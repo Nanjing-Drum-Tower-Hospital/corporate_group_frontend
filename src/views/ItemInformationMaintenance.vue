@@ -23,13 +23,66 @@
           </el-form-item>
       </el-form>
       </span>
-    <el-button type="primary">
+    <el-button type="primary" @click="queryItemInformation">
 搜索
     </el-button>
 
-    <el-button type="primary">
+
+    <el-button type="primary" @click="openAddDialog">
+
       添加
     </el-button>
+
+    <el-dialog title="添加货品信息" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="编码" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="货品名称" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="型号" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="单位" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="售价" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="制造商" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="销售公司" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="账单码" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="执行标准" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="批准文号" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="类型" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="有效期" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="创建时间" >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <el-table
         :data="tableData"
         border
@@ -50,12 +103,12 @@
           width="120">
       </el-table-column>
       <el-table-column
-          prop="unit_name"
+          prop="unitName"
           label="单位"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="selling_price"
+          prop="sellingPrice"
           label="售价"
           width="120">
       </el-table-column>
@@ -71,7 +124,7 @@
       </el-table-column>
 
       <el-table-column
-          prop="bill_item"
+          prop="billItem"
           label="账单码"
           width="120">
       </el-table-column>
@@ -81,7 +134,7 @@
           width="120">
       </el-table-column>
       <el-table-column
-          prop="approval_no"
+          prop="approvalNo"
           label="批准文号"
           width="120">
       </el-table-column>
@@ -91,12 +144,12 @@
           width="120">
       </el-table-column>
       <el-table-column
-          prop="expire_date"
+          prop="expireDate"
           label="有效期"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="create_date"
+          prop="createDate"
           label="创建时间"
           width="120">
       </el-table-column>
@@ -125,51 +178,47 @@
   </div>
 </template>
 <script >
+import service from "@/main";
+
 export default {
   name: "itemInformationMaintenance",
   data() {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1517 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1519 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1516 弄',
-        zip: 200333
-      }]
+
+      form:[],
+      tableData:[],
+      dialogFormVisible: false,
     }
   },
+  methods:{
+    openAddDialog(){
+      //the dialog should contain all the fields above
+      this.dialogFormVisible= true
+
+
+
+    },
+    queryItemInformation(){
+
+      service.get('/itemList', {
+        params:{
+          code: '%',
+        }
+
+      })//axis后面的.get可以省略；
+          .then(
+              (response) => {
+                console.log(response);
+                this.tableData = response.data.data;
+
+              })
+
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+    },
+  }
 }
 </script>
 
