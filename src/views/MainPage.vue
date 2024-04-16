@@ -138,7 +138,7 @@ export default {
         localStorage.removeItem("token")
         localStorage.removeItem("weakPassword")
         // this.user= localStorage.getItem("user")
-        this.$router.push('/login')
+        this.$router.replace({name:"login"})
       }
       else if(command==="changePassword"){
         this.dialogFormVisible = true

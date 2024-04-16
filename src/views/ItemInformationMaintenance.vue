@@ -1,23 +1,23 @@
 <template>
   <div>
     <span style="width: 100%">
-      <el-form :model="form"  :inline="true" style="display: inline-block">
+      <el-form :model="searchInput"  :inline="true" style="display: inline-block">
 
-          <el-form-item label="货品名称">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="编码">
+            <el-input v-model="searchInput.name"></el-input>
           </el-form-item>
       </el-form>
       </span>
     <span style="width: 100%;">
-              <el-form :model="form"  :inline="true" style="display: inline-block;">
+              <el-form :model="searchInput"  :inline="true" style="display: inline-block;">
           <el-form-item label="创建时间">
             <el-row :gutter="10">
               <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" v-model="searchInput.beginDate" style="width: 100%;"></el-date-picker>
               </el-col>
               <el-col class="line" :span="2" style="">-</el-col>
               <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" v-model="searchInput.beginDate" style="width: 100%;"></el-date-picker>
               </el-col>
             </el-row>
           </el-form-item>
@@ -185,9 +185,14 @@ export default {
   data() {
     return {
 
-      form:[],
+      searchInput:{
+        name:'',
+        beginDate:'',
+        endDate:''
+      },
       tableData:[],
       dialogFormVisible: false,
+      form:{}
     }
   },
   methods:{
@@ -202,7 +207,7 @@ export default {
 
       service.get('/itemList', {
         params:{
-          code: '%',
+          code: this.searchInput.name,
         }
 
       })//axis后面的.get可以省略；

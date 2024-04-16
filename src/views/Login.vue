@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     onLogin() {
-      this.$router.replace({path: "/mainPage"})
+      this.$router.replace({name:"mainPage"})
       console.log('Login data:', this.loginData);
     },
     onClear() {
