@@ -6,7 +6,7 @@
 
     </el-aside>
     <el-container class="login-container">
-      <el-form @submit.native.prevent="onLogin" class="login-form" ref="loginForm" :model="loginData" label-position="top">
+      <el-form class="login-form" ref="loginForm" :model="loginData" label-position="top">
         <h1>登录</h1>
         <el-form-item label="用户名">
           <el-input v-model="loginData.username" placeholder="admin or test"></el-input>
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import service from "@/main";
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "login",
@@ -37,8 +39,42 @@ export default {
   },
   methods: {
     onLogin() {
-      this.$router.replace({name:"mainPage"})
-      console.log('Login data:', this.loginData);
+      service.post('/login', {
+        username: this.loginData.username,
+        password: this.loginData.password
+
+
+      }).then(
+          (response) => {
+
+            if (response.data.code <= 400) {
+              let data = response.data.data;
+              let token = data.token;
+              let username = data.username;
+
+              localStorage.setItem("username", username)
+              localStorage.setItem("token", token)
+              if(response.data.code >= 300) {
+                this.$message.warning(response.data.message)
+
+
+              } else {
+                this.$message.success(response.data.message)
+              }
+
+
+              sessionStorage.setItem("login", Math.random().toString())
+              this.$router.replace({name:"mainPage"})
+              }
+
+
+
+          })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+
     },
     onClear() {
       this.$refs.loginForm.resetFields();

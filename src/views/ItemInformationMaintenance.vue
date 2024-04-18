@@ -35,51 +35,65 @@
 
     <el-dialog title="添加货品信息" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="编码" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="货品名称" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="型号" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="单位" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="售价" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="制造商" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="销售公司" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="账单码" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="执行标准" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="批准文号" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="类型" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="有效期" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="创建时间" >
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
 
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="编码" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.code" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="货品名称" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.name" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="型号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.model" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="单位" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.unitName" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="售价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.sellingPrice" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="制造商" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.manufacturer" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="销售公司" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.companyName" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="账单码" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.billItem" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="执行标准" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.standards" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="批准文号" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.approvalNo" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="类型" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.type" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="有效期" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.expireDate" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addItem">保 存</el-button>
       </div>
     </el-dialog>
 
@@ -190,22 +204,32 @@ export default {
         beginDate:'',
         endDate:''
       },
-      tableData:[],
+      tableData:{},
       dialogFormVisible: false,
       form:{}
     }
   },
   methods:{
+    addItem(){
+      console.log(this.form);
+      service.post('/addItem', this.form
+      ).then(
+          (response) => {
+            console.log(response);
+            // this.dialogFormVisible = false;
+          })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+    },
     openAddDialog(){
       //the dialog should contain all the fields above
       this.dialogFormVisible= true
-
-
-
     },
     queryItemInformation(){
 
-      service.get('/itemList', {
+      service.get('/queryItemList', {
         params:{
           code: this.searchInput.name,
         }

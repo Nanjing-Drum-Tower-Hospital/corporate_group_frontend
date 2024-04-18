@@ -40,8 +40,8 @@
         <div style="" >
           <el-dropdown @command="userHandleCommand">
         <span style="font-size: 18px">
-G375
-           {{ user }}
+
+           {{ username }}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
 
@@ -76,7 +76,7 @@ export default {
       status:"注册",
 
 
-      user: localStorage.getItem("user"),
+      username: localStorage.getItem("username"),
       dialogFormVisible: false,
       passwordForm: {
         oldPassword:"",
@@ -134,10 +134,8 @@ export default {
 
     userHandleCommand(command) {
       if(command==="logout"){
-        localStorage.removeItem("user")
+        localStorage.removeItem("username")
         localStorage.removeItem("token")
-        localStorage.removeItem("weakPassword")
-        // this.user= localStorage.getItem("user")
         this.$router.replace({name:"login"})
       }
       else if(command==="changePassword"){

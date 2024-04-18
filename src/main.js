@@ -34,7 +34,7 @@ service.interceptors.request.use(
         if (localStorage.getItem("token")) {
             // console.log("config.headers['token']")
             config.headers['token'] = localStorage.getItem("token")
-            config.headers['user'] = localStorage.getItem("user")
+            config.headers['username'] = localStorage.getItem("username")
         }
         return config
     },
@@ -63,9 +63,9 @@ service.interceptors.response.use(response => {
                             type: 'warning'
                         }
                     ).then(() => {
-                        localStorage.removeItem("user")
+                        localStorage.removeItem("username")
                         localStorage.removeItem("token")
-                        localStorage.removeItem("weakPassword")
+
                         router.push("/login");
                     })
                 }
