@@ -45,14 +45,29 @@ service.interceptors.request.use(
     }
 )
 
+//NavigationDuplicated not display
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+    if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject);
+    return originalPush.call(this, location).catch(err => {
+        if (err.name !== 'NavigationDuplicated') {
+            throw err;
+        }
+    });
+};
+
+new Vue({
+    render: h => h(App),
+    router: router,
+
+}).$mount('#app')
 //response响应拦截
 let t=false
 service.interceptors.response.use(response => {
         let res = response.data;
         console.log(res)
-        if (res.code <= 400) {
-            return response
-        } else {
+        if(response.data.code >= 400) {
+            Vue.prototype.$message.error(response.data.message)
             if (res.code === 401) {
                 if(!t){
                     t=!t
@@ -70,8 +85,18 @@ service.interceptors.response.use(response => {
                     })
                 }
             }
-            return Promise.reject(response.data.msg)
+        } else if(response.data.code >=300){
+            Vue.prototype.$message.warning(response.data.message)
         }
+        else{
+            console.log(response.data.message)
+            if(response.data.message!== null && response.data.message !== ""){
+                Vue.prototype.$message.success(response.data.message)
+            }
+
+        }
+        return response
+
     },
     error => {
         console.log(error)
@@ -80,9 +105,13 @@ service.interceptors.response.use(response => {
         }
         return Promise.reject(error)
     }
-)
-new Vue({
-  render: h => h(App),
-  router: router,
 
-}).$mount('#app')
+)
+
+router.beforeEach((to, from, next) => {
+    next()
+
+})
+
+
+

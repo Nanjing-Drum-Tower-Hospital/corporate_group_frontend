@@ -54,13 +54,7 @@ export default {
 
               localStorage.setItem("username", username)
               localStorage.setItem("token", token)
-              if(response.data.code >= 300) {
-                this.$message.warning(response.data.message)
 
-
-              } else {
-                this.$message.success(response.data.message)
-              }
 
 
               sessionStorage.setItem("login", Math.random().toString())

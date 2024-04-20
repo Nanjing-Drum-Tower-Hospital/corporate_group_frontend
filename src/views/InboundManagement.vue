@@ -23,7 +23,7 @@
           </el-form-item>
       </el-form>
       </span>
-    <el-button type="primary">
+    <el-button type="primary" @click="queryInboundList">
       搜索
     </el-button>
 
@@ -31,50 +31,30 @@
       添加
     </el-button>
     <el-table
-        :data="tableData"
+        :data="inboundTableData"
         border
-        style="width: 100%">
+        style="width: 100%"
+        @row-click="handleRowClick"
+    >
       <el-table-column
-          prop="code"
+          prop="orderNo"
           label="订单号"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="model"
-          label="到货时间"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="name"
-          label="供货商"
+          prop="supplierName"
+          label="供应商"
           width="120">
       </el-table-column>
 
+
       <el-table-column
-          prop="unit_name"
-          label="验收状态"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="selling_price"
-          label="金额"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="manufacturer"
+          prop="remark"
           label="备注"
           width="120">
       </el-table-column>
 
 
-      <el-table-column
-          label="操作"
-      >
-        <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
-        </template>
-      </el-table-column>
     </el-table>
     <div class="block">
       <el-pagination
@@ -128,25 +108,20 @@
           width="120">
       </el-table-column>
       <el-table-column
-          prop="selling_price"
-          label=""
-          width="120">
-      </el-table-column>
-      <el-table-column
           prop="manufacturer"
           label="备注"
           width="120">
       </el-table-column>
 
 
-      <el-table-column
-          label="操作"
-      >
-        <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
-        </template>
-      </el-table-column>
+<!--      <el-table-column-->
+<!--          label="操作"-->
+<!--      >-->
+<!--        <template slot-scope="scope">-->
+<!--          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
+<!--          <el-button type="text" size="small">编辑</el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
     <div class="block">
       <el-pagination
@@ -162,6 +137,8 @@
   </div>
 </template>
 <script >
+import service from "@/main";
+
 export default {
   name: "inboundManagement",
   data() {
@@ -176,37 +153,47 @@ export default {
         resource: '',
         desc: ''
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1517 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1519 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1516 弄',
-        zip: 200333
-      }]
+      inboundTableData: [],
+      inboundDetailTableData: []
     }
+
   },
+  methods: {
+    // Define the method that will be called when a row is clicked
+    // eslint-disable-next-line no-unused-vars
+    handleRowClick(row, column, event) {
+      console.log("Row clicked:", row);
+
+      // Additional logic here
+    },
+    queryInboundList() {
+      console.log("queryInboundList")
+      service.get('/queryInboundList', {
+        params: {
+        }
+      }).then(
+          (response) => {
+            console.log(response)
+            this.inboundTableData = response.data.data
+          }
+      ).catch(
+          (error) => {
+            console.log(error)
+          }
+      )
+    },
+    handleClick(row) {
+      console.log(row)
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+    }
+  }
+
+
 }
 </script>
 

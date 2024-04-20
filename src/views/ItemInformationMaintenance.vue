@@ -33,7 +33,7 @@
       添加
     </el-button>
 
-    <el-dialog title="添加货品信息" :visible.sync="dialogFormVisible">
+    <el-dialog title="添加货品信息" :visible.sync="dialogFormVisible" :before-close="handleClose" :close-on-click-modal="false">
       <el-form :model="form">
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
@@ -59,13 +59,13 @@
             <el-input v-model="form.sellingPrice" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
           <el-form-item label="制造商" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.manufacturer" autocomplete="off" style="width: 70%;"></el-input>
+            <el-input v-model="form.manufacturerId" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="销售公司" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.companyName" autocomplete="off" style="width: 70%;"></el-input>
+          <el-form-item label="供应商" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.supplierId" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
           <el-form-item label="账单码" style="flex: 1;" :label-width="'100px'">
             <el-input v-model="form.billItem" autocomplete="off" style="width: 70%;"></el-input>
@@ -92,7 +92,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="addItem">保 存</el-button>
       </div>
     </el-dialog>
@@ -127,13 +127,13 @@
           width="120">
       </el-table-column>
       <el-table-column
-          prop="manufacturer"
+          prop="manufacturerName"
           label="制造商"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="company"
-          label="销售公司"
+          prop="supplierName"
+          label="供应商"
           width="120">
       </el-table-column>
 
@@ -173,8 +173,9 @@
           label="操作"
 >
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
+<!--          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
+          <el-button @click="handleClickEdit(scope.row)" type="text" size="small">编辑</el-button>
+          <el-button @click="handleClickDelete(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -210,13 +211,45 @@ export default {
     }
   },
   methods:{
+    handleClose(){
+      this.form={}
+      this.dialogFormVisible = false;
+    },
+    handleClickEdit(row){
+      console.log(row);
+      this.form = JSON.parse(JSON.stringify(row));
+      this.dialogFormVisible = true;
+    },
+
+    handleClickDelete(row){
+      console.log(row);
+
+      service.get('/deleteItem', {
+        params:{
+          id: row.id,
+        }
+
+      }).then(
+          (response) => {
+            console.log(response);
+            this.queryItemInformation();
+          })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+    },
+
+
+
     addItem(){
       console.log(this.form);
-      service.post('/addItem', this.form
+      service.post('/addOrUpdateItem', this.form
       ).then(
           (response) => {
             console.log(response);
-            // this.dialogFormVisible = false;
+            this.dialogFormVisible = false;
+            this.form={}
           })
           .catch(
               (error) => {
@@ -239,6 +272,8 @@ export default {
               (response) => {
                 console.log(response);
                 this.tableData = response.data.data;
+
+
 
               })
 

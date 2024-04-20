@@ -4,7 +4,9 @@
     <!-- Sidebar -->
     <el-col :span="12" style="width: 200px">
       <el-menu style="height: 100vh;"
-               default-active="2"
+               default-active="1"
+               :default-openeds="['1']"
+
                class="el-menu-vertical-demo"
                @select="handleMenuSelection"
                @open="handleOpen"
