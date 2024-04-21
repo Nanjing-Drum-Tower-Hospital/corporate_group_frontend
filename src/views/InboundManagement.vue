@@ -37,19 +37,19 @@
         @row-click="handleRowClick"
     >
       <el-table-column
-          prop="orderNo"
+          prop="inbound.orderNo"
           label="订单号"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="supplierName"
+          prop="supplier.supplierName"
           label="供应商"
           width="120">
       </el-table-column>
 
 
       <el-table-column
-          prop="remark"
+          prop="inbound.remark"
           label="备注"
           width="120">
       </el-table-column>
@@ -83,7 +83,7 @@
       添加
     </el-button>
     <el-table
-        :data="tableData"
+        :data="inboundDetailTableData"
         border
         style="width: 100%">
       <el-table-column
@@ -92,26 +92,22 @@
           width="150">
       </el-table-column>
       <el-table-column
-          prop="model"
+          prop="name"
           label="货品名称"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="name"
-          label="货品单位"
+          prop="model"
+          label="货品型号"
           width="120">
       </el-table-column>
 
       <el-table-column
-          prop="unit_name"
-          label="厂家"
+          prop="machineNo"
+          label="机器编号"
           width="120">
       </el-table-column>
-      <el-table-column
-          prop="manufacturer"
-          label="备注"
-          width="120">
-      </el-table-column>
+
 
 
 <!--      <el-table-column-->
@@ -159,10 +155,26 @@ export default {
 
   },
   methods: {
-    // Define the method that will be called when a row is clicked
+    queryInboundDetail() {
+      console.log("queryInboundList")
+      service.get('/queryInboundDetail', {
+        params: {
+        }
+      }).then(
+          (response) => {
+            console.log(response)
+            this.inboundDetailTableData = response.data.data
+          }
+      ).catch(
+          (error) => {
+            console.log(error)
+          }
+      )
+    },
     // eslint-disable-next-line no-unused-vars
     handleRowClick(row, column, event) {
       console.log("Row clicked:", row);
+      this.queryInboundDetail()
 
       // Additional logic here
     },

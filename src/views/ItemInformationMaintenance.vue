@@ -64,20 +64,11 @@
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="供应商" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.supplierId" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
           <el-form-item label="账单码" style="flex: 1;" :label-width="'100px'">
             <el-input v-model="form.billItem" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="执行标准" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+          <el-form-item label="执行标准" style="flex: 1; " :label-width="'100px'">
             <el-input v-model="form.standards" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="批准文号" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.approvalNo" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
         </div>
 
@@ -85,6 +76,13 @@
           <el-form-item label="类型" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
             <el-input v-model="form.type" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
+          <el-form-item label="批准文号" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.approvalNo" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+
           <el-form-item label="有效期" style="flex: 1;" :label-width="'100px'">
             <el-input v-model="form.expireDate" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
@@ -102,68 +100,64 @@
         border
         style="width: 100%">
       <el-table-column
-          prop="code"
+          prop="item.code"
           label="编码"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="name"
+          prop="item.name"
           label="货品名称"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="model"
+          prop="item.model"
           label="型号"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="unitName"
+          prop="item.unitName"
           label="单位"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="sellingPrice"
+          prop="item.sellingPrice"
           label="售价"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="manufacturerName"
+          prop="manufacturer.manufacturerName"
           label="制造商"
           width="120">
       </el-table-column>
-      <el-table-column
-          prop="supplierName"
-          label="供应商"
-          width="120">
-      </el-table-column>
+
 
       <el-table-column
-          prop="billItem"
+          prop="item.billItem"
           label="账单码"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="standards"
+          prop="item.standards"
           label="执行标准"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="approvalNo"
+          prop="item.approvalNo"
           label="批准文号"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="type"
+          prop="item.type"
           label="类型"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="expireDate"
+          prop="item.expireDate"
           label="有效期"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="createDate"
+          prop="item.createDate"
           label="创建时间"
           width="120">
       </el-table-column>
@@ -217,7 +211,7 @@ export default {
     },
     handleClickEdit(row){
       console.log(row);
-      this.form = JSON.parse(JSON.stringify(row));
+      this.form = JSON.parse(JSON.stringify(row.item));
       this.dialogFormVisible = true;
     },
 
