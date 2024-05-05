@@ -100,27 +100,27 @@
         border
         style="width: 100%">
       <el-table-column
-          prop="item.code"
+          prop="itemDetail.code"
           label="编码"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="item.name"
+          prop="itemDetail.name"
           label="货品名称"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="item.model"
+          prop="itemDetail.model"
           label="型号"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="item.unitName"
+          prop="itemDetail.unitName"
           label="单位"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="item.sellingPrice"
+          prop="itemDetail.sellingPrice"
           label="售价"
           width="120">
       </el-table-column>
@@ -132,32 +132,32 @@
 
 
       <el-table-column
-          prop="item.billItem"
+          prop="itemDetail.billItem"
           label="账单码"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="item.standards"
+          prop="itemDetail.standards"
           label="执行标准"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="item.approvalNo"
+          prop="itemDetail.approvalNo"
           label="批准文号"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="item.type"
+          prop="itemDetail.type"
           label="类型"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="item.expireDate"
+          prop="itemDetail.expireDate"
           label="有效期"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="item.createDate"
+          prop="itemDetail.createDate"
           label="创建时间"
           width="120">
       </el-table-column>

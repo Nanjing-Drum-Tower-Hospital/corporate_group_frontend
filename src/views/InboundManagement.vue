@@ -37,7 +37,7 @@
         @row-click="handleRowClick"
     >
       <el-table-column
-          prop="inbound.orderNo"
+          prop="inboundInfo.orderNo"
           label="订单号"
           width="150">
       </el-table-column>
@@ -49,7 +49,7 @@
 
 
       <el-table-column
-          prop="inbound.remark"
+          prop="inboundInfo.remark"
           label="备注"
           width="120">
       </el-table-column>
@@ -87,23 +87,23 @@
         border
         style="width: 100%">
       <el-table-column
-          prop="code"
+          prop="item.itemDetail.code"
           label="编码"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="name"
+          prop="item.itemDetail.name"
           label="货品名称"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="model"
+          prop="item.itemDetail.model"
           label="货品型号"
           width="120">
       </el-table-column>
 
       <el-table-column
-          prop="machineNo"
+          prop="inboundItem.machineNo"
           label="机器编号"
           width="120">
       </el-table-column>
