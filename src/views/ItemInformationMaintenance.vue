@@ -1,192 +1,141 @@
 <template>
-  <div>
-    <span style="width: 100%">
-      <el-form :model="searchInput"  :inline="true" style="display: inline-block">
-
-          <el-form-item label="编码">
-            <el-input v-model="searchInput.name"></el-input>
-          </el-form-item>
+  <div style="display: flex; flex-direction: column; height: 100%;">
+    <div>
+      <el-form :model="searchInput" :inline="true" style="display: inline-block">
+        <el-form-item label="编码">
+          <el-input v-model="searchInput.name"></el-input>
+        </el-form-item>
       </el-form>
-      </span>
-    <span style="width: 100%;">
-              <el-form :model="searchInput"  :inline="true" style="display: inline-block;">
-          <el-form-item label="创建时间">
-            <el-row :gutter="10">
-              <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="searchInput.beginDate" style="width: 100%;"></el-date-picker>
-              </el-col>
-              <el-col class="line" :span="2" style="">-</el-col>
-              <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="searchInput.beginDate" style="width: 100%;"></el-date-picker>
-              </el-col>
-            </el-row>
-          </el-form-item>
+
+      <el-form :model="searchInput" :inline="true" style="display: inline-block;">
+        <el-form-item label="创建时间">
+          <el-row :gutter="10">
+            <el-col :span="11">
+              <el-date-picker type="date" placeholder="选择日期"
+                              value-format="yyyy-MM-dd"
+                              v-model="searchInput.beginDate"
+                              style="width: 100%;">
+              </el-date-picker>
+            </el-col>
+            <el-col class="line" :span="2" style="">-</el-col>
+            <el-col :span="11">
+              <el-date-picker type="date" placeholder="选择日期"
+                              value-format="yyyy-MM-dd"
+                              v-model="searchInput.endDate"
+                              style="width: 100%;">
+              </el-date-picker>
+            </el-col>
+          </el-row>
+        </el-form-item>
       </el-form>
-      </span>
-    <el-button type="primary" @click="queryItemInformation">
-搜索
-    </el-button>
 
+      <el-button type="primary" @click="queryItemInformation">
+        搜索
+      </el-button>
 
-    <el-button type="primary" @click="openAddDialog">
-
-      添加
-    </el-button>
+      <el-button type="primary" @click="openAddDialog">
+        添加
+      </el-button>
+    </div>
 
     <el-dialog title="添加货品信息" :visible.sync="dialogFormVisible" :before-close="handleClose" :close-on-click-modal="false">
-      <el-form :model="form">
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="编码" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.code" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="货品名称" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.name" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="型号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.model" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="单位" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.unitName" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="售价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.sellingPrice" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="制造商" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.manufacturerId" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="账单码" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.billItem" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="执行标准" style="flex: 1; " :label-width="'100px'">
-            <el-input v-model="form.standards" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="类型" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.type" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="批准文号" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.approvalNo" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-
-          <el-form-item label="有效期" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.expireDate" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-        </div>
-
-      </el-form>
+      <!-- Dialog form fields as in your original code -->
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="addItem">保 存</el-button>
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="addItem">保存</el-button>
       </div>
     </el-dialog>
 
-    <el-table
-        :data="tableData"
-        border
-        style="width: 100%">
-      <el-table-column
-          prop="itemDetail.code"
-          label="编码"
-          width="150">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.name"
-          label="货品名称"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.model"
-          label="型号"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.unitName"
-          label="单位"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.sellingPrice"
-          label="售价"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="manufacturer.manufacturerName"
-          label="制造商"
-          width="120">
-      </el-table-column>
+    <div style="flex-grow: 1; overflow-y: auto;">
+      <el-table
+          :data="tableData"
+          border
+          style="width: 100%;">
+        <el-table-column
+            prop="itemDetail.code"
+            label="编码"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.name"
+            label="货品名称"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.model"
+            label="型号"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.unitName"
+            label="单位"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.sellingPrice"
+            label="售价"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="manufacturer.manufacturerName"
+            label="制造商"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.billItem"
+            label="账单码"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.standards"
+            label="执行标准"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.approvalNo"
+            label="批准文号"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.type"
+            label="类型"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.expireDate"
+            label="有效期"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.createDate"
+            label="创建时间"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClickEdit(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="handleClickDelete(scope.row)" type="text" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
-
-      <el-table-column
-          prop="itemDetail.billItem"
-          label="账单码"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.standards"
-          label="执行标准"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.approvalNo"
-          label="批准文号"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.type"
-          label="类型"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.expireDate"
-          label="有效期"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="itemDetail.createDate"
-          label="创建时间"
-          width="120">
-      </el-table-column>
-
-
-      <el-table-column
-          label="操作"
->
-        <template slot-scope="scope">
-<!--          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
-          <el-button @click="handleClickEdit(scope.row)" type="text" size="small">编辑</el-button>
-          <el-button @click="handleClickDelete(scope.row)" type="text" size="small">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block">
+    <div>
       <el-pagination
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="currentPage"
+          :page-sizes="[pageSize]"
+          :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400">
+          :total="itemsCount">
       </el-pagination>
     </div>
   </div>
 </template>
+
 <script >
+
 import service from "@/main";
 
 export default {
@@ -201,10 +150,31 @@ export default {
       },
       tableData:{},
       dialogFormVisible: false,
-      form:{}
+      form:{},
+      manufacturerList:[],
+      currentPage:1,
+      itemsCount:0,
+      pageSize:10,
     }
   },
+  mounted() {
+    // Call your backend API to fetch the list of manufacturers
+    service.get('/queryManufacturerList')
+        .then(response => {
+          // Assign the received data to the manufacturers array
+          this.manufacturerList = response.data.data;
+          console.log(this.manufacturerList)
+        })
+        .catch(error => {
+          console.error('Error fetching manufacturer list:', error);
+          // Handle errors if needed
+        });
+  },
   methods:{
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+      this.queryItemInformation()
+    },
     handleClose(){
       this.form={}
       this.dialogFormVisible = false;
@@ -255,10 +225,13 @@ export default {
       this.dialogFormVisible= true
     },
     queryItemInformation(){
-
       service.get('/queryItemList', {
         params:{
           code: this.searchInput.name,
+          beginDate: this.searchInput.beginDate,
+          endDate: this.searchInput.endDate,
+          currentPage:this.currentPage,
+          pageSize:this.pageSize,
         }
 
       })//axis后面的.get可以省略；
@@ -266,11 +239,27 @@ export default {
               (response) => {
                 console.log(response);
                 this.tableData = response.data.data;
-
-
-
               })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
 
+      service.get('/queryItemsCount', {
+        params:{
+          code: this.searchInput.name,
+          beginDate: this.searchInput.beginDate,
+          endDate: this.searchInput.endDate,
+          currentPage:this.currentPage,
+          pageSize:this.pageSize,
+        }
+
+      })//axis后面的.get可以省略；
+          .then(
+              (response) => {
+                console.log(response);
+                this.itemsCount = response.data.data;
+              })
           .catch(
               (error) => {
                 console.log(error);
@@ -280,8 +269,22 @@ export default {
 }
 </script>
 
-
-
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 96vh;
+}
 
+
+
+.content {
+  flex: 1;
+  padding: 20px 0;
+}
+
+.footer {
+  margin-top: auto;
+  padding: 10px 0;
+}
 </style>
