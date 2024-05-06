@@ -27,9 +27,80 @@
       搜索
     </el-button>
 
-    <el-button type="primary">
+    <el-button type="primary" @click="openAddDialog">
       添加
     </el-button>
+
+    <el-dialog title="添加货品信息" :visible.sync="dialogFormVisible" :before-close="handleClose" :close-on-click-modal="false">
+      <el-form :model="form">
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="编码" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.code" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="货品名称" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.name" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="型号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.model" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="单位" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.unitName" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="售价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.sellingPrice" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="制造商" style="flex: 1;" :label-width="'100px'">
+            <el-select v-model="form.manufacturerId" placeholder="请选择制造商" style="width: 70%;">
+              <!-- You can dynamically populate the options here -->
+              <!-- For example, using a loop to iterate over a manufacturers array -->
+              <el-option
+                  v-for="manufacturer in manufacturerList"
+                  :key="manufacturer.id"
+                  :label="manufacturer.manufacturerName"
+                  :value="manufacturer.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="账单码" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.billItem" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="执行标准" style="flex: 1; " :label-width="'100px'">
+            <el-input v-model="form.standards" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="类型" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.type" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="批准文号" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.approvalNo" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+
+          <el-form-item label="有效期" style="flex: 1;" :label-width="'100px'">
+            <el-input v-model="form.expireDate" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button type="primary" @click="addItem">保 存</el-button>
+      </div>
+    </el-dialog>
     <el-table
         :data="inboundTableData"
         border
@@ -150,11 +221,16 @@ export default {
         desc: ''
       },
       inboundTableData: [],
-      inboundDetailTableData: []
+      inboundDetailTableData: [],
+      dialogFormVisible:false
     }
 
   },
   methods: {
+    openAddDialog(){
+      //the dialog should contain all the fields above
+      this.dialogFormVisible= true
+    },
     queryInboundDetail() {
       console.log("queryInboundList")
       service.get('/queryInboundDetail', {
