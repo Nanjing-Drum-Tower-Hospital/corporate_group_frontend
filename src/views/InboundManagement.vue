@@ -35,70 +35,53 @@
       <el-form :model="form">
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="编码" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.code" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="货品名称" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.name" autocomplete="off" style="width: 70%;"></el-input>
+          <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.orderNo" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="型号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.model" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="单位" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.unitName" autocomplete="off" style="width: 70%;"></el-input>
+          <el-form-item label="到货日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-date-picker type="date" placeholder="选择日期"
+                            value-format="yyyy-MM-dd"
+                            v-model="form.arrivalDate"
+                            style="width: 70%;">
+            </el-date-picker>
           </el-form-item>
         </div>
 
+
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="售价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.sellingPrice" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="制造商" style="flex: 1;" :label-width="'100px'">
-            <el-select v-model="form.manufacturerId" placeholder="请选择制造商" style="width: 70%;">
+
+          <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">
+            <el-select v-model="form.supplierId" placeholder="请选择制造商" style="width: 70%;">
               <!-- You can dynamically populate the options here -->
               <!-- For example, using a loop to iterate over a manufacturers array -->
               <el-option
-                  v-for="manufacturer in manufacturerList"
-                  :key="manufacturer.id"
-                  :label="manufacturer.manufacturerName"
-                  :value="manufacturer.id">
+                  v-for="supplier in supplierList"
+                  :key="supplier.id"
+                  :label="supplier.supplierName"
+                  :value="supplier.id">
               </el-option>
             </el-select>
           </el-form-item>
         </div>
 
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="账单码" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.billItem" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-          <el-form-item label="执行标准" style="flex: 1; " :label-width="'100px'">
-            <el-input v-model="form.standards" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-        </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="类型" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.type" autocomplete="off" style="width: 70%;"></el-input>
+          <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.remark" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
-          <el-form-item label="批准文号" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.approvalNo" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
+
         </div>
 
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
 
-          <el-form-item label="有效期" style="flex: 1;" :label-width="'100px'">
-            <el-input v-model="form.expireDate" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-        </div>
+
 
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="addItem">保 存</el-button>
+        <el-button type="primary" @click="handleSave">保 存</el-button>
       </div>
     </el-dialog>
     <el-table
@@ -110,6 +93,12 @@
       <el-table-column
           prop="inboundInfo.orderNo"
           label="订单号"
+          width="150"
+>
+      </el-table-column>
+      <el-table-column
+          prop="inboundInfo.arrivalDate"
+          label="到货时间"
           width="150">
       </el-table-column>
       <el-table-column
@@ -123,6 +112,13 @@
           prop="inboundInfo.remark"
           label="备注"
           width="120">
+      </el-table-column>
+      <el-table-column
+          label="操作">
+        <template slot-scope="scope">
+          <el-button @click="handleOrderClickEdit(scope.row)" type="text" size="small">编辑</el-button>
+          <el-button @click="handleOrderClickDelete(scope.row)" type="text" size="small">删除</el-button>
+        </template>
       </el-table-column>
 
 
@@ -138,14 +134,14 @@
           :total="400">
       </el-pagination>
     </div>
-    <span style="width: 100%">
-      <el-form :model="form"  :inline="true" style="display: inline-block">
-
-          <el-form-item label="货品名称">
-            <el-input v-model="form.name"></el-input>
-          </el-form-item>
-      </el-form>
-      </span>
+    <span v-if="currentInbound && currentInbound.inboundInfo">
+  订单号：{{currentInbound.inboundInfo.orderNo}}
+  <el-form :model="form" :inline="true" style="display: inline-block">
+    <el-form-item label="货品名称">
+      <el-input v-model="form.name"></el-input>
+    </el-form-item>
+  </el-form>
+</span>
     <el-button type="primary">
       搜索
     </el-button>
@@ -179,16 +175,15 @@
           width="120">
       </el-table-column>
 
+      <el-table-column
+          label="操作">
+        <template slot-scope="scope">
+          <el-button @click="handleClickEdit(scope.row)" type="text" size="small">编辑</el-button>
+          <el-button @click="handleClickDelete(scope.row)" type="text" size="small">删除</el-button>
+        </template>
+      </el-table-column>
 
 
-<!--      <el-table-column-->
-<!--          label="操作"-->
-<!--      >-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
-<!--          <el-button type="text" size="small">编辑</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
     </el-table>
     <div class="block">
       <el-pagination
@@ -211,30 +206,64 @@ export default {
   data() {
     return {
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+
       },
       inboundTableData: [],
+      currentInbound:{},
       inboundDetailTableData: [],
-      dialogFormVisible:false
+      dialogFormVisible:false,
+      supplierList:[],
+
     }
 
   },
+  mounted() {
+    // Call your backend API to fetch the list of manufacturers
+    service.get('/querySupplierList')
+        .then(response => {
+          // Assign the received data to the manufacturers array
+          this.supplierList = response.data.data;
+          console.log(this.supplierList)
+        })
+        .catch(error => {
+          console.error('Error fetching manufacturer list:', error);
+          // Handle errors if needed
+        });
+  },
   methods: {
+    handleSave(){
+      console.log(this.form);
+      service.post('/addOrUpdateInbound', this.form
+      ).then(
+          (response) => {
+            console.log(response);
+            this.dialogFormVisible = false;
+            this.form={}
+          })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+    },
+    handleClose(){
+      this.form={}
+      this.dialogFormVisible = false;
+    },
+    handleOrderClickEdit(row){
+      console.log(row);
+      this.form = JSON.parse(JSON.stringify(row.inboundInfo));
+      this.dialogFormVisible = true;
+    },
     openAddDialog(){
       //the dialog should contain all the fields above
       this.dialogFormVisible= true
     },
     queryInboundDetail() {
-      console.log("queryInboundList")
+      console.log(this.currentInbound.inboundInfo.orderNo)
       service.get('/queryInboundDetail', {
         params: {
+          orderNo: this.currentInbound.inboundInfo.orderNo
+
         }
       }).then(
           (response) => {
@@ -249,6 +278,7 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     handleRowClick(row, column, event) {
+      this.currentInbound=row
       console.log("Row clicked:", row);
       this.queryInboundDetail()
 
