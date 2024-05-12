@@ -260,7 +260,7 @@ export default {
     },
     queryInboundDetail() {
       console.log(this.currentInbound.inboundInfo.orderNo)
-      service.get('/queryInboundDetail', {
+      service.get('/queryInboundDetailCount', {
         params: {
           orderNo: this.currentInbound.inboundInfo.orderNo
 
