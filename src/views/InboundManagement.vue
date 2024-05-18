@@ -4,20 +4,20 @@
       <el-form :model="form"  :inline="true" style="display: inline-block">
 
           <el-form-item label="订单号">
-            <el-input v-model="form.name"></el-input>
+            <el-input v-model="formInbound.name"></el-input>
           </el-form-item>
       </el-form>
       </span>
     <span style="width: 100%;">
-              <el-form :model="form"  :inline="true" style="display: inline-block;">
+              <el-form :model="formInbound"  :inline="true" style="display: inline-block;">
           <el-form-item label="到货时间">
             <el-row :gutter="10">
               <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1" style="width: 100%;"></el-date-picker>
               </el-col>
               <el-col class="line" :span="2" style="">-</el-col>
               <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1" style="width: 100%;"></el-date-picker>
               </el-col>
             </el-row>
           </el-form-item>
@@ -31,12 +31,12 @@
       添加
     </el-button>
 
-    <el-dialog title="添加货品信息" :visible.sync="dialogFormVisible" :before-close="handleClose" :close-on-click-modal="false">
-      <el-form :model="form">
+    <el-dialog title="添加货品信息" :visible.sync="dialogFormInboundVisible" :before-close="handleInboundClose" :close-on-click-modal="false">
+      <el-form :model="formInbound">
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.orderNo" autocomplete="off" style="width: 70%;"></el-input>
+            <el-input v-model="formInbound.orderNo" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
         </div>
 
@@ -44,7 +44,7 @@
           <el-form-item label="到货日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
             <el-date-picker type="date" placeholder="选择日期"
                             value-format="yyyy-MM-dd"
-                            v-model="form.arrivalDate"
+                            v-model="formInbound.arrivalDate"
                             style="width: 70%;">
             </el-date-picker>
           </el-form-item>
@@ -54,7 +54,7 @@
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
 
           <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">
-            <el-select v-model="form.supplierId" placeholder="请选择制造商" style="width: 70%;">
+            <el-select v-model="formInbound.supplierId" placeholder="请选择制造商" style="width: 70%;">
               <!-- You can dynamically populate the options here -->
               <!-- For example, using a loop to iterate over a manufacturers array -->
               <el-option
@@ -70,7 +70,7 @@
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.remark" autocomplete="off" style="width: 70%;"></el-input>
+            <el-input v-model="formInbound.remark" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
 
         </div>
@@ -80,8 +80,8 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="handleSave">保 存</el-button>
+        <el-button @click="handleInboundClose">取 消</el-button>
+        <el-button type="primary" @click="handleInboundSave">保 存</el-button>
       </div>
     </el-dialog>
     <el-table
@@ -136,9 +136,9 @@
     </div>
     <span v-if="currentInbound && currentInbound.inboundInfo">
   订单号：{{currentInbound.inboundInfo.orderNo}}
-  <el-form :model="form" :inline="true" style="display: inline-block">
+  <el-form :model="formInboundDetail" :inline="true" style="display: inline-block">
     <el-form-item label="货品名称">
-      <el-input v-model="form.name"></el-input>
+      <el-input v-model="formInboundDetail.name"></el-input>
     </el-form-item>
   </el-form>
 </span>
@@ -146,9 +146,48 @@
       搜索
     </el-button>
 
-    <el-button type="primary">
+    <el-button @click="openAddInboundDetailDialog" type="primary">
       添加
     </el-button>
+    <el-dialog title="添加货品信息" :visible.sync="dialogFormInboundDetailVisible" :before-close="handleInboundDetailClose" :close-on-click-modal="false">
+      <el-form :model="formInboundDetail">
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="formInboundDetail.orderNo" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="到货日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-date-picker type="date" placeholder="选择日期"
+                            value-format="yyyy-MM-dd"
+                            v-model="formInboundDetail.arrivalDate"
+                            style="width: 70%;">
+            </el-date-picker>
+          </el-form-item>
+        </div>
+
+
+
+
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="formInboundDetail.remark" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+
+        </div>
+
+
+
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleInboundDetailClose">取 消</el-button>
+        <el-button type="primary" @click="handleSave">保 存</el-button>
+      </div>
+    </el-dialog>
     <el-table
         :data="inboundDetailTableData"
         border
@@ -170,8 +209,8 @@
       </el-table-column>
 
       <el-table-column
-          prop="inboundItem.machineNo"
-          label="机器编号"
+          prop="inboundItem.machineNoCount"
+          label="数量"
           width="120">
       </el-table-column>
 
@@ -205,13 +244,17 @@ export default {
   name: "inboundManagement",
   data() {
     return {
-      form: {
+      formInbound: {
+
+      },
+      formInboundDetail: {
 
       },
       inboundTableData: [],
       currentInbound:{},
       inboundDetailTableData: [],
-      dialogFormVisible:false,
+      dialogFormInboundVisible:false,
+      dialogFormInboundDetailVisible:false,
       supplierList:[],
 
     }
@@ -231,32 +274,39 @@ export default {
         });
   },
   methods: {
-    handleSave(){
-      console.log(this.form);
-      service.post('/addOrUpdateInbound', this.form
+    openAddInboundDetailDialog(){
+      this.dialogFormInboundDetailVisible= true
+    },
+    handleInboundSave(){
+      console.log(this.formInbound);
+      service.post('/addOrUpdateInbound', this.formInbound
       ).then(
           (response) => {
             console.log(response);
-            this.dialogFormVisible = false;
-            this.form={}
+            this.dialogFormInboundVisible = false;
+            this.formInbound={}
           })
           .catch(
               (error) => {
                 console.log(error);
               });
     },
-    handleClose(){
-      this.form={}
-      this.dialogFormVisible = false;
+    handleInboundClose(){
+      this.formInbound={}
+      this.dialogFormInboundVisible = false;
+    },
+    handleInboundDetailClose(){
+      this.formInboundDetail={}
+      this.dialogFormInboundDetailVisible = false;
     },
     handleOrderClickEdit(row){
       console.log(row);
-      this.form = JSON.parse(JSON.stringify(row.inboundInfo));
-      this.dialogFormVisible = true;
+      this.formInbound = JSON.parse(JSON.stringify(row.inboundInfo));
+      this.dialogFormInboundVisible = true;
     },
     openAddDialog(){
       //the dialog should contain all the fields above
-      this.dialogFormVisible= true
+      this.dialogFormInboundVisible= true
     },
     queryInboundDetail() {
       console.log(this.currentInbound.inboundInfo.orderNo)
