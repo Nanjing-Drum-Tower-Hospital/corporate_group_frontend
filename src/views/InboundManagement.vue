@@ -1,7 +1,7 @@
 <template>
   <div>
     <span style="width: 100%">
-      <el-form :model="form"  :inline="true" style="display: inline-block">
+      <el-form :model="form" :inline="true" style="display: inline-block">
 
           <el-form-item label="订单号">
             <el-input v-model="formInbound.name"></el-input>
@@ -9,15 +9,17 @@
       </el-form>
       </span>
     <span style="width: 100%;">
-              <el-form :model="formInbound"  :inline="true" style="display: inline-block;">
+              <el-form :model="formInbound" :inline="true" style="display: inline-block;">
           <el-form-item label="到货时间">
             <el-row :gutter="10">
               <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1"
+                                style="width: 100%;"></el-date-picker>
               </el-col>
               <el-col class="line" :span="2" style="">-</el-col>
               <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1"
+                                style="width: 100%;"></el-date-picker>
               </el-col>
             </el-row>
           </el-form-item>
@@ -31,7 +33,8 @@
       添加
     </el-button>
 
-    <el-dialog title="添加入库信息" :visible.sync="dialogFormInboundVisible" :before-close="handleInboundClose" :close-on-click-modal="false">
+    <el-dialog title="添加入库信息" :visible.sync="dialogFormInboundVisible" :before-close="handleInboundClose"
+               :close-on-click-modal="false">
       <el-form :model="formInbound">
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
@@ -76,8 +79,6 @@
         </div>
 
 
-
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleInboundClose">取 消</el-button>
@@ -94,7 +95,7 @@
           prop="inboundInfo.orderNo"
           label="订单号"
           width="150"
->
+      >
       </el-table-column>
       <el-table-column
           prop="inboundInfo.arrivalDate"
@@ -135,7 +136,7 @@
       </el-pagination>
     </div>
     <span v-if="currentInbound && currentInbound.inboundInfo">
-  订单号：{{currentInbound.inboundInfo.orderNo}}
+  订单号：{{ currentInbound.inboundInfo.orderNo }}
   <el-form :model="formInboundDetail" :inline="true" style="display: inline-block">
     <el-form-item label="货品名称">
       <el-input v-model="formInboundDetail.name"></el-input>
@@ -149,31 +150,45 @@
     <el-button @click="openAddInboundDetailDialog" type="primary">
       添加
     </el-button>
-    <el-dialog title="添加入库货品信息" :visible.sync="dialogFormInboundDetailVisible" :before-close="handleInboundDetailClose" :close-on-click-modal="false">
+    <el-dialog title="添加入库货品信息" :visible.sync="dialogFormInboundDetailVisible"
+               :before-close="handleInboundDetailClose" :close-on-click-modal="false">
+
+          <span v-if="currentInbound && currentInbound.inboundInfo">
+            订单号：{{ currentInbound.inboundInfo.orderNo }}
+
+          </span>
       <el-form :model="formInboundDetail">
+        <el-form-item label="Item Detail" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+          <el-autocomplete
+              v-model="selectedItem"
+              :fetch-suggestions="querySearchItemDetail"
+              placeholder="Search Item Detail"
+              style="width: 100%;"
+              @select="handleItemDetailSelection"
+          ></el-autocomplete>
+        </el-form-item>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+
           <el-form-item label="编码" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
             <el-input v-model="formInboundDetail.code" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
         </div>
 
 
-
-
-
         <div>
-          <div v-for="(machineNo, index) in machineNumbers" :key="index" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <el-form-item :label="'机器编号 ' + (index + 1)" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+          <div v-for="(machineNo, index) in machineNumbers" :key="index"
+               style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <el-form-item :label="'机器编号 ' + (index + 1)" style="flex: 1; margin-right: 10px;"
+                          :label-width="'100px'">
               <!-- Use a method to handle input updates -->
-              <el-input :value="machineNo" @input="updateMachineNo($event, index)" autocomplete="off" style="width: 70%;"></el-input>
+              <el-input :value="machineNo" @input="updateMachineNo($event, index)" autocomplete="off"
+                        style="width: 70%;"></el-input>
             </el-form-item>
             <el-button type="text" @click="removeMachine(index)">Remove</el-button>
           </div>
           <el-button @click="addMachine">Add Machine</el-button>
         </div>
-
-
 
 
       </el-form>
@@ -231,30 +246,26 @@
     </div>
   </div>
 </template>
-<script >
+<script>
 import service from "@/main";
 
 export default {
   name: "inboundManagement",
   data() {
     return {
-      formInbound: {
-
-      },
-      formInboundDetail: {
-
-      },
+      formInbound: {},
+      formInboundDetail: {},
       inboundTableData: [],
-      currentInbound:{},
+      currentInbound: {},
       inboundDetailTableData: [],
-      dialogFormInboundVisible:false,
-      dialogFormInboundDetailVisible:false,
-      supplierList:[],
-
+      dialogFormInboundVisible: false,
+      dialogFormInboundDetailVisible: false,
+      supplierList: [],
 
 
       machineNumbers: [],
-
+      selectedItem: null,
+      itemDetails: []
     }
 
   },
@@ -272,6 +283,29 @@ export default {
         });
   },
   methods: {
+    querySearchItemDetail(queryString, cb) {
+      // Make a GET request to your Spring Boot backend to fetch item details
+      // You can use libraries like Axios for making HTTP requests
+      service.get('/queryItemByCodeOrName',{
+        params: {
+          input: queryString,
+        }
+      })
+
+          .then(response => {
+            // Process the response and extract item details
+            this.itemDetails = response.data.data;
+            // Call the callback function with the results
+            cb(this.itemDetails.map(item => ({ value: item.code+ " - "+ item.name, label: item.name })));
+          })
+          .catch(error => {
+            console.error('Error fetching item details:', error);
+          });
+    },
+    handleItemDetailSelection(item) {
+      // Handle the selection of an item from the autocomplete dropdown
+      console.log('Selected Item:', item);
+    },
     addMachine() {
       this.machineNumbers.push(''); // Add an empty string to the machineNumbers array
     },
@@ -313,41 +347,40 @@ export default {
     },
 
 
-
-    openAddInboundDetailDialog(){
-      this.formInboundDetail.orderNo=this.currentInbound.inboundInfo.orderNo
-      this.dialogFormInboundDetailVisible= true
+    openAddInboundDetailDialog() {
+      this.formInboundDetail.orderNo = this.currentInbound.inboundInfo.orderNo
+      this.dialogFormInboundDetailVisible = true
     },
-    handleInboundSave(){
+    handleInboundSave() {
       console.log(this.formInbound);
       service.post('/addOrUpdateInbound', this.formInbound
       ).then(
           (response) => {
             console.log(response);
             this.dialogFormInboundVisible = false;
-            this.formInbound={}
+            this.formInbound = {}
           })
           .catch(
               (error) => {
                 console.log(error);
               });
     },
-    handleInboundClose(){
-      this.formInbound={}
+    handleInboundClose() {
+      this.formInbound = {}
       this.dialogFormInboundVisible = false;
     },
-    handleInboundDetailClose(){
-      this.formInboundDetail={}
+    handleInboundDetailClose() {
+      this.formInboundDetail = {}
       this.dialogFormInboundDetailVisible = false;
     },
-    handleOrderClickEdit(row){
+    handleOrderClickEdit(row) {
       console.log(row);
       this.formInbound = JSON.parse(JSON.stringify(row.inboundInfo));
       this.dialogFormInboundVisible = true;
     },
-    openAddDialog(){
+    openAddDialog() {
       //the dialog should contain all the fields above
-      this.dialogFormInboundVisible= true
+      this.dialogFormInboundVisible = true
     },
     queryInboundDetail() {
       console.log(this.currentInbound.inboundInfo.orderNo)
@@ -369,7 +402,7 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     handleRowClick(row, column, event) {
-      this.currentInbound=row
+      this.currentInbound = row
       console.log("Row clicked:", row);
       this.queryInboundDetail()
 
@@ -378,8 +411,7 @@ export default {
     queryInboundList() {
       console.log("queryInboundList")
       service.get('/queryInboundList', {
-        params: {
-        }
+        params: {}
       }).then(
           (response) => {
             console.log(response)
@@ -405,7 +437,6 @@ export default {
 
 }
 </script>
-
 
 
 <style scoped>
