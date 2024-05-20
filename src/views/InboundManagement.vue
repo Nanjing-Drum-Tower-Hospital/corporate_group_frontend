@@ -162,13 +162,15 @@
 
 
 
-
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="机器编号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="formInboundDetail.machineNo" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-item>
-
+        <div>
+          <div v-for="(machineNo, index) in machineNumbers" :key="index" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <el-form-item :label="'机器编号 ' + (index + 1)" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <!-- Use a method to handle input updates -->
+              <el-input :value="machineNo" @input="updateMachineNo($event, index)" autocomplete="off" style="width: 70%;"></el-input>
+            </el-form-item>
+            <el-button type="text" @click="removeMachine(index)">Remove</el-button>
+          </div>
+          <el-button @click="addMachine">Add Machine</el-button>
         </div>
 
 
@@ -249,6 +251,10 @@ export default {
       dialogFormInboundDetailVisible:false,
       supplierList:[],
 
+
+
+      machineNumbers: [],
+
     }
 
   },
@@ -266,7 +272,18 @@ export default {
         });
   },
   methods: {
+    addMachine() {
+      this.machineNumbers.push(''); // Add an empty string to the machineNumbers array
+    },
+    updateMachineNo(value, index) {
+      // Update the value at the specific index
+      this.$set(this.machineNumbers, index, value);
+    },
+    removeMachine(index) {
+      this.machineNumbers.splice(index, 1); // Remove the string at the specified index
+    },
     handleInboundDetailSave() {
+      console.log(this.machineNumbers);
       service.get('/queryItemByCode', {
         params: {
           code: this.formInboundDetail.code,
@@ -276,17 +293,18 @@ export default {
               (response) => {
                 console.log(response);
                 this.formInboundDetail.itemId = response.data.data.id;
-                service.post('/addOrUpdateInboundDetail', this.formInboundDetail)//axis后面的.get可以省略；
-                    .then(
-                        (response) => {
-                          console.log(response.data.data[0].itemDetail.id);
 
-
-                        })
-                    .catch(
-                        (error) => {
-                          console.log(error);
-                        });
+                // Iterate over each element in machineNumbers
+                this.machineNumbers.forEach((machine) => {
+                  this.formInboundDetail.machineNo = machine.machineNo; // Set formInboundDetail.machineNo to the current machine number
+                  service.post('/addOrUpdateInboundDetail', this.formInboundDetail)
+                      .then((response) => {
+                        console.log(response.data.data[0].itemDetail.id);
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                });
               })
           .catch(
               (error) => {
