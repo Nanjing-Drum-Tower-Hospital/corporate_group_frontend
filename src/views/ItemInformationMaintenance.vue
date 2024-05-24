@@ -200,6 +200,7 @@
 <script >
 
 import service from "@/main";
+import {MessageBox} from "element-ui";
 
 export default {
   name: "itemInformationMaintenance",
@@ -244,27 +245,41 @@ export default {
     },
     handleClickEdit(row){
       console.log(row);
-      this.form = JSON.parse(JSON.stringify(row.item));
+      this.form = JSON.parse(JSON.stringify(row.itemDetail));
       this.dialogFormVisible = true;
     },
 
-    handleClickDelete(row){
-      console.log(row);
-
-      service.get('/deleteItem', {
-        params:{
-          id: row.itemDetail.id,
-        }
-
-      }).then(
-          (response) => {
-            console.log(response);
-            this.queryItemInformation();
-          })
-          .catch(
-              (error) => {
-                console.log(error);
-              });
+    handleClickDelete(row) {
+      MessageBox.confirm('请确认是否删除该货品信息?', '警告', {
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+        type: 'warning'
+      }).then(() => {
+        // User confirmed deletion
+        console.log(row);
+        service.get('/deleteItem', {
+          params: {
+            id: row.itemDetail.id,
+          }
+        }).then(response => {
+          console.log(response);
+          // Call queryItemInformation and wait for it to finish
+          return this.queryItemInformation();
+        }).then(() => {
+          console.log(this.tableData)
+          // After queryItemInformation is finished
+          if (this.tableData.length === 0 && this.currentPage > 1) {
+            this.currentPage--;
+            // Call queryItemInformation again after updating currentPage
+            return this.queryItemInformation();
+          }
+        }).catch(error => {
+          console.error(error);
+        });
+      }).catch(() => {
+        // User cancelled the deletion
+        console.log('Deletion cancelled');
+      });
     },
 
 
@@ -277,6 +292,7 @@ export default {
             console.log(response);
             this.dialogFormVisible = false;
             this.form={}
+            return this.queryItemInformation();
           })
           .catch(
               (error) => {
@@ -287,47 +303,41 @@ export default {
       //the dialog should contain all the fields above
       this.dialogFormVisible= true
     },
-    queryItemInformation(){
-      service.get('/queryItemList', {
-        params:{
+    queryItemInformation() {
+      // Create a Promise for each service.get call
+      const fetchItemList = service.get('/queryItemList', {
+        params: {
           code: this.searchInput.name,
           beginDate: this.searchInput.beginDate,
           endDate: this.searchInput.endDate,
-          currentPage:this.currentPage,
-          pageSize:this.pageSize,
+          currentPage: this.currentPage,
+          pageSize: this.pageSize,
         }
+      }).then(response => {
+        console.log(response);
+        this.tableData = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
 
-      })//axis后面的.get可以省略；
-          .then(
-              (response) => {
-                console.log(response);
-                this.tableData = response.data.data;
-              })
-          .catch(
-              (error) => {
-                console.log(error);
-              });
-
-      service.get('/queryItemsCount', {
-        params:{
+      const fetchItemsCount = service.get('/queryItemsCount', {
+        params: {
           code: this.searchInput.name,
           beginDate: this.searchInput.beginDate,
           endDate: this.searchInput.endDate,
-          currentPage:this.currentPage,
-          pageSize:this.pageSize,
+          currentPage: this.currentPage,
+          pageSize: this.pageSize,
         }
+      }).then(response => {
+        console.log(response);
+        this.itemsCount = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
 
-      })//axis后面的.get可以省略；
-          .then(
-              (response) => {
-                console.log(response);
-                this.itemsCount = response.data.data;
-              })
-          .catch(
-              (error) => {
-                console.log(error);
-              });
-    },
+      // Return a Promise that resolves when both requests are completed
+      return Promise.all([fetchItemList, fetchItemsCount]);
+    }
   }
 }
 </script>
