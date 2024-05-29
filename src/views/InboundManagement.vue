@@ -1,31 +1,31 @@
 <template>
   <div class="container">
     <div class="half">
-      <span style="width: 100%">
-      <el-form :model="form" :inline="true" style="display: inline-block">
+<!--      <span style="width: 100%">-->
+<!--      <el-form :model="form" :inline="true" style="display: inline-block">-->
 
-          <el-form-item label="订单号">
-            <el-input v-model="formInbound.name"></el-input>
-          </el-form-item>
-      </el-form>
-      </span>
-      <span style="width: 100%;">
-              <el-form :model="formInbound" :inline="true" style="display: inline-block;">
-          <el-form-item label="到货时间">
-            <el-row :gutter="10">
-              <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1"
-                                style="width: 100%;"></el-date-picker>
-              </el-col>
-              <el-col class="line" :span="2" style="">-</el-col>
-              <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1"
-                                style="width: 100%;"></el-date-picker>
-              </el-col>
-            </el-row>
-          </el-form-item>
-      </el-form>
-      </span>
+<!--          <el-form-item label="订单号">-->
+<!--            <el-input v-model="formInbound.name"></el-input>-->
+<!--          </el-form-item>-->
+<!--      </el-form>-->
+<!--      </span>-->
+<!--      <span style="width: 100%;">-->
+<!--              <el-form :model="formInbound" :inline="true" style="display: inline-block;">-->
+<!--          <el-form-item label="到货时间">-->
+<!--            <el-row :gutter="10">-->
+<!--              <el-col :span="11">-->
+<!--                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1"-->
+<!--                                style="width: 100%;"></el-date-picker>-->
+<!--              </el-col>-->
+<!--              <el-col class="line" :span="2" style="">-</el-col>-->
+<!--              <el-col :span="11">-->
+<!--                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1"-->
+<!--                                style="width: 100%;"></el-date-picker>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--          </el-form-item>-->
+<!--      </el-form>-->
+<!--      </span>-->
       <el-button type="primary" @click="queryInboundList">
         搜索
       </el-button>
@@ -303,6 +303,42 @@ export default {
         });
   },
   methods: {
+    handleInboundDelete(row) {
+      MessageBox.confirm("请确认是否删除订单号为" + row.inboundInfo.orderNo + "的入库信息？该订单号下所有入库信息都将被删除！",
+          '警告', {
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+        type: 'warning'
+      }).then(() => {
+        // User confirmed deletion
+        console.log(row);
+        service.get('/deleteInbound', {
+          params: {
+            orderNo: row.inboundInfo.orderNo
+          }
+        }).then(response => {
+          console.log(response);
+          // Call queryItemInformation and wait for it to finish
+          return this.queryInboundList();
+        }).then(() => {
+          this.currentInbound = {};
+          this.inboundDetailTableData= [];
+          console.log(this.inboundTableData)
+          // After queryItemInformation is finished
+          if (this.inboundTableData.length === 0 && this.inboundCurrentPage > 1) {
+            this.inboundCurrentPage--;
+            // Call queryItemInformation again after updating currentPage
+            return this.queryInboundList();
+          }
+        }).catch(error => {
+          console.error(error);
+        });
+      }).catch(() => {
+        // User cancelled the deletion
+        console.log('Deletion cancelled');
+      });
+    },
+
 
     handleInboundCurrentChange(inboundCurrentPage){
       this.inboundCurrentPage = inboundCurrentPage;
@@ -372,7 +408,7 @@ export default {
       this.formInboundDetail.itemId = row.inboundItem.itemId
       this.formInboundDetail.orderNo = this.currentInbound.inboundInfo.orderNo
       MessageBox.confirm("请确认是否删除订单号为" + this.formInboundDetail.orderNo +
-          "编码为" + row.item.itemDetail.code + "的所有入库信息?", '警告', {
+          "编码为" + row.item.itemDetail.code + "的所有入库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
         type: 'warning'
@@ -483,6 +519,8 @@ export default {
             console.log(response);
             this.dialogFormInboundVisible = false;
             this.formInbound = {}
+            this.currentInbound= {}
+            return this.queryInboundList();
 
           })
           .catch(
@@ -552,35 +590,35 @@ export default {
       // Additional logic here
     },
     queryInboundList() {
-      console.log("queryInboundList")
-      service.get('/queryInboundList', {
+      console.log("queryInboundList");
+
+      // Create a Promise for each service.get call
+      const fetchInboundListData = service.get('/queryInboundList', {
         params: {
           currentPage: this.inboundCurrentPage,
           pageSize: this.inboundPageSize,
         }
-      }).then(
-          (response) => {
-            console.log(response)
-            this.inboundTableData = response.data.data
-          }
-      ).catch(
-          (error) => {
-            console.log(error)
-          })
-      service.get('/queryInboundCount', {
+      }).then(response => {
+        console.log(response);
+        this.inboundTableData = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      const fetchInboundCount = service.get('/queryInboundCount', {
         params: {
           currentPage: this.inboundCurrentPage,
           pageSize: this.inboundPageSize,
         }
-      }).then(
-          (response) => {
-            console.log(response)
-            this.inboundsCount = response.data.data
-          }
-      ).catch(
-          (error) => {
-            console.log(error)
-          })
+      }).then(response => {
+        console.log(response);
+        this.inboundsCount = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      // Return a Promise that resolves when both requests are completed
+      return Promise.all([fetchInboundListData, fetchInboundCount]);
     },
     handleClick(row) {
       console.log(row)
