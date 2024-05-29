@@ -512,7 +512,9 @@ export default {
       this.queryInboundDetailMachineNoCount()
     },
     handleInboundSave() {
+      console.log("this.formInbound");
       console.log(this.formInbound);
+      console.log("this.formInbound");
       service.post('/addOrUpdateInbound', this.formInbound
       ).then(
           (response) => {
@@ -520,6 +522,7 @@ export default {
             this.dialogFormInboundVisible = false;
             this.formInbound = {}
             this.currentInbound= {}
+            this.inboundDetailTableData = []
             return this.queryInboundList();
 
           })
