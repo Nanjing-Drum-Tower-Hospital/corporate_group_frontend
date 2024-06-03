@@ -6,6 +6,8 @@ import ItemInformationMaintenance from "@/views/ItemInformationMaintenance.vue";
 import InboundManagement from "@/views/InboundManagement.vue";
 import OutboundManagement from "@/views/OutboundManagement.vue";
 import InventoryManagement from "@/views/InventoryManagement.vue";
+import SupplierInformationManagement from "@/views/SupplierInformationManagement.vue";
+import ManufacturerInformationManagement from "@/views/ManufacturerInformationManagement.vue";
 
 
 
@@ -36,26 +38,33 @@ export default new VueRouter({
                 {
                     name: 'itemInformationMaintenance',
                     path: '/itemInformationMaintenance',
-                    // redirect: "/main",
                     component: ItemInformationMaintenance,
                 },
                 {
                     name: 'inboundManagement',
                     path: '/inboundManagement',
-                    // redirect: "/main",
                     component: InboundManagement,
                 },
                 {
                     name: 'outboundManagement',
                     path: '/outboundManagement',
-                    // redirect: "/main",
                     component: OutboundManagement,
                 },
                 {
                     name: 'inventoryManagement',
                     path: '/inventoryManagement',
-                    // redirect: "/main",
                     component: InventoryManagement,
+                },
+                {
+                    name: 'supplierInformationManagement',
+                    path: '/supplierInformationManagement',
+                    component: SupplierInformationManagement,
+                },
+                {
+                    name: 'manufacturerInformationManagement',
+                    path: '/manufacturerInformationManagement',
+
+                    component: ManufacturerInformationManagement,
                 },
 
 

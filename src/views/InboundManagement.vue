@@ -301,6 +301,7 @@ export default {
           console.error('Error fetching manufacturer list:', error);
           // Handle errors if needed
         });
+    this.queryInboundList()
   },
   methods: {
     handleInboundDelete(row) {

@@ -29,6 +29,9 @@
             <el-menu-item index="1-2">货品入库</el-menu-item>
             <el-menu-item index="1-3">货品出库</el-menu-item>
             <el-menu-item index="1-4">货品库存管理</el-menu-item>
+            <el-menu-item index="1-6">制造商信息管理</el-menu-item>
+            <el-menu-item index="1-5">供应商信息管理</el-menu-item>
+
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -126,6 +129,12 @@ export default {
       }
       else if(index==="1-4"){
         this.$router.push({name: 'inventoryManagement'})
+      }
+      else if(index==="1-5"){
+        this.$router.push({name: 'supplierInformationManagement'})
+      }
+      else if(index==="1-6"){
+        this.$router.push({name: 'manufacturerInformationManagement'})
       }
 
     },

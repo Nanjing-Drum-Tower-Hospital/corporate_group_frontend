@@ -233,6 +233,7 @@ export default {
           console.error('Error fetching manufacturer list:', error);
           // Handle errors if needed
         });
+    this.queryItemInformation()
   },
   methods:{
     handleCurrentChange(currentPage) {
