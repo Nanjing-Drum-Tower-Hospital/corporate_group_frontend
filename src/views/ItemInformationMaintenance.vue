@@ -60,7 +60,7 @@
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="售价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+          <el-form-item label="含税单价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
             <el-input v-model="form.sellingPrice" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
           <el-form-item label="制造商" style="flex: 1;" :label-width="'100px'">
@@ -135,9 +135,28 @@
             width="120">
         </el-table-column>
         <el-table-column
-            prop="itemDetail.sellingPrice"
-            label="售价"
+            prop="itemDetail.sellingPriceBeforeTax"
+            label="单价"
             width="120">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.itemDetail.sellingPriceBeforeTax) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.tax"
+            label="税额"
+            width="120">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.itemDetail.tax) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="itemDetail.sellingPrice"
+            label="含税单价"
+            width="120">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.itemDetail.sellingPrice) }}
+          </template>
         </el-table-column>
         <el-table-column
             prop="manufacturer.manufacturerName"
@@ -164,11 +183,11 @@
             label="类型"
             width="120">
         </el-table-column>
-        <el-table-column
-            prop="itemDetail.expireDate"
-            label="有效期"
-            width="120">
-        </el-table-column>
+<!--        <el-table-column-->
+<!--            prop="itemDetail.expireDate"-->
+<!--            label="有效期"-->
+<!--            width="120">-->
+<!--        </el-table-column>-->
         <el-table-column
             prop="itemDetail.createDate"
             label="创建时间"
@@ -236,6 +255,9 @@ export default {
     this.queryItemInformation()
   },
   methods:{
+    formatNumber(value) {
+      return Number(value).toFixed(10);
+    },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
       this.queryItemInformation()
