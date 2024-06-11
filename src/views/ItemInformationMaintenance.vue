@@ -122,22 +122,22 @@
         <el-table-column
             prop="itemDetail.name"
             label="货品名称"
-            width="120">
+            width="150">
         </el-table-column>
         <el-table-column
             prop="itemDetail.model"
             label="型号"
-            width="120">
+            width="150">
         </el-table-column>
         <el-table-column
             prop="itemDetail.unitName"
             label="单位"
-            width="120">
+            width="150">
         </el-table-column>
         <el-table-column
             prop="itemDetail.sellingPriceBeforeTax"
             label="单价"
-            width="120">
+            width="150">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.itemDetail.sellingPriceBeforeTax) }}
           </template>
@@ -145,7 +145,7 @@
         <el-table-column
             prop="itemDetail.tax"
             label="税额"
-            width="120">
+            width="150">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.itemDetail.tax) }}
           </template>
@@ -153,7 +153,7 @@
         <el-table-column
             prop="itemDetail.sellingPrice"
             label="含税单价"
-            width="120">
+            width="150">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.itemDetail.sellingPrice) }}
           </template>
@@ -161,28 +161,28 @@
         <el-table-column
             prop="manufacturer.manufacturerName"
             label="制造商"
-            width="120">
+            width="150">
         </el-table-column>
-        <el-table-column
-            prop="itemDetail.billItem"
-            label="账单码"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="itemDetail.standards"
-            label="执行标准"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="itemDetail.approvalNo"
-            label="批准文号"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="itemDetail.type"
-            label="类型"
-            width="120">
-        </el-table-column>
+<!--        <el-table-column-->
+<!--            prop="itemDetail.billItem"-->
+<!--            label="账单码"-->
+<!--            width="150">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--            prop="itemDetail.standards"-->
+<!--            label="执行标准"-->
+<!--            width="120">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--            prop="itemDetail.approvalNo"-->
+<!--            label="批准文号"-->
+<!--            width="120">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--            prop="itemDetail.type"-->
+<!--            label="类型"-->
+<!--            width="150">-->
+<!--        </el-table-column>-->
 <!--        <el-table-column-->
 <!--            prop="itemDetail.expireDate"-->
 <!--            label="有效期"-->
@@ -191,7 +191,7 @@
         <el-table-column
             prop="itemDetail.createDate"
             label="创建时间"
-            width="120">
+            width="150">
         </el-table-column>
         <el-table-column
             label="操作">

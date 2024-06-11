@@ -38,21 +38,21 @@
                  :close-on-click-modal="false">
         <el-form :model="formInbound">
 
-          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input v-model="formInbound.orderNo" autocomplete="off" style="width: 70%;"></el-input>
-            </el-form-item>
-          </div>
+<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
+<!--            <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
+<!--              <el-input v-model="formInbound.orderNo" autocomplete="off" style="width: 70%;"></el-input>-->
+<!--            </el-form-item>-->
+<!--          </div>-->
 
-          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <el-form-item label="到货日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-date-picker type="date" placeholder="选择日期"
-                              value-format="yyyy-MM-dd"
-                              v-model="formInbound.arrivalDate"
-                              style="width: 70%;">
-              </el-date-picker>
-            </el-form-item>
-          </div>
+<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
+<!--            <el-form-item label="到货日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
+<!--              <el-date-picker type="date" placeholder="选择日期"-->
+<!--                              value-format="yyyy-MM-dd"-->
+<!--                              v-model="formInbound.arrivalDate"-->
+<!--                              style="width: 70%;">-->
+<!--              </el-date-picker>-->
+<!--            </el-form-item>-->
+<!--          </div>-->
 
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
@@ -93,14 +93,14 @@
           @row-click="handleRowClick"
       >
         <el-table-column
-            prop="inboundInfo.orderNo"
-            label="订单号"
+            prop="inboundInfo.inboundNo"
+            label="入库单号"
             width="150"
         >
         </el-table-column>
         <el-table-column
-            prop="inboundInfo.arrivalDate"
-            label="到货时间"
+            prop="inboundInfo.inboundDate"
+            label="入库时间"
             width="150">
         </el-table-column>
         <el-table-column
@@ -119,6 +119,7 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleInboundEdit(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="handleClickEdit(scope.row)" type="text" size="small">冲红</el-button>
             <el-button @click="handleInboundDelete(scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -513,9 +514,7 @@ export default {
       this.queryInboundDetailMachineNoCount()
     },
     handleInboundSave() {
-      console.log("this.formInbound");
       console.log(this.formInbound);
-      console.log("this.formInbound");
       service.post('/addOrUpdateInbound', this.formInbound
       ).then(
           (response) => {

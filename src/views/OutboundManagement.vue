@@ -14,11 +14,11 @@
                  :close-on-click-modal="false">
         <el-form :model="formOutbound">
 
-          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input v-model="formOutbound.orderNo" autocomplete="off" style="width: 70%;"></el-input>
-            </el-form-item>
-          </div>
+<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
+<!--            <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
+<!--              <el-input v-model="formOutbound.orderNo" autocomplete="off" style="width: 70%;"></el-input>-->
+<!--            </el-form-item>-->
+<!--          </div>-->
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="出库日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
@@ -72,6 +72,7 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleOutboundEdit(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="handleClickEdit(scope.row)" type="text" size="small">冲红</el-button>
             <el-button @click="handleOutboundDelete(scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
