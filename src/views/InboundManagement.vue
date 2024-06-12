@@ -34,7 +34,7 @@
         添加
       </el-button>
 
-      <el-dialog title="添加入库信息" :visible.sync="dialogFormInboundVisible" :before-close="handleInboundClose"
+      <el-dialog title="添加修改入库信息" :visible.sync="dialogFormInboundVisible" :before-close="handleInboundClose"
                  :close-on-click-modal="false">
         <el-form :model="formInbound">
 
@@ -159,11 +159,11 @@
 
       </div>
 
-      <el-dialog title="添加入库货品信息" :visible.sync="dialogFormInboundDetailVisible"
+      <el-dialog title="添加修改入库货品信息" :visible.sync="dialogFormInboundDetailVisible"
                  :before-close="handleInboundDetailClose" :close-on-click-modal="false">
 
           <span v-if="currentInbound && currentInbound.inboundInfo">
-            订单号：{{ currentInbound.inboundInfo.inboundNo }}
+            入库单号：{{ currentInbound.inboundInfo.inboundNo }}
 
           </span>
         <el-form :model="formInboundDetail">
@@ -304,7 +304,7 @@ export default {
   },
   methods: {
     handleInboundDelete(row) {
-      MessageBox.confirm("请确认是否删除入库单号为" + row.inboundInfo.inboundNo + "的入库信息？该订单号下所有入库信息都将被删除！",
+      MessageBox.confirm("请确认是否删除入库单号为" + row.inboundInfo.inboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',

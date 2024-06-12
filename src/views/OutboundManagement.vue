@@ -10,7 +10,7 @@
         添加
       </el-button>
 
-      <el-dialog title="添加出库信息" :visible.sync="dialogFormOutboundVisible" :before-close="handleOutboundClose"
+      <el-dialog title="添加修改出库信息" :visible.sync="dialogFormOutboundVisible" :before-close="handleOutboundClose"
                  :close-on-click-modal="false">
         <el-form :model="formOutbound">
 
@@ -20,15 +20,15 @@
 <!--            </el-form-item>-->
 <!--          </div>-->
 
-          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <el-form-item label="出库日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-date-picker type="date" placeholder="选择日期"
-                              value-format="yyyy-MM-dd"
-                              v-model="formOutbound.outboundDate"
-                              style="width: 70%;">
-              </el-date-picker>
-            </el-form-item>
-          </div>
+<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
+<!--            <el-form-item label="出库日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
+<!--              <el-date-picker type="date" placeholder="选择日期"-->
+<!--                              value-format="yyyy-MM-dd"-->
+<!--                              v-model="formOutbound.outboundDate"-->
+<!--                              style="width: 70%;">-->
+<!--              </el-date-picker>-->
+<!--            </el-form-item>-->
+<!--          </div>-->
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-input v-model="formOutbound.remark" autocomplete="off" style="width: 70%;"></el-input>
@@ -52,8 +52,8 @@
           @row-click="handleRowClick"
       >
         <el-table-column
-            prop="outboundInfo.orderNo"
-            label="订单号"
+            prop="outboundInfo.outboundNo"
+            label="出库单号"
             width="150"
         >
         </el-table-column>
@@ -93,7 +93,7 @@
     <div class="half">
       <div v-if="currentOutbound && currentOutbound.outboundInfo">
               <span  >
-  订单号：{{ currentOutbound.outboundInfo.orderNo }}
+  出库单号：{{ currentOutbound.outboundInfo.outboundNo }}
                 <!--  <el-form :model="formOutboundDetail" :inline="true" style="display: inline-block">-->
                 <!--    <el-form-item label="货品名称">-->
                 <!--      <el-input v-model="formOutboundDetail.name"></el-input>-->
@@ -112,11 +112,11 @@
 
       </div>
 
-      <el-dialog title="添加出库货品信息" :visible.sync="dialogFormOutboundDetailVisible"
+      <el-dialog title="添加修改出库货品信息" :visible.sync="dialogFormOutboundDetailVisible"
                  :before-close="handleOutboundDetailClose" :close-on-click-modal="false">
 
           <span v-if="currentOutbound && currentOutbound.outboundInfo">
-            订单号：{{ currentOutbound.outboundInfo.orderNo }}
+            出库单号：{{ currentOutbound.outboundInfo.outboundNo }}
 
           </span>
         <el-form :model="formOutboundDetail">
@@ -259,7 +259,7 @@ export default {
   },
   methods: {
     handleOutboundDelete(row) {
-      MessageBox.confirm("请确认是否删除订单号为" + row.outboundInfo.orderNo + "的入库信息？该订单号下所有入库信息都将被删除！",
+      MessageBox.confirm("请确认是否删除出库单号为" + row.outboundInfo.outboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -269,7 +269,7 @@ export default {
         console.log(row);
         service.get('/deleteOutbound', {
           params: {
-            orderNo: row.outboundInfo.orderNo
+            outboundNo: row.outboundInfo.outboundNo
           }
         }).then(response => {
           console.log(response);
@@ -325,7 +325,7 @@ export default {
 
       service.get('/queryOutboundItemListByOrderNoAndItemId', {
         params: {
-          orderNo: this.formOutboundDetail.orderNo,
+          outboundNo: this.formOutboundDetail.outboundNo,
           itemId: this.formOutboundDetail.itemId,
         }
       })//axis后面的.get可以省略；
@@ -361,8 +361,8 @@ export default {
 
     handleOutboundDetailDelete(row) {
       this.formOutboundDetail.itemId = row.outboundItem.itemId
-      this.formOutboundDetail.orderNo = this.currentOutbound.outboundInfo.orderNo
-      MessageBox.confirm("请确认是否删除订单号为" + this.formOutboundDetail.orderNo +
+      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
+      MessageBox.confirm("请确认是否删除出库单号为" + this.formOutboundDetail.outboundNo +
           "编码为" + row.item.itemDetail.code + "的所有入库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
@@ -372,7 +372,7 @@ export default {
         console.log(row);
         service.get('/deleteOutboundItemListByOrderNoAndItemId', {
           params: {
-            orderNo: this.formOutboundDetail.orderNo,
+            outboundNo: this.formOutboundDetail.outboundNo,
             itemId: this.formOutboundDetail.itemId,
           }
         }).then(response => {
@@ -401,10 +401,10 @@ export default {
       this.selectedItem = row.item.itemDetail.code + " - " + row.item.itemDetail.name
       this.formOutboundDetail.itemId = row.outboundItem.itemId
       console.log(row)
-      this.formOutboundDetail.orderNo = this.currentOutbound.outboundInfo.orderNo
+      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
       service.get('/queryOutboundItemListByOrderNoAndItemId', {
         params: {
-          orderNo: this.formOutboundDetail.orderNo,
+          outboundNo: this.formOutboundDetail.outboundNo,
           itemId: this.formOutboundDetail.itemId,
         }
       })//axis后面的.get可以省略；
@@ -431,7 +431,7 @@ export default {
     handleOutboundDetailSave() {
 
       const params = new URLSearchParams({
-        orderNo: this.formOutboundDetail.orderNo,
+        outboundNo: this.formOutboundDetail.outboundNo,
         itemId: this.formOutboundDetail.itemId
       });
 
@@ -459,7 +459,7 @@ export default {
 
     openAddOutboundDetailDialog() {
       this.selectedItem = ""
-      this.formOutboundDetail.orderNo = this.currentOutbound.outboundInfo.orderNo
+      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
       this.dialogFormOutboundDetailVisible = true
     },
     handleOutboundDetailCurrentChange(outboundDetailCurrentPage) {
@@ -467,9 +467,7 @@ export default {
       this.queryOutboundDetailMachineNoCount()
     },
     handleOutboundSave() {
-      console.log("this.formOutbound");
       console.log(this.formOutbound);
-      console.log("this.formOutbound");
       service.post('/addOrUpdateOutbound', this.formOutbound
       ).then(
           (response) => {
@@ -506,12 +504,12 @@ export default {
       this.dialogFormOutboundVisible = true
     },
     queryOutboundDetailMachineNoCount() {
-      console.log(this.currentOutbound.outboundInfo.orderNo);
+      console.log(this.currentOutbound.outboundInfo.outboundNo);
 
       // Create a Promise for each service.get call
       const fetchOutboundDetailData = service.get('/queryOutboundDetailMachineNoCount', {
         params: {
-          orderNo: this.currentOutbound.outboundInfo.orderNo,
+          outboundNo: this.currentOutbound.outboundInfo.outboundNo,
           currentPage: this.outboundDetailCurrentPage,
           pageSize: this.outboundDetailPageSize,
         }
@@ -524,7 +522,7 @@ export default {
 
       const fetchOutboundDetailsCount = service.get('/countOutboundDetailMachineNoCount', {
         params: {
-          orderNo: this.currentOutbound.outboundInfo.orderNo,
+          outboundNo: this.currentOutbound.outboundInfo.outboundNo,
           currentPage: this.outboundDetailCurrentPage,
           pageSize: this.outboundDetailPageSize,
         }
