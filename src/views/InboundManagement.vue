@@ -106,14 +106,14 @@
         <el-table-column
             prop="supplier.supplierName"
             label="供应商"
-            width="120">
+            width="150">
         </el-table-column>
 
 
         <el-table-column
             prop="inboundInfo.remark"
             label="备注"
-            width="120">
+            width="150">
         </el-table-column>
         <el-table-column
             label="操作">
@@ -140,7 +140,7 @@
     <div class="half">
       <div v-if="currentInbound && currentInbound.inboundInfo">
               <span  >
-  订单号：{{ currentInbound.inboundInfo.orderNo }}
+  入库单号：{{ currentInbound.inboundInfo.inboundNo }}
 <!--  <el-form :model="formInboundDetail" :inline="true" style="display: inline-block">-->
 <!--    <el-form-item label="货品名称">-->
 <!--      <el-input v-model="formInboundDetail.name"></el-input>-->
@@ -163,12 +163,10 @@
                  :before-close="handleInboundDetailClose" :close-on-click-modal="false">
 
           <span v-if="currentInbound && currentInbound.inboundInfo">
-            订单号：{{ currentInbound.inboundInfo.orderNo }}
+            订单号：{{ currentInbound.inboundInfo.inboundNo }}
 
           </span>
         <el-form :model="formInboundDetail">
-
-
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="货品编码名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-autocomplete
@@ -220,7 +218,7 @@
         <el-table-column
             prop="item.itemDetail.name"
             label="货品名称"
-            width="120">
+            width="180">
         </el-table-column>
         <el-table-column
             prop="item.itemDetail.model"
@@ -306,7 +304,7 @@ export default {
   },
   methods: {
     handleInboundDelete(row) {
-      MessageBox.confirm("请确认是否删除订单号为" + row.inboundInfo.orderNo + "的入库信息？该订单号下所有入库信息都将被删除！",
+      MessageBox.confirm("请确认是否删除入库单号为" + row.inboundInfo.inboundNo + "的入库信息？该订单号下所有入库信息都将被删除！",
           '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
@@ -316,7 +314,7 @@ export default {
         console.log(row);
         service.get('/deleteInbound', {
           params: {
-            orderNo: row.inboundInfo.orderNo
+            inboundNo: row.inboundInfo.inboundNo
           }
         }).then(response => {
           console.log(response);
@@ -370,9 +368,9 @@ export default {
       // Handle the selection of an item from the autocomplete dropdown
       this.formInboundDetail.itemId = item.value
 
-      service.get('/queryInboundItemListByOrderNoAndItemId', {
+      service.get('/queryInboundItemListByInboundNoAndItemId', {
         params: {
-          orderNo: this.formInboundDetail.orderNo,
+          inboundNo: this.formInboundDetail.inboundNo,
           itemId: this.formInboundDetail.itemId,
         }
       })//axis后面的.get可以省略；
@@ -408,8 +406,8 @@ export default {
 
     handleInboundDetailDelete(row) {
       this.formInboundDetail.itemId = row.inboundItem.itemId
-      this.formInboundDetail.orderNo = this.currentInbound.inboundInfo.orderNo
-      MessageBox.confirm("请确认是否删除订单号为" + this.formInboundDetail.orderNo +
+      this.formInboundDetail.inboundNo = this.currentInbound.inboundInfo.inboundNo
+      MessageBox.confirm("请确认是否删除入库单号为" + this.formInboundDetail.inboundNo +
           "编码为" + row.item.itemDetail.code + "的所有入库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
@@ -417,9 +415,9 @@ export default {
       }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteInboundItemListByOrderNoAndItemId', {
+        service.get('/deleteInboundItemListByInboundNoAndItemId', {
           params: {
-            orderNo: this.formInboundDetail.orderNo,
+            inboundNo: this.formInboundDetail.inboundNo,
             itemId: this.formInboundDetail.itemId,
           }
         }).then(response => {
@@ -448,10 +446,10 @@ export default {
       this.selectedItem = row.item.itemDetail.code + " - " + row.item.itemDetail.name
       this.formInboundDetail.itemId = row.inboundItem.itemId
       console.log(row)
-      this.formInboundDetail.orderNo = this.currentInbound.inboundInfo.orderNo
-      service.get('/queryInboundItemListByOrderNoAndItemId', {
+      this.formInboundDetail.inboundNo = this.currentInbound.inboundInfo.inboundNo
+      service.get('/queryInboundItemListByInboundNoAndItemId', {
         params: {
-          orderNo: this.formInboundDetail.orderNo,
+          inboundNo: this.formInboundDetail.inboundNo,
           itemId: this.formInboundDetail.itemId,
         }
       })//axis后面的.get可以省略；
@@ -478,7 +476,7 @@ export default {
     handleInboundDetailSave() {
 
       const params = new URLSearchParams({
-        orderNo: this.formInboundDetail.orderNo,
+        inboundNo: this.formInboundDetail.inboundNo,
         itemId: this.formInboundDetail.itemId
       });
 
@@ -506,7 +504,7 @@ export default {
 
     openAddInboundDetailDialog() {
       this.selectedItem = ""
-      this.formInboundDetail.orderNo = this.currentInbound.inboundInfo.orderNo
+      this.formInboundDetail.inboundNo = this.currentInbound.inboundInfo.inboundNo
       this.dialogFormInboundDetailVisible = true
     },
     handleInboundDetailCurrentChange(inboundDetailCurrentPage) {
@@ -551,12 +549,11 @@ export default {
       this.dialogFormInboundVisible = true
     },
     queryInboundDetailMachineNoCount() {
-      console.log(this.currentInbound.inboundInfo.orderNo);
 
       // Create a Promise for each service.get call
       const fetchInboundDetailData = service.get('/queryInboundDetailMachineNoCount', {
         params: {
-          orderNo: this.currentInbound.inboundInfo.orderNo,
+          inboundNo: this.currentInbound.inboundInfo.inboundNo,
           currentPage: this.inboundDetailCurrentPage,
           pageSize: this.inboundDetailPageSize,
         }
@@ -569,7 +566,7 @@ export default {
 
       const fetchInboundDetailsCount = service.get('/countInboundDetailMachineNoCount', {
         params: {
-          orderNo: this.currentInbound.inboundInfo.orderNo,
+          inboundNo: this.currentInbound.inboundInfo.inboundNo,
           currentPage: this.inboundDetailCurrentPage,
           pageSize: this.inboundDetailPageSize,
         }
