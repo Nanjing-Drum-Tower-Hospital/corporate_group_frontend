@@ -182,7 +182,7 @@
         </el-table-column>
 
         <el-table-column
-            prop="outboundItem.machineNoCount"
+            prop="inboundItem.machineNoCount"
             label="数量"
             width="120">
         </el-table-column>
