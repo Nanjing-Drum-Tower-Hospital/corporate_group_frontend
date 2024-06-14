@@ -138,21 +138,18 @@
             </el-form-item>
 
           </div>
-
-
           <div>
-            <div v-for="(machineNo, index) in machineNumbers" :key="index"
-                 style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-              <el-form-item :label="'机器编号 ' + (index + 1)" style="flex: 1; margin-right: 10px;"
-                            :label-width="'100px'">
-                <!-- Use a method to handle input updates -->
-                <el-input :value="machineNo" @input="updateMachineNo($event, index)" autocomplete="off"
-                          style="width: 70%;"></el-input>
-              </el-form-item>
-              <el-button type="text" @click="removeMachine(index)">删除</el-button>
-            </div>
-            <el-button @click="addMachine">添加入库机器编号</el-button>
+            <el-transfer
+                :data="elTransferLeftData"
+                :props="{ key: 'key', label: 'label' }"
+                :titles="['Source', 'Target']"
+                v-model="selectedKeys"
+                @change="handleTransferChange"
+                class="edit_dev">
+            </el-transfer>
+
           </div>
+
 
 
         </el-form>
@@ -240,6 +237,9 @@ export default {
       outboundCurrentPage: 1,
       outboundPageSize: 5,
       outboundsCount: 0,
+      elTransferLeftData: [],
+      elTransferRightData: [],
+      selectedKeys: []         // This will only keep track of the keys
     }
 
   },
@@ -258,6 +258,17 @@ export default {
     this.queryOutboundList()
   },
   methods: {
+    handleTransferChange(newKeys, direction, moveKeys) {
+      if (direction === 'right') {
+        const movingObjects = this.elTransferLeftData.filter(item => moveKeys.includes(item.key)).map(item => item.originalObject);
+        this.elTransferRightData = [...this.elTransferRightData, ...movingObjects];
+      } else if (direction === 'left') {
+        this.elTransferRightData = this.elTransferRightData.filter(obj => !moveKeys.includes(obj.inboundItem.id));
+      }
+      // Update selected keys based on elTransferRightData
+      this.selectedKeys = newKeys;
+
+    },
     handleOutboundDelete(row) {
       MessageBox.confirm("请确认是否删除出库单号为" + row.outboundInfo.outboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
@@ -323,7 +334,7 @@ export default {
       // Handle the selection of an item from the autocomplete dropdown
       this.formOutboundDetail.itemId = item.value
 
-      service.get('/queryOutboundItemListByOrderNoAndItemId', {
+      service.get('/queryOutboundItemListByOutboundNoAndItemId', {
         params: {
           outboundNo: this.formOutboundDetail.outboundNo,
           itemId: this.formOutboundDetail.itemId,
@@ -332,14 +343,18 @@ export default {
           .then(
               (response) => {
                 console.log(response);
-                this.machineNumbers = [];
-                if (response.data && response.data.data) {
-                  response.data.data.forEach(item => {
-                    if (item.machineNo) {
-                      this.machineNumbers.push(item.machineNo);
-                    }
-                  });
-                }
+                const elTransferLeftData = response.data.data.map((item) => {
+                  return {
+                    key: item.inboundItem.id,  // Using inbound item's id as the key
+                    label: `${item.inboundItem.machineNo} (入库单号： ${item.inboundItem.inboundNo})`, // Creating a label with machineNo and itemId
+                    originalObject: item, // Storing the entire object for later use
+                  };
+                });
+
+
+                // Update the data property for <el-transfer>
+                this.elTransferLeftData = elTransferLeftData;
+                console.log("Formatted data for transfer component:", this.data);
               })
           .catch(
               (error) => {
@@ -348,16 +363,7 @@ export default {
 
 
     },
-    addMachine() {
-      this.machineNumbers.push(''); // Add an empty string to the machineNumbers array
-    },
-    updateMachineNo(value, index) {
-      // Update the value at the specific index
-      this.$set(this.machineNumbers, index, value);
-    },
-    removeMachine(index) {
-      this.machineNumbers.splice(index, 1); // Remove the string at the specified index
-    },
+
 
     handleOutboundDetailDelete(row) {
       this.formOutboundDetail.itemId = row.outboundItem.itemId
@@ -429,26 +435,16 @@ export default {
 
     },
     handleOutboundDetailSave() {
+      console.log(this.elTransferRightData)
 
-      const params = new URLSearchParams({
-        outboundNo: this.formOutboundDetail.outboundNo,
-        itemId: this.formOutboundDetail.itemId
-      });
-
-      // Append each machine number individually
-      this.machineNumbers.forEach(machineNumber => {
-        params.append('machineNumbers', machineNumber);
-      });
-
-      // Call the addOrUpdateOutboundDetail endpoint with machineNumbers
-      service.get(`/addOrUpdateOutboundDetail?${params.toString()}`)
-          .then(response => {
+      service.post('/addOrUpdateOutboundDetail', this.elTransferRightData
+      ).then(response => {
             console.log(response);
-            this.queryOutboundDetailMachineNoCount()
-            this.dialogFormOutboundDetailVisible = false
-            this.selectedItem = ""
-            this.machineNumbers = []
-            this.formOutboundDetail = {}
+            // this.queryOutboundDetailMachineNoCount()
+            // this.dialogFormOutboundDetailVisible = false
+            // this.selectedItem = ""
+            // this.machineNumbers = []
+            // this.formOutboundDetail = {}
           })
           .catch(error => {
             console.log(error);
@@ -602,5 +598,8 @@ export default {
 .half {
   flex: 1;
   overflow-y: auto; /* Optional: Add scroll if content exceeds upper half */
+}
+.edit_dev >>> .el-transfer-panel {
+  width:350px;
 }
 </style>
