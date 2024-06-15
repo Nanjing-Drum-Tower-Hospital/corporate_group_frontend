@@ -267,6 +267,7 @@ export default {
       }
       // Update selected keys based on elTransferRightData
       this.selectedKeys = newKeys;
+      console.log(this.selectedKeys)
 
     },
     handleOutboundDelete(row) {
@@ -334,7 +335,7 @@ export default {
       // Handle the selection of an item from the autocomplete dropdown
       this.formOutboundDetail.itemId = item.value
 
-      service.get('/queryOutboundItemListByOutboundNoAndItemId', {
+      service.get('/queryOutboundItemListWithoutOutboundByOutboundNoAndItemId', {
         params: {
           outboundNo: this.formOutboundDetail.outboundNo,
           itemId: this.formOutboundDetail.itemId,
@@ -343,18 +344,22 @@ export default {
           .then(
               (response) => {
                 console.log(response);
-                const elTransferLeftData = response.data.data.map((item) => {
+                const items = response.data.data.map(item => {
                   return {
-                    key: item.inboundItem.id,  // Using inbound item's id as the key
-                    label: `${item.inboundItem.machineNo} (入库单号： ${item.inboundItem.inboundNo})`, // Creating a label with machineNo and itemId
+                    key: item.inboundItem.id, // Using inbound item's id as the key
+                    label: `${item.inboundItem.machineNo} (入库单号: ${item.inboundItem.inboundNo})`, // Creating a label with machineNo and itemId
                     originalObject: item, // Storing the entire object for later use
                   };
                 });
 
-
-                // Update the data property for <el-transfer>
-                this.elTransferLeftData = elTransferLeftData;
-                console.log("Formatted data for transfer component:", this.data);
+                // Sort items into left or right data arrays based on the presence of outboundInfo
+                this.elTransferLeftData = items;
+                this.elTransferRightData = items.filter(item => item.originalObject.outboundInfo !== null)
+                    .map(item => item.originalObject);
+                this.selectedKeys = items.filter(item => item.originalObject.outboundInfo !== null)
+                    .map(item => item.key);
+                console.log("Left Panel Data:", this.elTransferLeftData);
+                console.log("Right Panel Data:", this.elTransferRightData);
               })
           .catch(
               (error) => {
@@ -435,16 +440,21 @@ export default {
 
     },
     handleOutboundDetailSave() {
+      console.log(this.elTransferLeftData)
       console.log(this.elTransferRightData)
 
-      service.post('/addOrUpdateOutboundDetail', this.elTransferRightData
+      service.post('/addOrUpdateOutboundDetail', this.elTransferRightData,
+          {
+            params: {
+              outboundNo: this.formOutboundDetail.outboundNo,
+              itemId: this.formOutboundDetail.itemId,
+            }}
       ).then(response => {
             console.log(response);
-            // this.queryOutboundDetailMachineNoCount()
-            // this.dialogFormOutboundDetailVisible = false
-            // this.selectedItem = ""
-            // this.machineNumbers = []
-            // this.formOutboundDetail = {}
+            this.queryOutboundDetailMachineNoCount()
+            this.handleOutboundDetailClose()
+
+
           })
           .catch(error => {
             console.log(error);
@@ -487,8 +497,10 @@ export default {
     handleOutboundDetailClose() {
       this.dialogFormOutboundDetailVisible = false;
       this.selectedItem = ""
-      this.machineNumbers = []
       this.formOutboundDetail = {}
+      this.elTransferLeftData= []
+      this.elTransferRightData= []
+      this.selectedKeys= []
     },
     handleOutboundEdit(row) {
       console.log(row);
