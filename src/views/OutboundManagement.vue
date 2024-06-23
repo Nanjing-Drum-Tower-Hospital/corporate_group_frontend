@@ -142,7 +142,7 @@
             <el-transfer
                 :data="elTransferLeftData"
                 :props="{ key: 'key', label: 'label' }"
-                :titles="['Source', 'Target']"
+                :titles="['现有库存列表', '出库列表']"
                 v-model="selectedKeys"
                 @change="handleTransferChange"
                 class="edit_dev">
@@ -371,9 +371,9 @@ export default {
 
 
     handleOutboundDetailDelete(row) {
-      this.formOutboundDetail.itemId = row.outboundItem.itemId
-      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
-      MessageBox.confirm("请确认是否删除出库单号为" + this.formOutboundDetail.outboundNo +
+      console.log(row)
+
+      MessageBox.confirm("请确认是否删除出库单号为" + this.currentOutbound.outboundInfo.outboundNo +
           "编码为" + row.item.itemDetail.code + "的所有入库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
@@ -381,10 +381,10 @@ export default {
       }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteOutboundItemListByOrderNoAndItemId', {
+        service.get('/deleteOutboundItemListByOutboundNoAndItemId', {
           params: {
-            outboundNo: this.formOutboundDetail.outboundNo,
-            itemId: this.formOutboundDetail.itemId,
+            outboundNo: row.outboundInfo.outboundNo,
+            itemId: row.inboundItem.itemId,
           }
         }).then(response => {
           console.log(response);
