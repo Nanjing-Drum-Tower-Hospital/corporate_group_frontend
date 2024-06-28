@@ -113,26 +113,28 @@
       <el-table
           :data="tableData"
           border
-          style="width: 100%;">
+          class="custom-row-height"
+          style="width: 100%; ">
+
         <el-table-column
             prop="itemDetail.code"
             label="编码"
-            width="150">
+            width="90">
         </el-table-column>
         <el-table-column
             prop="itemDetail.name"
             label="货品名称"
-            width="150">
+            width="180">
         </el-table-column>
         <el-table-column
             prop="itemDetail.model"
             label="型号"
-            width="150">
+            width="90">
         </el-table-column>
         <el-table-column
             prop="itemDetail.unitName"
             label="单位"
-            width="150">
+            width="90">
         </el-table-column>
         <el-table-column
             prop="itemDetail.sellingPriceBeforeTax"
@@ -163,38 +165,14 @@
             label="制造商"
             width="150">
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop="itemDetail.billItem"-->
-<!--            label="账单码"-->
-<!--            width="150">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="itemDetail.standards"-->
-<!--            label="执行标准"-->
-<!--            width="120">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="itemDetail.approvalNo"-->
-<!--            label="批准文号"-->
-<!--            width="120">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="itemDetail.type"-->
-<!--            label="类型"-->
-<!--            width="150">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="itemDetail.expireDate"-->
-<!--            label="有效期"-->
-<!--            width="120">-->
-<!--        </el-table-column>-->
         <el-table-column
             prop="itemDetail.createDate"
             label="创建时间"
-            width="150">
+            width="120">
         </el-table-column>
         <el-table-column
-            label="操作">
+            label="操作"
+            width="120">
           <template slot-scope="scope">
             <el-button @click="handleClickEdit(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="handleClickDelete(scope.row)" type="text" size="small">删除</el-button>
@@ -383,4 +361,14 @@ export default {
   margin-top: auto;
   padding: 10px 0;
 }
+.custom-row-height .el-table .el-table__row {
+  height: 20px !important; /* Ensures this style overrides any existing styles */
+  line-height: 20px !important; /* Adjust this as necessary to align text vertically */
+}
+
+.custom-row-height .el-table .cell {
+  padding: 2px 0 !important; /* Reduces cell padding to fit the smaller height */
+}
+
+
 </style>

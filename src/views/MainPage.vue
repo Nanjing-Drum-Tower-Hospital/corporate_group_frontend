@@ -2,7 +2,7 @@
   <div style="display: flex; height: 100vh;">
 
     <!-- Sidebar -->
-    <el-col :span="12" style="width: 25vh">
+    <el-col :span="12" style="width: 30vh">
       <el-menu style="height: 100vh;"
                default-active="1"
                :default-openeds="['1']"

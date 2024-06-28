@@ -72,7 +72,7 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleOutboundEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleClickEdit(scope.row)" type="text" size="small">冲红</el-button>
+            <el-button @click="handleAccountingReversal(scope.row)" type="text" size="small">冲红</el-button>
             <el-button @click="handleOutboundDelete(scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -258,6 +258,10 @@ export default {
     this.queryOutboundList()
   },
   methods: {
+    handleAccountingReversal(row){
+      console.log(row)
+      console.log(123)
+    },
     handleTransferChange(newKeys, direction, moveKeys) {
       if (direction === 'right') {
         const movingObjects = this.elTransferLeftData.filter(item => moveKeys.includes(item.key)).map(item => item.originalObject);
@@ -407,13 +411,12 @@ export default {
       });
     },
     handleOutboundDetailEdit(row) {
-      this.selectedItem = ""
-      console.log(this.selectedItem)
-      this.selectedItem = row.item.itemDetail.code + " - " + row.item.itemDetail.name
-      this.formOutboundDetail.itemId = row.outboundItem.itemId
       console.log(row)
+      this.formOutboundDetail= {}
+      this.formOutboundDetail.itemId = row.inboundItem.itemId
+
       this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
-      service.get('/queryOutboundItemListByOrderNoAndItemId', {
+      service.get('/queryOutboundItemListWithoutOutboundByOutboundNoAndItemId', {
         params: {
           outboundNo: this.formOutboundDetail.outboundNo,
           itemId: this.formOutboundDetail.itemId,
@@ -422,14 +425,22 @@ export default {
           .then(
               (response) => {
                 console.log(response);
-                this.machineNumbers = [];
-                if (response.data && response.data.data) {
-                  response.data.data.forEach(item => {
-                    if (item.machineNo) {
-                      this.machineNumbers.push(item.machineNo);
-                    }
-                  });
-                }
+                const items = response.data.data.map(item => {
+                  return {
+                    key: item.inboundItem.id, // Using inbound item's id as the key
+                    label: `${item.inboundItem.machineNo} (入库单号: ${item.inboundItem.inboundNo})`, // Creating a label with machineNo and itemId
+                    originalObject: item, // Storing the entire object for later use
+                  };
+                });
+
+                // Sort items into left or right data arrays based on the presence of outboundInfo
+                this.elTransferLeftData = items;
+                this.elTransferRightData = items.filter(item => item.originalObject.outboundInfo !== null)
+                    .map(item => item.originalObject);
+                this.selectedKeys = items.filter(item => item.originalObject.outboundInfo !== null)
+                    .map(item => item.key);
+                console.log("Left Panel Data:", this.elTransferLeftData);
+                console.log("Right Panel Data:", this.elTransferRightData);
               })
           .catch(
               (error) => {
