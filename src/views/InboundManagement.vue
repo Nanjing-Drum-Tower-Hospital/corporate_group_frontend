@@ -1,31 +1,7 @@
 <template>
   <div class="container">
     <div class="half">
-<!--      <span style="width: 100%">-->
-<!--      <el-form :model="form" :inline="true" style="display: inline-block">-->
 
-<!--          <el-form-item label="订单号">-->
-<!--            <el-input v-model="formInbound.name"></el-input>-->
-<!--          </el-form-item>-->
-<!--      </el-form>-->
-<!--      </span>-->
-<!--      <span style="width: 100%;">-->
-<!--              <el-form :model="formInbound" :inline="true" style="display: inline-block;">-->
-<!--          <el-form-item label="到货时间">-->
-<!--            <el-row :gutter="10">-->
-<!--              <el-col :span="11">-->
-<!--                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1"-->
-<!--                                style="width: 100%;"></el-date-picker>-->
-<!--              </el-col>-->
-<!--              <el-col class="line" :span="2" style="">-</el-col>-->
-<!--              <el-col :span="11">-->
-<!--                <el-date-picker type="date" placeholder="选择日期" v-model="formInbound.date1"-->
-<!--                                style="width: 100%;"></el-date-picker>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--          </el-form-item>-->
-<!--      </el-form>-->
-<!--      </span>-->
       <el-button type="primary" @click="queryInboundList">
         搜索
       </el-button>
@@ -38,21 +14,7 @@
                  :close-on-click-modal="false">
         <el-form :model="formInbound">
 
-<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
-<!--            <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
-<!--              <el-input v-model="formInbound.orderNo" autocomplete="off" style="width: 70%;"></el-input>-->
-<!--            </el-form-item>-->
-<!--          </div>-->
 
-<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
-<!--            <el-form-item label="到货日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
-<!--              <el-date-picker type="date" placeholder="选择日期"-->
-<!--                              value-format="yyyy-MM-dd"-->
-<!--                              v-model="formInbound.arrivalDate"-->
-<!--                              style="width: 70%;">-->
-<!--              </el-date-picker>-->
-<!--            </el-form-item>-->
-<!--          </div>-->
 
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
@@ -141,15 +103,9 @@
       <div v-if="currentInbound && currentInbound.inboundInfo">
               <span  >
   入库单号：{{ currentInbound.inboundInfo.inboundNo }}
-<!--  <el-form :model="formInboundDetail" :inline="true" style="display: inline-block">-->
-<!--    <el-form-item label="货品名称">-->
-<!--      <el-input v-model="formInboundDetail.name"></el-input>-->
-<!--    </el-form-item>-->
-<!--  </el-form>-->
+
 </span>
-<!--        <el-button type="primary">-->
-<!--          搜索-->
-<!--        </el-button>-->
+
 
         <el-button @click="openAddInboundDetailDialog" type="primary">
           添加
@@ -167,6 +123,7 @@
 
           </span>
         <el-form :model="formInboundDetail">
+
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="货品编码名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-autocomplete
@@ -183,24 +140,15 @@
             </el-form-item>
 
           </div>
-
-
           <div>
-            <div v-for="(machineNo, index) in machineNumbers" :key="index"
-                 style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-              <el-form-item :label="'机器编号 ' + (index + 1)" style="flex: 1; margin-right: 10px;"
-                            :label-width="'100px'">
-                <!-- Use a method to handle input updates -->
-                <el-input :value="machineNo" @input="updateMachineNo($event, index)" autocomplete="off"
-                          style="width: 70%;"></el-input>
-              </el-form-item>
-              <el-button type="text" @click="removeMachine(index)">删除</el-button>
-            </div>
-            <el-button @click="addMachine">添加入库机器编号</el-button>
+            {{ dialogInboundDetail.itemAmount }}
           </div>
 
 
+
         </el-form>
+
+
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleInboundDetailClose">取 消</el-button>
           <el-button type="primary" @click="handleInboundDetailSave">保 存</el-button>
@@ -227,7 +175,7 @@
         </el-table-column>
 
         <el-table-column
-            prop="inboundItem.machineNoCount"
+            prop="inboundItem.itemAmount"
             label="数量"
             width="120">
         </el-table-column>
@@ -275,7 +223,6 @@ export default {
       supplierList: [],
 
 
-      machineNumbers: [],
       selectedItem: null,
       itemDetails: [],
       inboundDetailCurrentPage: 1,
@@ -285,6 +232,9 @@ export default {
       inboundCurrentPage: 1,
       inboundPageSize: 5,
       inboundsCount: 0,
+
+
+      dialogInboundDetail:{}
     }
 
   },
@@ -338,71 +288,52 @@ export default {
         console.log('Deletion cancelled');
       });
     },
+    handleInboundSave() {
+      console.log(this.formInbound);
+      service.post('/addOrUpdateInbound', this.formInbound
+      ).then(
+          (response) => {
+            console.log(response);
+            this.dialogFormInboundVisible = false;
+            this.formInbound = {}
+            this.currentInbound= {}
+            this.inboundDetailTableData = []
+            return this.queryInboundList();
 
+          })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+    },
+    handleInboundClose() {
+      this.formInbound = {}
+      this.dialogFormInboundVisible = false;
+    },
+    handleInboundEdit(row) {
+      console.log(row);
+      this.formInbound = JSON.parse(JSON.stringify(row.inboundInfo));
+      this.dialogFormInboundVisible = true;
+    },
+    openAddDialog() {
+      //the dialog should contain all the fields above
+      this.dialogFormInboundVisible = true
+    },
 
     handleInboundCurrentChange(inboundCurrentPage){
       this.inboundCurrentPage = inboundCurrentPage;
       this.queryInboundList()
     },
-    querySearchItemDetail(queryString, cb) {
-      // Make a GET request to your Spring Boot backend to fetch item details
-      // You can use libraries like Axios for making HTTP requests
-      service.get('/queryItemByCodeOrName', {
-        params: {
-          input: queryString,
-        }
-      })
 
-          .then(response => {
-            // Process the response and extract item details
-            this.itemDetails = response.data.data;
-            // Call the callback function with the results
-            cb(this.itemDetails.map(item => ({value: item.id, label: item.code + " - " + item.name})));
-          })
-          .catch(error => {
-            console.error('Error fetching item details:', error);
-          });
-    },
-    handleItemDetailSelection(item) {
+    // eslint-disable-next-line no-unused-vars
+    handleRowClick(row, column, event) {
+      this.currentInbound = row
+      console.log("Row clicked:", row);
+      this.queryInboundDetailMachineNoCount()
 
-      // Handle the selection of an item from the autocomplete dropdown
-      this.formInboundDetail.itemId = item.value
+      // Additional logic here
+    },
 
-      service.get('/queryInboundItemListByInboundNoAndItemId', {
-        params: {
-          inboundNo: this.formInboundDetail.inboundNo,
-          itemId: this.formInboundDetail.itemId,
-        }
-      })//axis后面的.get可以省略；
-          .then(
-              (response) => {
-                console.log(response);
-                this.machineNumbers = [];
-                if (response.data && response.data.data) {
-                  response.data.data.forEach(item => {
-                    if (item.machineNo) {
-                      this.machineNumbers.push(item.machineNo);
-                    }
-                  });
-                }
-              })
-          .catch(
-              (error) => {
-                console.log(error);
-              });
-
-
-    },
-    addMachine() {
-      this.machineNumbers.push(''); // Add an empty string to the machineNumbers array
-    },
-    updateMachineNo(value, index) {
-      // Update the value at the specific index
-      this.$set(this.machineNumbers, index, value);
-    },
-    removeMachine(index) {
-      this.machineNumbers.splice(index, 1); // Remove the string at the specified index
-    },
 
     handleInboundDetailDelete(row) {
       this.formInboundDetail.itemId = row.inboundItem.itemId
@@ -511,47 +442,18 @@ export default {
       this.inboundDetailCurrentPage = inboundDetailCurrentPage;
       this.queryInboundDetailMachineNoCount()
     },
-    handleInboundSave() {
-      console.log(this.formInbound);
-      service.post('/addOrUpdateInbound', this.formInbound
-      ).then(
-          (response) => {
-            console.log(response);
-            this.dialogFormInboundVisible = false;
-            this.formInbound = {}
-            this.currentInbound= {}
-            this.inboundDetailTableData = []
-            return this.queryInboundList();
 
-          })
-          .catch(
-              (error) => {
-                console.log(error);
-              });
-    },
-    handleInboundClose() {
-      this.formInbound = {}
-      this.dialogFormInboundVisible = false;
-    },
     handleInboundDetailClose() {
       this.dialogFormInboundDetailVisible = false;
       this.selectedItem = ""
       this.machineNumbers = []
       this.formInboundDetail = {}
     },
-    handleInboundEdit(row) {
-      console.log(row);
-      this.formInbound = JSON.parse(JSON.stringify(row.inboundInfo));
-      this.dialogFormInboundVisible = true;
-    },
-    openAddDialog() {
-      //the dialog should contain all the fields above
-      this.dialogFormInboundVisible = true
-    },
+
     queryInboundDetailMachineNoCount() {
 
       // Create a Promise for each service.get call
-      const fetchInboundDetailData = service.get('/queryInboundDetailMachineNoCount', {
+      const fetchInboundDetailData = service.get('/queryInboundDetailList', {
         params: {
           inboundNo: this.currentInbound.inboundInfo.inboundNo,
           currentPage: this.inboundDetailCurrentPage,
@@ -564,7 +466,7 @@ export default {
         console.error(error);
       });
 
-      const fetchInboundDetailsCount = service.get('/countInboundDetailMachineNoCount', {
+      const fetchInboundDetailsCount = service.get('/countInboundDetailList', {
         params: {
           inboundNo: this.currentInbound.inboundInfo.inboundNo,
           currentPage: this.inboundDetailCurrentPage,
@@ -581,14 +483,7 @@ export default {
       return Promise.all([fetchInboundDetailData, fetchInboundDetailsCount]);
     },
 
-    // eslint-disable-next-line no-unused-vars
-    handleRowClick(row, column, event) {
-      this.currentInbound = row
-      console.log("Row clicked:", row);
-      this.queryInboundDetailMachineNoCount()
 
-      // Additional logic here
-    },
     queryInboundList() {
       console.log("queryInboundList");
 
@@ -620,16 +515,53 @@ export default {
       // Return a Promise that resolves when both requests are completed
       return Promise.all([fetchInboundListData, fetchInboundCount]);
     },
-    handleClick(row) {
-      console.log(row)
+
+    querySearchItemDetail(queryString, cb) {
+      // Make a GET request to your Spring Boot backend to fetch item details
+      // You can use libraries like Axios for making HTTP requests
+      service.get('/queryItemByCodeOrName', {
+        params: {
+          input: queryString,
+        }
+      })
+
+          .then(response => {
+            // Process the response and extract item details
+            this.itemDetails = response.data.data;
+            // Call the callback function with the results
+            cb(this.itemDetails.map(item => ({value: item.id, label: item.code + " - " + item.name})));
+          })
+          .catch(error => {
+            console.error('Error fetching item details:', error);
+          });
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+    handleItemDetailSelection(item) {
+
+      // Handle the selection of an item from the autocomplete dropdown
+      this.formInboundDetail.itemId = item.value
+
+      service.get('/queryInboundItemListByInboundNoAndItemId', {
+        params: {
+          inboundNo: this.formInboundDetail.inboundNo,
+          itemId: this.formInboundDetail.itemId,
+        }
+      })//axis后面的.get可以省略；
+          .then(
+              (response) => {
+                console.log(response);
+                this.dialogInboundDetail=response.data.data
+              })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+
+
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-    }
+
+
   }
+
 
 
 }
