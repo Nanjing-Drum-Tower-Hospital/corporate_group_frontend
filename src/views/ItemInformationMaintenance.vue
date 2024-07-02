@@ -60,8 +60,8 @@
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-item label="含税单价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.sellingPrice" autocomplete="off" style="width: 70%;"></el-input>
+          <el-form-item label="税前单价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.unitPriceExcludingTax" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
           <el-form-item label="制造商" style="flex: 1;" :label-width="'100px'">
             <el-select v-model="form.manufacturerId" placeholder="请选择制造商" style="width: 70%;">
@@ -135,11 +135,11 @@
             width="150">
         </el-table-column>
         <el-table-column
-            prop="itemDetail.sellingPriceBeforeTax"
-            label="单价"
+            prop="itemDetail.unitPriceExcludingTax"
+            label="税前单价"
             width="150">
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.itemDetail.sellingPriceBeforeTax) }}
+            {{ formatNumber(scope.row.itemDetail.unitPriceExcludingTax) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -151,11 +151,11 @@
           </template>
         </el-table-column>
         <el-table-column
-            prop="itemDetail.sellingPrice"
+            prop="itemDetail.unitPriceIncludingTax"
             label="含税单价"
             width="150">
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.itemDetail.sellingPrice) }}
+            {{ formatNumber(scope.row.itemDetail.unitPriceIncludingTax) }}
           </template>
         </el-table-column>
         <el-table-column

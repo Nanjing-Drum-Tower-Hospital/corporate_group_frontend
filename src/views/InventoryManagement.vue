@@ -41,7 +41,7 @@
           width="120">
       </el-table-column>
       <el-table-column
-          prop="selling_price"
+          prop="unit_price_excluding_tax"
           label=""
           width="120">
       </el-table-column>
