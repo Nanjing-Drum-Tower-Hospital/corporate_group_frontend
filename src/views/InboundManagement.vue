@@ -140,14 +140,14 @@
             </el-form-item>
 
           </div>
-          <div v-if="dialogInboundDetailNew">
+          <div >
             <el-form-item label="数量" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-input-number v-model="dialogInboundDetailNew.itemAmount"  ></el-input-number>
             </el-form-item>
 
           </div>
 
-          <div v-if="dialogInboundDetailNew" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <div  style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-input v-model="dialogInboundDetailNew.remark" autocomplete="off" style="width: 70%;"></el-input>
             </el-form-item>
@@ -248,8 +248,8 @@ export default {
       inboundsCount: 0,
 
 
-      dialogInboundDetailOld:null,
-      dialogInboundDetailNew:null
+      dialogInboundDetailOld:[],
+      dialogInboundDetailNew:[]
     }
 
   },
@@ -420,6 +420,10 @@ export default {
 
     },
     handleInboundDetailSave() {
+      const dialogInboundDetail = [
+        this.dialogInboundDetailOld,
+        this.dialogInboundDetailNew
+      ];
       console.log(this.dialogInboundDetailOld)
       console.log(this.dialogInboundDetailNew)
 
@@ -428,7 +432,7 @@ export default {
 
       // Call the addOrUpdateInboundDetail endpoint with machineNumbers
       service.post('/addOrUpdateInboundDetail',
-          this.dialogInboundDetailOld,this.dialogInboundDetailNew
+          dialogInboundDetail
       )
           .then(response => {
             console.log(response);
@@ -456,8 +460,20 @@ export default {
       this.dialogFormInboundDetailVisible = false;
       this.selectedItem = ""
       this.formInboundDetail = {}
-      this.dialogInboundDetailOld=null
-      this.dialogInboundDetailNew=null
+      this.dialogInboundDetailOld = {
+        id: 0,
+        inboundNo:this.formInboundDetail.inboundNo,
+        itemId:this.formInboundDetail.itemId,
+        itemAmount: 0,
+        remark: ""
+      }
+      this.dialogInboundDetailNew = {
+        id: 0,
+        inboundNo:this.formInboundDetail.inboundNo,
+        itemId:this.formInboundDetail.itemId,
+        itemAmount: 0,
+        remark: ""
+      }
     },
 
     queryInboundDetail() {
@@ -559,9 +575,27 @@ export default {
           .then(
               (response) => {
                 console.log(response);
-                //to deep copy
-                this.dialogInboundDetailOld=response.data.data
-                this.dialogInboundDetailNew=response.data.data
+                if(response.data.data===null) {
+                  this.dialogInboundDetailOld = {
+                    id: 0,
+                    inboundNo:this.formInboundDetail.inboundNo,
+                    itemId:this.formInboundDetail.itemId,
+                    itemAmount: 0,
+                    remark: ""
+                  }
+                  this.dialogInboundDetailNew = {
+                    id: 0,
+                    inboundNo:this.formInboundDetail.inboundNo,
+                    itemId:this.formInboundDetail.itemId,
+                    itemAmount: 0,
+                    remark: ""
+                  }
+                }else{
+                  //to deep copy
+                  this.dialogInboundDetailOld=JSON.parse(JSON.stringify(response.data.data));
+                  this.dialogInboundDetailNew=JSON.parse(JSON.stringify(response.data.data));
+                }
+
               })
           .catch(
               (error) => {
