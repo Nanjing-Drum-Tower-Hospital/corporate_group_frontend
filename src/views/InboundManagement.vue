@@ -140,8 +140,18 @@
             </el-form-item>
 
           </div>
-          <div>
-            {{ dialogInboundDetail.itemAmount }}
+          <div v-if="dialogInboundDetailNew">
+            <el-form-item label="数量" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input-number v-model="dialogInboundDetailNew.itemAmount"  ></el-input-number>
+            </el-form-item>
+
+          </div>
+
+          <div v-if="dialogInboundDetailNew" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input v-model="dialogInboundDetailNew.remark" autocomplete="off" style="width: 70%;"></el-input>
+            </el-form-item>
+
           </div>
 
 
@@ -179,7 +189,11 @@
             label="数量"
             width="120">
         </el-table-column>
-
+        <el-table-column
+            prop="inboundItem.remark"
+            label="备注"
+            width="120">
+        </el-table-column>
         <el-table-column
             label="操作">
           <template slot-scope="scope">
@@ -234,7 +248,8 @@ export default {
       inboundsCount: 0,
 
 
-      dialogInboundDetail:{}
+      dialogInboundDetailOld:null,
+      dialogInboundDetailNew:null
     }
 
   },
@@ -329,7 +344,7 @@ export default {
     handleRowClick(row, column, event) {
       this.currentInbound = row
       console.log("Row clicked:", row);
-      this.queryInboundDetailMachineNoCount()
+      this.queryInboundDetail()
 
       // Additional logic here
     },
@@ -354,14 +369,14 @@ export default {
         }).then(response => {
           console.log(response);
           // Call queryItemInformation and wait for it to finish
-          return this.queryInboundDetailMachineNoCount();
+          return this.queryInboundDetail();
         }).then(() => {
           console.log(this.inboundDetailTableData)
           // After queryItemInformation is finished
           if (this.inboundDetailTableData.length === 0 && this.inboundDetailCurrentPage > 1) {
             this.inboundDetailCurrentPage--;
             // Call queryItemInformation again after updating currentPage
-            return this.queryInboundDetailMachineNoCount();
+            return this.queryInboundDetail();
           }
         }).catch(error => {
           console.error(error);
@@ -405,26 +420,20 @@ export default {
 
     },
     handleInboundDetailSave() {
+      console.log(this.dialogInboundDetailOld)
+      console.log(this.dialogInboundDetailNew)
 
-      const params = new URLSearchParams({
-        inboundNo: this.formInboundDetail.inboundNo,
-        itemId: this.formInboundDetail.itemId
-      });
 
-      // Append each machine number individually
-      this.machineNumbers.forEach(machineNumber => {
-        params.append('machineNumbers', machineNumber);
-      });
+
 
       // Call the addOrUpdateInboundDetail endpoint with machineNumbers
-      service.get(`/addOrUpdateInboundDetail?${params.toString()}`)
+      service.post('/addOrUpdateInboundDetail',
+          this.dialogInboundDetailOld,this.dialogInboundDetailNew
+      )
           .then(response => {
             console.log(response);
-            this.queryInboundDetailMachineNoCount()
-            this.dialogFormInboundDetailVisible = false
-            this.selectedItem = ""
-            this.machineNumbers = []
-            this.formInboundDetail = {}
+            this.queryInboundDetail()
+            this.handleInboundDetailClose()
           })
           .catch(error => {
             console.log(error);
@@ -440,17 +449,18 @@ export default {
     },
     handleInboundDetailCurrentChange(inboundDetailCurrentPage) {
       this.inboundDetailCurrentPage = inboundDetailCurrentPage;
-      this.queryInboundDetailMachineNoCount()
+      this.queryInboundDetail()
     },
 
     handleInboundDetailClose() {
       this.dialogFormInboundDetailVisible = false;
       this.selectedItem = ""
-      this.machineNumbers = []
       this.formInboundDetail = {}
+      this.dialogInboundDetailOld=null
+      this.dialogInboundDetailNew=null
     },
 
-    queryInboundDetailMachineNoCount() {
+    queryInboundDetail() {
 
       // Create a Promise for each service.get call
       const fetchInboundDetailData = service.get('/queryInboundDetailList', {
@@ -549,7 +559,9 @@ export default {
           .then(
               (response) => {
                 console.log(response);
-                this.dialogInboundDetail=response.data.data
+                //to deep copy
+                this.dialogInboundDetailOld=response.data.data
+                this.dialogInboundDetailNew=response.data.data
               })
           .catch(
               (error) => {
