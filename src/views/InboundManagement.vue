@@ -304,6 +304,7 @@ export default {
       });
     },
     handleInboundSave() {
+
       console.log(this.formInbound);
       service.post('/addOrUpdateInbound', this.formInbound
       ).then(
@@ -387,39 +388,20 @@ export default {
       });
     },
     handleInboundDetailEdit(row) {
-      this.selectedItem = ""
-      console.log(this.selectedItem)
-      this.selectedItem = row.item.itemDetail.code + " - " + row.item.itemDetail.name
-      this.formInboundDetail.itemId = row.inboundItem.itemId
+
       console.log(row)
-      this.formInboundDetail.inboundNo = this.currentInbound.inboundInfo.inboundNo
-      service.get('/queryInboundItemListByInboundNoAndItemId', {
-        params: {
-          inboundNo: this.formInboundDetail.inboundNo,
-          itemId: this.formInboundDetail.itemId,
-        }
-      })//axis后面的.get可以省略；
-          .then(
-              (response) => {
-                console.log(response);
-                this.machineNumbers = [];
-                if (response.data && response.data.data) {
-                  response.data.data.forEach(item => {
-                    if (item.machineNo) {
-                      this.machineNumbers.push(item.machineNo);
-                    }
-                  });
-                }
-              })
-          .catch(
-              (error) => {
-                console.log(error);
-              });
-      this.dialogFormInboundDetailVisible = true
+      this.openAddInboundDetailDialog()
+      let item={}
+      item.value=row.inboundItem.itemId
+      console.log(item)
+      this.selectedItem=row.item.itemDetail.code+" - "+row.item.itemDetail.name
+      this.handleItemDetailSelection(item)
 
 
     },
     handleInboundDetailSave() {
+      console.log("this.selectedItem");
+      console.log(this.selectedItem);
       const dialogInboundDetail = [
         this.dialogInboundDetailOld,
         this.dialogInboundDetailNew

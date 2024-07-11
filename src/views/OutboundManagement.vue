@@ -10,33 +10,36 @@
         添加
       </el-button>
 
-      <el-dialog title="添加修改出库信息" :visible.sync="dialogFormOutboundVisible" :before-close="handleOutboundClose"
+      <el-dialog title="添加修改入库信息" :visible.sync="dialogFormOutboundVisible" :before-close="handleOutboundClose"
                  :close-on-click-modal="false">
         <el-form :model="formOutbound">
 
+
+
+
 <!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
-<!--            <el-form-item label="订单号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
-<!--              <el-input v-model="formOutbound.orderNo" autocomplete="off" style="width: 70%;"></el-input>-->
+
+<!--            <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">-->
+<!--              <el-select v-model="formOutbound.supplierId" placeholder="请选择制造商" style="width: 70%;">-->
+<!--                &lt;!&ndash; You can dynamically populate the options here &ndash;&gt;-->
+<!--                &lt;!&ndash; For example, using a loop to iterate over a manufacturers array &ndash;&gt;-->
+<!--                <el-option-->
+<!--                    v-for="supplier in supplierList"-->
+<!--                    :key="supplier.id"-->
+<!--                    :label="supplier.supplierName"-->
+<!--                    :value="supplier.id">-->
+<!--                </el-option>-->
+<!--              </el-select>-->
 <!--            </el-form-item>-->
 <!--          </div>-->
 
-<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
-<!--            <el-form-item label="出库日期" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
-<!--              <el-date-picker type="date" placeholder="选择日期"-->
-<!--                              value-format="yyyy-MM-dd"-->
-<!--                              v-model="formOutbound.outboundDate"-->
-<!--                              style="width: 70%;">-->
-<!--              </el-date-picker>-->
-<!--            </el-form-item>-->
-<!--          </div>-->
+
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-input v-model="formOutbound.remark" autocomplete="off" style="width: 70%;"></el-input>
             </el-form-item>
 
           </div>
-
-
 
 
         </el-form>
@@ -53,20 +56,26 @@
       >
         <el-table-column
             prop="outboundInfo.outboundNo"
-            label="出库单号"
+            label="入库单号"
             width="150"
         >
         </el-table-column>
         <el-table-column
             prop="outboundInfo.outboundDate"
-            label="出库时间"
+            label="入库时间"
             width="150">
         </el-table-column>
+<!--        <el-table-column-->
+<!--            prop="supplier.supplierName"-->
+<!--            label="供应商"-->
+<!--            width="150">-->
+<!--        </el-table-column>-->
+
 
         <el-table-column
             prop="outboundInfo.remark"
             label="备注"
-            width="120">
+            width="150">
         </el-table-column>
         <el-table-column
             label="操作">
@@ -93,16 +102,10 @@
     <div class="half">
       <div v-if="currentOutbound && currentOutbound.outboundInfo">
               <span  >
-  出库单号：{{ currentOutbound.outboundInfo.outboundNo }}
-                <!--  <el-form :model="formOutboundDetail" :inline="true" style="display: inline-block">-->
-                <!--    <el-form-item label="货品名称">-->
-                <!--      <el-input v-model="formOutboundDetail.name"></el-input>-->
-                <!--    </el-form-item>-->
-                <!--  </el-form>-->
+  入库单号：{{ currentOutbound.outboundInfo.outboundNo }}
+
 </span>
-        <!--        <el-button type="primary">-->
-        <!--          搜索-->
-        <!--        </el-button>-->
+
 
         <el-button @click="openAddOutboundDetailDialog" type="primary">
           添加
@@ -112,15 +115,14 @@
 
       </div>
 
-      <el-dialog title="添加修改出库货品信息" :visible.sync="dialogFormOutboundDetailVisible"
+      <el-dialog title="添加修改入库货品信息" :visible.sync="dialogFormOutboundDetailVisible"
                  :before-close="handleOutboundDetailClose" :close-on-click-modal="false">
 
           <span v-if="currentOutbound && currentOutbound.outboundInfo">
-            出库单号：{{ currentOutbound.outboundInfo.outboundNo }}
+            入库单号：{{ currentOutbound.outboundInfo.outboundNo }}
 
           </span>
         <el-form :model="formOutboundDetail">
-
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="货品编码名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
@@ -138,21 +140,25 @@
             </el-form-item>
 
           </div>
-          <div>
-            <el-transfer
-                :data="elTransferLeftData"
-                :props="{ key: 'key', label: 'label' }"
-                :titles="['现有库存列表', '出库列表']"
-                v-model="selectedKeys"
-                @change="handleTransferChange"
-                class="edit_dev">
-            </el-transfer>
+          <div >
+            <el-form-item label="数量" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input-number v-model="dialogOutboundDetailNew.itemAmount"  ></el-input-number>
+            </el-form-item>
+
+          </div>
+
+          <div  style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input v-model="dialogOutboundDetailNew.remark" autocomplete="off" style="width: 70%;"></el-input>
+            </el-form-item>
 
           </div>
 
 
 
         </el-form>
+
+
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleOutboundDetailClose">取 消</el-button>
           <el-button type="primary" @click="handleOutboundDetailSave">保 存</el-button>
@@ -170,7 +176,7 @@
         <el-table-column
             prop="item.itemDetail.name"
             label="货品名称"
-            width="120">
+            width="180">
         </el-table-column>
         <el-table-column
             prop="item.itemDetail.model"
@@ -179,11 +185,15 @@
         </el-table-column>
 
         <el-table-column
-            prop="inboundItem.machineNoCount"
+            prop="outboundItem.itemAmount"
             label="数量"
             width="120">
         </el-table-column>
-
+        <el-table-column
+            prop="outboundItem.remark"
+            label="备注"
+            width="120">
+        </el-table-column>
         <el-table-column
             label="操作">
           <template slot-scope="scope">
@@ -224,10 +234,9 @@ export default {
       outboundDetailTableData: [],
       dialogFormOutboundVisible: false,
       dialogFormOutboundDetailVisible: false,
-      supplierList: [],
+      // supplierList: [],
 
 
-      machineNumbers: [],
       selectedItem: null,
       itemDetails: [],
       outboundDetailCurrentPage: 1,
@@ -237,41 +246,30 @@ export default {
       outboundCurrentPage: 1,
       outboundPageSize: 5,
       outboundsCount: 0,
-      elTransferLeftData: [],
-      elTransferRightData: [],
-      selectedKeys: []         // This will only keep track of the keys
+
+
+      dialogOutboundDetailOld: [],
+      dialogOutboundDetailNew: []
     }
 
   },
-  mounted() {
-    // Call your backend API to fetch the list of manufacturers
-    service.get('/querySupplierList')
-        .then(response => {
-          // Assign the received data to the manufacturers array
-          this.supplierList = response.data.data;
-          console.log(this.supplierList)
-        })
-        .catch(error => {
-          console.error('Error fetching manufacturer list:', error);
-          // Handle errors if needed
-        });
-    this.queryOutboundList()
-  },
+  // mounted() {
+  //   // Call your backend API to fetch the list of manufacturers
+  //   service.get('/querySupplierList')
+  //       .then(response => {
+  //         // Assign the received data to the manufacturers array
+  //         this.supplierList = response.data.data;
+  //         console.log(this.supplierList)
+  //       })
+  //       .catch(error => {
+  //         console.error('Error fetching manufacturer list:', error);
+  //         // Handle errors if needed
+  //       });
+  //   this.queryOutboundList()
+  // },
   methods: {
-    handleTransferChange(newKeys, direction, moveKeys) {
-      if (direction === 'right') {
-        const movingObjects = this.elTransferLeftData.filter(item => moveKeys.includes(item.key)).map(item => item.originalObject);
-        this.elTransferRightData = [...this.elTransferRightData, ...movingObjects];
-      } else if (direction === 'left') {
-        this.elTransferRightData = this.elTransferRightData.filter(obj => !moveKeys.includes(obj.inboundItem.id));
-      }
-      // Update selected keys based on elTransferRightData
-      this.selectedKeys = newKeys;
-      console.log(this.selectedKeys)
-
-    },
     handleOutboundDelete(row) {
-      MessageBox.confirm("请确认是否删除出库单号为" + row.outboundInfo.outboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
+      MessageBox.confirm("请确认是否删除入库单号为" + row.outboundInfo.outboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -289,7 +287,7 @@ export default {
           return this.queryOutboundList();
         }).then(() => {
           this.currentOutbound = {};
-          this.outboundDetailTableData= [];
+          this.outboundDetailTableData = [];
           console.log(this.outboundTableData)
           // After queryItemInformation is finished
           if (this.outboundTableData.length === 0 && this.outboundCurrentPage > 1) {
@@ -305,75 +303,58 @@ export default {
         console.log('Deletion cancelled');
       });
     },
+    handleOutboundSave() {
 
+      console.log(this.formOutbound);
+      service.post('/addOrUpdateOutbound', this.formOutbound
+      ).then(
+          (response) => {
+            console.log(response);
+            this.dialogFormOutboundVisible = false;
+            this.formOutbound = {}
+            this.currentOutbound = {}
+            this.outboundDetailTableData = []
+            return this.queryOutboundList();
 
-    handleOutboundCurrentChange(outboundCurrentPage){
-      this.outboundCurrentPage = outboundCurrentPage;
-      this.queryOutboundList()
-    },
-    querySearchItemDetail(queryString, cb) {
-      // Make a GET request to your Spring Boot backend to fetch item details
-      // You can use libraries like Axios for making HTTP requests
-      service.get('/queryItemByCodeOrName', {
-        params: {
-          input: queryString,
-        }
-      })
-
-          .then(response => {
-            // Process the response and extract item details
-            this.itemDetails = response.data.data;
-            // Call the callback function with the results
-            cb(this.itemDetails.map(item => ({value: item.id, label: item.code + " - " + item.name})));
           })
-          .catch(error => {
-            console.error('Error fetching item details:', error);
-          });
-    },
-    handleItemDetailSelection(item) {
-
-      // Handle the selection of an item from the autocomplete dropdown
-      this.formOutboundDetail.itemId = item.value
-
-      service.get('/queryOutboundItemListWithoutOutboundByOutboundNoAndItemId', {
-        params: {
-          outboundNo: this.formOutboundDetail.outboundNo,
-          itemId: this.formOutboundDetail.itemId,
-        }
-      })//axis后面的.get可以省略；
-          .then(
-              (response) => {
-                console.log(response);
-                const items = response.data.data.map(item => {
-                  return {
-                    key: item.inboundItem.id, // Using inbound item's id as the key
-                    label: `${item.inboundItem.machineNo} (入库单号: ${item.inboundItem.inboundNo})`, // Creating a label with machineNo and itemId
-                    originalObject: item, // Storing the entire object for later use
-                  };
-                });
-
-                // Sort items into left or right data arrays based on the presence of outboundInfo
-                this.elTransferLeftData = items;
-                this.elTransferRightData = items.filter(item => item.originalObject.outboundInfo !== null)
-                    .map(item => item.originalObject);
-                this.selectedKeys = items.filter(item => item.originalObject.outboundInfo !== null)
-                    .map(item => item.key);
-                console.log("Left Panel Data:", this.elTransferLeftData);
-                console.log("Right Panel Data:", this.elTransferRightData);
-              })
           .catch(
               (error) => {
                 console.log(error);
               });
+    },
+    handleOutboundClose() {
+      this.formOutbound = {}
+      this.dialogFormOutboundVisible = false;
+    },
+    handleOutboundEdit(row) {
+      console.log(row);
+      this.formOutbound = JSON.parse(JSON.stringify(row.outboundInfo));
+      this.dialogFormOutboundVisible = true;
+    },
+    openAddDialog() {
+      //the dialog should contain all the fields above
+      this.dialogFormOutboundVisible = true
+    },
 
+    handleOutboundCurrentChange(outboundCurrentPage) {
+      this.outboundCurrentPage = outboundCurrentPage;
+      this.queryOutboundList()
+    },
 
+    // eslint-disable-next-line no-unused-vars
+    handleRowClick(row, column, event) {
+      this.currentOutbound = row
+      console.log("Row clicked:", row);
+      this.queryOutboundDetail()
+
+      // Additional logic here
     },
 
 
     handleOutboundDetailDelete(row) {
-      console.log(row)
-
-      MessageBox.confirm("请确认是否删除出库单号为" + this.currentOutbound.outboundInfo.outboundNo +
+      this.formOutboundDetail.itemId = row.outboundItem.itemId
+      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
+      MessageBox.confirm("请确认是否删除入库单号为" + this.formOutboundDetail.outboundNo +
           "编码为" + row.item.itemDetail.code + "的所有入库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
@@ -383,20 +364,20 @@ export default {
         console.log(row);
         service.get('/deleteOutboundItemListByOutboundNoAndItemId', {
           params: {
-            outboundNo: row.outboundInfo.outboundNo,
-            itemId: row.inboundItem.itemId,
+            outboundNo: this.formOutboundDetail.outboundNo,
+            itemId: this.formOutboundDetail.itemId,
           }
         }).then(response => {
           console.log(response);
           // Call queryItemInformation and wait for it to finish
-          return this.queryOutboundDetailMachineNoCount();
+          return this.queryOutboundDetail();
         }).then(() => {
           console.log(this.outboundDetailTableData)
           // After queryItemInformation is finished
           if (this.outboundDetailTableData.length === 0 && this.outboundDetailCurrentPage > 1) {
             this.outboundDetailCurrentPage--;
             // Call queryItemInformation again after updating currentPage
-            return this.queryOutboundDetailMachineNoCount();
+            return this.queryOutboundDetail();
           }
         }).catch(error => {
           console.error(error);
@@ -407,54 +388,36 @@ export default {
       });
     },
     handleOutboundDetailEdit(row) {
-      this.selectedItem = ""
-      console.log(this.selectedItem)
-      this.selectedItem = row.item.itemDetail.code + " - " + row.item.itemDetail.name
-      this.formOutboundDetail.itemId = row.outboundItem.itemId
+
       console.log(row)
-      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
-      service.get('/queryOutboundItemListByOrderNoAndItemId', {
-        params: {
-          outboundNo: this.formOutboundDetail.outboundNo,
-          itemId: this.formOutboundDetail.itemId,
-        }
-      })//axis后面的.get可以省略；
-          .then(
-              (response) => {
-                console.log(response);
-                this.machineNumbers = [];
-                if (response.data && response.data.data) {
-                  response.data.data.forEach(item => {
-                    if (item.machineNo) {
-                      this.machineNumbers.push(item.machineNo);
-                    }
-                  });
-                }
-              })
-          .catch(
-              (error) => {
-                console.log(error);
-              });
-      this.dialogFormOutboundDetailVisible = true
+      this.openAddOutboundDetailDialog()
+      let item = {}
+      item.value = row.outboundItem.itemId
+      console.log(item)
+      this.selectedItem = row.item.itemDetail.code + " - " + row.item.itemDetail.name
+      this.handleItemDetailSelection(item)
 
 
     },
     handleOutboundDetailSave() {
-      console.log(this.elTransferLeftData)
-      console.log(this.elTransferRightData)
+      console.log("this.selectedItem");
+      console.log(this.selectedItem);
+      const dialogOutboundDetail = [
+        this.dialogOutboundDetailOld,
+        this.dialogOutboundDetailNew
+      ];
+      console.log(this.dialogOutboundDetailOld)
+      console.log(this.dialogOutboundDetailNew)
 
-      service.post('/addOrUpdateOutboundDetail', this.elTransferRightData,
-          {
-            params: {
-              outboundNo: this.formOutboundDetail.outboundNo,
-              itemId: this.formOutboundDetail.itemId,
-            }}
-      ).then(response => {
+
+      // Call the addOrUpdateOutboundDetail endpoint with machineNumbers
+      service.post('/addOrUpdateOutboundDetail',
+          dialogOutboundDetail
+      )
+          .then(response => {
             console.log(response);
-            this.queryOutboundDetailMachineNoCount()
+            this.queryOutboundDetail()
             this.handleOutboundDetailClose()
-
-
           })
           .catch(error => {
             console.log(error);
@@ -470,52 +433,33 @@ export default {
     },
     handleOutboundDetailCurrentChange(outboundDetailCurrentPage) {
       this.outboundDetailCurrentPage = outboundDetailCurrentPage;
-      this.queryOutboundDetailMachineNoCount()
+      this.queryOutboundDetail()
     },
-    handleOutboundSave() {
-      console.log(this.formOutbound);
-      service.post('/addOrUpdateOutbound', this.formOutbound
-      ).then(
-          (response) => {
-            console.log(response);
-            this.dialogFormOutboundVisible = false;
-            this.formOutbound = {}
-            this.currentOutbound= {}
-            this.outboundDetailTableData = []
-            return this.queryOutboundList();
 
-          })
-          .catch(
-              (error) => {
-                console.log(error);
-              });
-    },
-    handleOutboundClose() {
-      this.formOutbound = {}
-      this.dialogFormOutboundVisible = false;
-    },
     handleOutboundDetailClose() {
       this.dialogFormOutboundDetailVisible = false;
       this.selectedItem = ""
       this.formOutboundDetail = {}
-      this.elTransferLeftData= []
-      this.elTransferRightData= []
-      this.selectedKeys= []
+      this.dialogOutboundDetailOld = {
+        id: 0,
+        outboundNo: this.formOutboundDetail.outboundNo,
+        itemId: this.formOutboundDetail.itemId,
+        itemAmount: 0,
+        remark: ""
+      }
+      this.dialogOutboundDetailNew = {
+        id: 0,
+        outboundNo: this.formOutboundDetail.outboundNo,
+        itemId: this.formOutboundDetail.itemId,
+        itemAmount: 0,
+        remark: ""
+      }
     },
-    handleOutboundEdit(row) {
-      console.log(row);
-      this.formOutbound = JSON.parse(JSON.stringify(row.outboundInfo));
-      this.dialogFormOutboundVisible = true;
-    },
-    openAddDialog() {
-      //the dialog should contain all the fields above
-      this.dialogFormOutboundVisible = true
-    },
-    queryOutboundDetailMachineNoCount() {
-      console.log(this.currentOutbound.outboundInfo.outboundNo);
+
+    queryOutboundDetail() {
 
       // Create a Promise for each service.get call
-      const fetchOutboundDetailData = service.get('/queryOutboundDetailMachineNoCount', {
+      const fetchOutboundDetailData = service.get('/queryOutboundDetailList', {
         params: {
           outboundNo: this.currentOutbound.outboundInfo.outboundNo,
           currentPage: this.outboundDetailCurrentPage,
@@ -528,7 +472,7 @@ export default {
         console.error(error);
       });
 
-      const fetchOutboundDetailsCount = service.get('/countOutboundDetailMachineNoCount', {
+      const fetchOutboundDetailsCount = service.get('/countOutboundDetailList', {
         params: {
           outboundNo: this.currentOutbound.outboundInfo.outboundNo,
           currentPage: this.outboundDetailCurrentPage,
@@ -545,14 +489,7 @@ export default {
       return Promise.all([fetchOutboundDetailData, fetchOutboundDetailsCount]);
     },
 
-    // eslint-disable-next-line no-unused-vars
-    handleRowClick(row, column, event) {
-      this.currentOutbound = row
-      console.log("Row clicked:", row);
-      this.queryOutboundDetailMachineNoCount()
 
-      // Additional logic here
-    },
     queryOutboundList() {
       console.log("queryOutboundList");
 
@@ -584,15 +521,71 @@ export default {
       // Return a Promise that resolves when both requests are completed
       return Promise.all([fetchOutboundListData, fetchOutboundCount]);
     },
-    handleClick(row) {
-      console.log(row)
+
+    querySearchItemDetail(queryString, cb) {
+      // Make a GET request to your Spring Boot backend to fetch item details
+      // You can use libraries like Axios for making HTTP requests
+      service.get('/queryItemByCodeOrName', {
+        params: {
+          input: queryString,
+        }
+      })
+
+          .then(response => {
+            // Process the response and extract item details
+            this.itemDetails = response.data.data;
+            // Call the callback function with the results
+            cb(this.itemDetails.map(item => ({value: item.id, label: item.code + " - " + item.name})));
+          })
+          .catch(error => {
+            console.error('Error fetching item details:', error);
+          });
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+    handleItemDetailSelection(item) {
+
+      // Handle the selection of an item from the autocomplete dropdown
+      this.formOutboundDetail.itemId = item.value
+
+      service.get('/queryOutboundItemListByOutboundNoAndItemId', {
+        params: {
+          outboundNo: this.formOutboundDetail.outboundNo,
+          itemId: this.formOutboundDetail.itemId,
+        }
+      })//axis后面的.get可以省略；
+          .then(
+              (response) => {
+                console.log(response);
+                if (response.data.data === null) {
+                  this.dialogOutboundDetailOld = {
+                    id: 0,
+                    outboundNo: this.formOutboundDetail.outboundNo,
+                    itemId: this.formOutboundDetail.itemId,
+                    itemAmount: 0,
+                    remark: ""
+                  }
+                  this.dialogOutboundDetailNew = {
+                    id: 0,
+                    outboundNo: this.formOutboundDetail.outboundNo,
+                    itemId: this.formOutboundDetail.itemId,
+                    itemAmount: 0,
+                    remark: ""
+                  }
+                } else {
+                  //to deep copy
+                  this.dialogOutboundDetailOld = JSON.parse(JSON.stringify(response.data.data));
+                  this.dialogOutboundDetailNew = JSON.parse(JSON.stringify(response.data.data));
+                }
+
+              })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+
+
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-    }
+
+
   }
 
 
@@ -610,8 +603,5 @@ export default {
 .half {
   flex: 1;
   overflow-y: auto; /* Optional: Add scroll if content exceeds upper half */
-}
-.edit_dev >>> .el-transfer-panel {
-  width:350px;
 }
 </style>
