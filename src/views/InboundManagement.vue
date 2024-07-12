@@ -81,7 +81,7 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleInboundEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleClickEdit(scope.row)" type="text" size="small">冲红</el-button>
+            <el-button @click="handleInboundAccountingReversal(scope.row)" type="text" size="small">冲红</el-button>
             <el-button @click="handleInboundDelete(scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -268,6 +268,42 @@ export default {
     this.queryInboundList()
   },
   methods: {
+    handleInboundAccountingReversal(row){
+      MessageBox.confirm("请确认是否对入库单号为" + row.inboundInfo.inboundNo + "的入库信息进行冲红？",
+          '警告', {
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+            type: 'warning'
+          }).then(() => {
+        // User confirmed deletion
+        console.log(row);
+        service.get('/inboundAccountingReversal', {
+          params: {
+            inboundNo: row.inboundInfo.inboundNo
+          }
+        }).then(response => {
+          console.log(response);
+          // Call queryItemInformation and wait for it to finish
+          return this.queryInboundList();
+        }).then(() => {
+          this.currentInbound = {};
+          this.inboundDetailTableData= [];
+          console.log(this.inboundTableData)
+          // After queryItemInformation is finished
+          if (this.inboundTableData.length === 0 && this.inboundCurrentPage > 1) {
+            this.inboundCurrentPage--;
+            // Call queryItemInformation again after updating currentPage
+            return this.queryInboundList();
+          }
+        }).catch(error => {
+          console.error(error);
+        });
+      }).catch(() => {
+        // User cancelled the deletion
+        console.log('Deletion cancelled');
+      });
+
+    },
     handleInboundDelete(row) {
       MessageBox.confirm("请确认是否删除入库单号为" + row.inboundInfo.inboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
