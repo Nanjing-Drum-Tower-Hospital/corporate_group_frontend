@@ -81,8 +81,12 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleInboundEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleInboundAccountingReversal(scope.row)" type="text" size="small">冲红</el-button>
-            <el-button @click="handleInboundDelete(scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="handleInboundDelete(scope.row)" type="text" size="small"
+                       :disabled="!isCurrentMonth(scope.row.inboundInfo.inboundDate)">删除</el-button>
+            <el-button @click="handleInboundAccountingReversal(scope.row)" type="text" size="small"
+                       :disabled="isCurrentMonth(scope.row.inboundInfo.inboundDate) || (scope.row.inboundInfo.accountingReversalInboundNo)">
+              冲红</el-button>
+
           </template>
         </el-table-column>
 
@@ -107,7 +111,8 @@
 </span>
 
 
-        <el-button @click="openAddInboundDetailDialog" type="primary">
+        <el-button @click="openAddInboundDetailDialog" type="primary"
+                   :disabled="!isCurrentMonth(currentInbound.inboundInfo.inboundDate) || currentInbound.inboundInfo.accountingReversalInboundNo">
           添加
         </el-button>
       </div>
@@ -197,8 +202,10 @@
         <el-table-column
             label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleInboundDetailEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleInboundDetailDelete(scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="handleInboundDetailEdit(scope.row)" type="text" size="small"
+                       :disabled="!isCurrentMonth(currentInbound.inboundInfo.inboundDate) || currentInbound.inboundInfo.accountingReversalInboundNo">编辑</el-button>
+            <el-button @click="handleInboundDetailDelete(scope.row)" type="text" size="small"
+                       :disabled="!isCurrentMonth(currentInbound.inboundInfo.inboundDate) || currentInbound.inboundInfo.accountingReversalInboundNo">删除</el-button>
           </template>
         </el-table-column>
 
@@ -268,6 +275,13 @@ export default {
     this.queryInboundList()
   },
   methods: {
+    isCurrentMonth(dateStr) {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth(); // Note: January is 0
+      const date = new Date(dateStr);
+      return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
+    },
     handleInboundAccountingReversal(row){
       MessageBox.confirm("请确认是否对入库单号为" + row.inboundInfo.inboundNo + "的入库信息进行冲红？",
           '警告', {
@@ -346,11 +360,13 @@ export default {
       ).then(
           (response) => {
             console.log(response);
-            this.dialogFormInboundVisible = false;
-            this.formInbound = {}
-            this.currentInbound= {}
-            this.inboundDetailTableData = []
-            return this.queryInboundList();
+            if(response.data.code<400){
+              this.dialogFormInboundVisible = false;
+              this.formInbound = {}
+              this.currentInbound= {}
+              this.inboundDetailTableData = []
+              return this.queryInboundList();
+            }
 
           })
           .catch(
@@ -454,8 +470,11 @@ export default {
       )
           .then(response => {
             console.log(response);
-            this.queryInboundDetail()
-            this.handleInboundDetailClose()
+            if(response.data.code<400){
+              this.queryInboundDetail()
+              this.handleInboundDetailClose()
+            }
+
           })
           .catch(error => {
             console.log(error);

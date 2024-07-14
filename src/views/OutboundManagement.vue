@@ -16,24 +16,6 @@
 
 
 
-
-<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
-
-<!--            <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">-->
-<!--              <el-select v-model="formOutbound.supplierId" placeholder="请选择制造商" style="width: 70%;">-->
-<!--                &lt;!&ndash; You can dynamically populate the options here &ndash;&gt;-->
-<!--                &lt;!&ndash; For example, using a loop to iterate over a manufacturers array &ndash;&gt;-->
-<!--                <el-option-->
-<!--                    v-for="supplier in supplierList"-->
-<!--                    :key="supplier.id"-->
-<!--                    :label="supplier.supplierName"-->
-<!--                    :value="supplier.id">-->
-<!--                </el-option>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--          </div>-->
-
-
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-input v-model="formOutbound.remark" autocomplete="off" style="width: 70%;"></el-input>
@@ -65,12 +47,6 @@
             label="入库时间"
             width="150">
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop="supplier.supplierName"-->
-<!--            label="供应商"-->
-<!--            width="150">-->
-<!--        </el-table-column>-->
-
 
         <el-table-column
             prop="outboundInfo.remark"
@@ -81,8 +57,13 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleOutboundEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleClickEdit(scope.row)" type="text" size="small">冲红</el-button>
-            <el-button @click="handleOutboundDelete(scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="handleOutboundDelete(scope.row)" type="text" size="small"
+                       :disabled="!isCurrentMonth(scope.row.outboundInfo.outboundDate) ">删除</el-button>
+            <el-button @click="handleOutboundAccountingReversal(scope.row)" type="text" size="small"
+                       :disabled="isCurrentMonth(scope.row.outboundInfo.outboundDate) || (scope.row.outboundInfo.accountingReversalOutboundNo)">
+              冲红
+            </el-button>
+
           </template>
         </el-table-column>
 
@@ -107,7 +88,8 @@
 </span>
 
 
-        <el-button @click="openAddOutboundDetailDialog" type="primary">
+        <el-button @click="openAddOutboundDetailDialog" type="primary"
+                   :disabled="!isCurrentMonth(currentOutbound.outboundInfo.outboundDate) || currentOutbound.outboundInfo.accountingReversalOutboundNo">
           添加
         </el-button>
       </div>
@@ -197,8 +179,10 @@
         <el-table-column
             label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleOutboundDetailEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleOutboundDetailDelete(scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="handleOutboundDetailEdit(scope.row)" type="text" size="small"
+                       :disabled="!isCurrentMonth(currentOutbound.outboundInfo.outboundDate) || currentOutbound.outboundInfo.accountingReversalOutboundNo">编辑</el-button>
+            <el-button @click="handleOutboundDetailDelete(scope.row)" type="text" size="small"
+                       :disabled="!isCurrentMonth(currentOutbound.outboundInfo.outboundDate) || currentOutbound.outboundInfo.accountingReversalOutboundNo">删除</el-button>
           </template>
         </el-table-column>
 
@@ -234,7 +218,7 @@ export default {
       outboundDetailTableData: [],
       dialogFormOutboundVisible: false,
       dialogFormOutboundDetailVisible: false,
-      // supplierList: [],
+      supplierList: [],
 
 
       selectedItem: null,
@@ -248,26 +232,69 @@ export default {
       outboundsCount: 0,
 
 
-      dialogOutboundDetailOld: [],
-      dialogOutboundDetailNew: []
+      dialogOutboundDetailOld:[],
+      dialogOutboundDetailNew:[]
     }
 
   },
-  // mounted() {
-  //   // Call your backend API to fetch the list of manufacturers
-  //   service.get('/querySupplierList')
-  //       .then(response => {
-  //         // Assign the received data to the manufacturers array
-  //         this.supplierList = response.data.data;
-  //         console.log(this.supplierList)
-  //       })
-  //       .catch(error => {
-  //         console.error('Error fetching manufacturer list:', error);
-  //         // Handle errors if needed
-  //       });
-  //   this.queryOutboundList()
-  // },
+  mounted() {
+    // Call your backend API to fetch the list of manufacturers
+    service.get('/querySupplierList')
+        .then(response => {
+          // Assign the received data to the manufacturers array
+          this.supplierList = response.data.data;
+          console.log(this.supplierList)
+        })
+        .catch(error => {
+          console.error('Error fetching manufacturer list:', error);
+          // Handle errors if needed
+        });
+    this.queryOutboundList()
+  },
   methods: {
+    isCurrentMonth(dateStr) {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth(); // Note: January is 0
+      const date = new Date(dateStr);
+      return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
+    },
+    handleOutboundAccountingReversal(row){
+      MessageBox.confirm("请确认是否对入库单号为" + row.outboundInfo.outboundNo + "的入库信息进行冲红？",
+          '警告', {
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+            type: 'warning'
+          }).then(() => {
+        // User confirmed deletion
+        console.log(row);
+        service.get('/outboundAccountingReversal', {
+          params: {
+            outboundNo: row.outboundInfo.outboundNo
+          }
+        }).then(response => {
+          console.log(response);
+          // Call queryItemInformation and wait for it to finish
+          return this.queryOutboundList();
+        }).then(() => {
+          this.currentOutbound = {};
+          this.outboundDetailTableData = [];
+          console.log(this.outboundTableData)
+          // After queryItemInformation is finished
+          if (this.outboundTableData.length === 0 && this.outboundCurrentPage > 1) {
+            this.outboundCurrentPage--;
+            // Call queryItemInformation again after updating currentPage
+            return this.queryOutboundList();
+          }
+        }).catch(error => {
+          console.error(error);
+        });
+      }).catch(() => {
+        // User cancelled the deletion
+        console.log('Deletion cancelled');
+      });
+
+    },
     handleOutboundDelete(row) {
       MessageBox.confirm("请确认是否删除入库单号为" + row.outboundInfo.outboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
@@ -416,8 +443,11 @@ export default {
       )
           .then(response => {
             console.log(response);
-            this.queryOutboundDetail()
-            this.handleOutboundDetailClose()
+            if (response.data.code < 400) {
+              this.queryOutboundDetail()
+              this.handleOutboundDetailClose()
+            }
+
           })
           .catch(error => {
             console.log(error);
