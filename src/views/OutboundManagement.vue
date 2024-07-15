@@ -100,12 +100,11 @@
       <el-dialog title="添加修改入库货品信息" :visible.sync="dialogFormOutboundDetailVisible"
                  :before-close="handleOutboundDetailClose" :close-on-click-modal="false">
 
-          <span v-if="currentOutbound && currentOutbound.outboundInfo">
-            入库单号：{{ currentOutbound.outboundInfo.outboundNo }}
 
-          </span>
         <el-form :model="formOutboundDetail">
-
+          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentOutbound && currentOutbound.outboundInfo">
+            {{ currentOutbound.outboundInfo.outboundNo }}
+          </el-form-item>
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="货品编码名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-autocomplete
@@ -119,6 +118,12 @@
               >
 
               </el-autocomplete>
+            </el-form-item>
+
+          </div>
+          <div>
+            <el-form-item label="现有库存：" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              {{ existingInventoryAmount }}
             </el-form-item>
 
           </div>
@@ -233,7 +238,8 @@ export default {
 
 
       dialogOutboundDetailOld:[],
-      dialogOutboundDetailNew:[]
+      dialogOutboundDetailNew:[],
+      existingInventoryAmount:0
     }
 
   },
@@ -252,6 +258,18 @@ export default {
     this.queryOutboundList()
   },
   methods: {
+    queryExistingInventoryAmount(){
+      service.get('/queryExistingInventoryAmount', {
+        params: {
+          itemId: this.formOutboundDetail.itemId,
+        }
+      }).then(response => {
+        console.log(response);
+        this.existingInventoryAmount = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+    },
     isCurrentMonth(dateStr) {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
@@ -467,6 +485,7 @@ export default {
     },
 
     handleOutboundDetailClose() {
+      this.existingInventoryAmount=0
       this.dialogFormOutboundDetailVisible = false;
       this.selectedItem = ""
       this.formOutboundDetail = {}
@@ -586,6 +605,7 @@ export default {
               (response) => {
                 console.log(response);
                 if (response.data.data === null) {
+                  this.existingInventoryAmount=0
                   this.dialogOutboundDetailOld = {
                     id: 0,
                     outboundNo: this.formOutboundDetail.outboundNo,
@@ -604,6 +624,7 @@ export default {
                   //to deep copy
                   this.dialogOutboundDetailOld = JSON.parse(JSON.stringify(response.data.data));
                   this.dialogOutboundDetailNew = JSON.parse(JSON.stringify(response.data.data));
+                  this.queryExistingInventoryAmount()
                 }
 
               })

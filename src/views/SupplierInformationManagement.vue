@@ -16,9 +16,9 @@
       <el-form :model="form">
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-supplier label="供应商名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.code" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-supplier>
+          <el-form-item label="供应商名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.supplierName" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
 
         </div>
 
@@ -116,7 +116,7 @@ export default {
     },
     handleClickEdit(row) {
       console.log(row);
-      this.form = JSON.parse(JSON.stringify(row.supplierDetail));
+      this.form = JSON.parse(JSON.stringify(row));
       this.dialogFormVisible = true;
     },
 
@@ -130,7 +130,7 @@ export default {
         console.log(row);
         service.get('/deleteSupplier', {
           params: {
-            id: row.supplierDetail.id,
+            id: row.id,
           }
         }).then(response => {
           console.log(response);

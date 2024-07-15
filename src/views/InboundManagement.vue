@@ -123,12 +123,11 @@
       <el-dialog title="添加修改入库货品信息" :visible.sync="dialogFormInboundDetailVisible"
                  :before-close="handleInboundDetailClose" :close-on-click-modal="false">
 
-          <span v-if="currentInbound && currentInbound.inboundInfo">
-            入库单号：{{ currentInbound.inboundInfo.inboundNo }}
 
-          </span>
         <el-form :model="formInboundDetail">
-
+          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentInbound && currentInbound.inboundInfo">
+            {{ currentInbound.inboundInfo.inboundNo }}
+          </el-form-item>
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="货品编码名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-autocomplete
@@ -145,6 +144,7 @@
             </el-form-item>
 
           </div>
+
           <div >
             <el-form-item label="数量" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
               <el-input-number v-model="dialogInboundDetailNew.itemAmount"  ></el-input-number>

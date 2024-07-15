@@ -12,13 +12,13 @@
       </el-button>
     </div>
 
-    <el-dialog title="添加制造商信息" :visible.sync="dialogFormVisible" :before-close="handleClose" :close-on-click-modal="false">
+    <el-dialog title="添加供应商信息" :visible.sync="dialogFormVisible" :before-close="handleClose" :close-on-click-modal="false">
       <el-form :model="form">
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-          <el-form-manufacturer label="制造商名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input v-model="form.code" autocomplete="off" style="width: 70%;"></el-input>
-          </el-form-manufacturer>
+          <el-form-item label="供应商名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input v-model="form.manufacturerName" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
 
         </div>
 
@@ -40,7 +40,7 @@
           style="width: 100%;">
         <el-table-column
             prop="manufacturerName"
-            label="制造商名称"
+            label="供应商名称"
             width="150">
         </el-table-column>
 
@@ -116,7 +116,7 @@ export default {
     },
     handleClickEdit(row) {
       console.log(row);
-      this.form = JSON.parse(JSON.stringify(row.manufacturerDetail));
+      this.form = JSON.parse(JSON.stringify(row));
       this.dialogFormVisible = true;
     },
 
@@ -130,7 +130,7 @@ export default {
         console.log(row);
         service.get('/deleteManufacturer', {
           params: {
-            id: row.manufacturerDetail.id,
+            id: row.id,
           }
         }).then(response => {
           console.log(response);
