@@ -14,9 +14,6 @@
                  :close-on-click-modal="false">
         <el-form :model="formInbound">
 
-
-
-
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
 
             <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">
@@ -195,6 +192,30 @@
             width="120">
         </el-table-column>
         <el-table-column
+            prop="unitPriceExcludingTax"
+            label="税前单价"
+            width="150">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.unitPriceExcludingTax) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="tax"
+            label="税额"
+            width="150">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.tax) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="unitPriceIncludingTax"
+            label="含税单价"
+            width="150">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.unitPriceIncludingTax) }}
+          </template>
+        </el-table-column>
+        <el-table-column
             prop="inboundItem.remark"
             label="备注"
             width="120">
@@ -275,6 +296,9 @@ export default {
     this.queryInboundList()
   },
   methods: {
+    formatNumber(value) {
+      return Number(value).toFixed(10);
+    },
     isCurrentMonth(dateStr) {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
