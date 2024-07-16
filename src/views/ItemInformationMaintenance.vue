@@ -115,47 +115,47 @@
           border
           style="width: 100%;">
         <el-table-column
-            prop="itemDetail.code"
+            prop="code"
             label="编码"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="itemDetail.name"
+            prop="name"
             label="货品名称"
-            width="150">
+            width="180">
         </el-table-column>
         <el-table-column
-            prop="itemDetail.model"
+            prop="model"
             label="型号"
-            width="150">
+            width="90">
         </el-table-column>
         <el-table-column
-            prop="itemDetail.unitName"
+            prop="unitName"
             label="单位"
-            width="150">
+            width="90">
         </el-table-column>
         <el-table-column
-            prop="itemDetail.unitPriceExcludingTax"
+            prop="unitPriceExcludingTax"
             label="税前单价"
             width="150">
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.itemDetail.unitPriceExcludingTax) }}
+            {{ formatNumber(scope.row.unitPriceExcludingTax) }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="itemDetail.tax"
+            prop="tax"
             label="税额"
             width="150">
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.itemDetail.tax) }}
+            {{ formatNumber(scope.row.unitTax) }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="itemDetail.unitPriceIncludingTax"
+            prop="unitPriceIncludingTax"
             label="含税单价"
             width="150">
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.itemDetail.unitPriceIncludingTax) }}
+            {{ formatNumber(scope.row.unitPriceIncludingTax) }}
           </template>
         </el-table-column>
         <el-table-column

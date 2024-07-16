@@ -67,7 +67,22 @@
             label="供应商"
             width="150">
         </el-table-column>
+        <el-table-column
+            prop="inboundPriceExcludingTax"
+            label="金额"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="inboundPriceIncludingTax"
+            label="价税合计"
+            width="150">
+        </el-table-column>
 
+<!--        <el-table-column-->
+<!--            prop="inboundTax"-->
+<!--            label="供应商"-->
+<!--            width="150">-->
+<!--        </el-table-column>-->
 
         <el-table-column
             prop="remark"
@@ -101,15 +116,15 @@
       </div>
     </div>
     <div class="half">
-      <div v-if="currentInbound && currentInbound.inboundInfo">
+      <div v-if="currentInbound ">
               <span  >
-  入库单号：{{ currentInbound.inboundInfo.inboundNo }}
+  入库单号：{{ currentInbound.inboundNo }}
 
 </span>
 
 
         <el-button @click="openAddInboundDetailDialog" type="primary"
-                   :disabled="!isCurrentMonth(currentInbound.inboundInfo.inboundDate) || currentInbound.inboundInfo.accountingReversalInboundNo">
+                   :disabled="!isCurrentMonth(currentInbound.inboundDate) || currentInbound.accountingReversalInboundNo">
           添加
         </el-button>
       </div>
@@ -122,8 +137,8 @@
 
 
         <el-form :model="formInboundDetail">
-          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentInbound && currentInbound.inboundInfo">
-            {{ currentInbound.inboundInfo.inboundNo }}
+          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentInbound">
+            {{ currentInbound.inboundNo }}
           </el-form-item>
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="货品编码名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
@@ -192,31 +207,31 @@
             width="120">
         </el-table-column>
         <el-table-column
-            prop="unitPriceExcludingTax"
-            label="税前单价"
+            prop="inboundDetailPriceExcludingTax"
+            label="金额"
             width="150">
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.unitPriceExcludingTax) }}
+            {{ formatNumber(scope.row.inboundDetailPriceExcludingTax) }}
+          </template>
+        </el-table-column>
+<!--        <el-table-column-->
+<!--            prop="inboundDetailTax"-->
+<!--            label="税额"-->
+<!--            width="150">-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ formatNumber(scope.row.inboundDetailTax) }}-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+        <el-table-column
+            prop="inboundDetailPriceIncludingTax"
+            label="价税合计"
+            width="150">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.inboundDetailPriceIncludingTax) }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="tax"
-            label="税额"
-            width="150">
-          <template slot-scope="scope">
-            {{ formatNumber(scope.row.tax) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-            prop="unitPriceIncludingTax"
-            label="含税单价"
-            width="150">
-          <template slot-scope="scope">
-            {{ formatNumber(scope.row.unitPriceIncludingTax) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-            prop="inboundItem.remark"
+            prop="remark"
             label="备注"
             width="120">
         </el-table-column>
@@ -307,7 +322,7 @@ export default {
       return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
     },
     handleInboundAccountingReversal(row){
-      MessageBox.confirm("请确认是否对入库单号为" + row.inboundInfo.inboundNo + "的入库信息进行冲红？",
+      MessageBox.confirm("请确认是否对入库单号为" + row.inboundNo + "的入库信息进行冲红？",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -317,7 +332,7 @@ export default {
         console.log(row);
         service.get('/inboundAccountingReversal', {
           params: {
-            inboundNo: row.inboundInfo.inboundNo
+            inboundNo: row.inboundNo
           }
         }).then(response => {
           console.log(response);
@@ -351,7 +366,7 @@ export default {
       }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteInboundByInboundNo ', {
+        service.get('/deleteInboundByInboundNo', {
           params: {
             inboundNo: row.inboundNo
           }
@@ -427,17 +442,17 @@ export default {
 
 
     handleInboundDetailDelete(row) {
-      this.formInboundDetail.itemId = row.inboundItem.itemId
-      this.formInboundDetail.inboundNo = this.currentInbound.inboundInfo.inboundNo
+      this.formInboundDetail.itemId = row.itemId
+      this.formInboundDetail.inboundNo = this.currentInbound.inboundNo
       MessageBox.confirm("请确认是否删除入库单号为" + this.formInboundDetail.inboundNo +
-          "编码为" + row.item.itemDetail.code + "的所有入库信息？", '警告', {
+          "编码为" + row.item.code + "的所有入库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
         type: 'warning'
       }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteInboundItemListByInboundNoAndItemId', {
+        service.get('/deleteInboundDetailByInboundNoAndItemId', {
           params: {
             inboundNo: this.formInboundDetail.inboundNo,
             itemId: this.formInboundDetail.itemId,
@@ -467,16 +482,16 @@ export default {
       console.log(row)
       this.openAddInboundDetailDialog()
       let item={}
-      item.value=row.inboundItem.itemId
+      item.value=row.itemId
       console.log(item)
-      this.selectedItem=row.item.itemDetail.code+" - "+row.item.itemDetail.name
+      this.selectedItem=row.item.code+" - "+row.item.name
       this.handleItemDetailSelection(item)
 
 
     },
     handleInboundDetailSave() {
       console.log("this.selectedItem");
-      console.log(this.selectedItem);
+      console.log(this.dialogInboundDetailNew);
       const dialogInboundDetail = [
         this.dialogInboundDetailOld,
         this.dialogInboundDetailNew
@@ -508,7 +523,7 @@ export default {
 
     openAddInboundDetailDialog() {
       this.selectedItem = ""
-      this.formInboundDetail.inboundNo = this.currentInbound.inboundInfo.inboundNo
+      this.formInboundDetail.inboundNo = this.currentInbound.inboundNo
       this.dialogFormInboundDetailVisible = true
     },
     handleInboundDetailCurrentChange(inboundDetailCurrentPage) {
@@ -654,6 +669,8 @@ export default {
                   //to deep copy
                   this.dialogInboundDetailOld=JSON.parse(JSON.stringify(response.data.data));
                   this.dialogInboundDetailNew=JSON.parse(JSON.stringify(response.data.data));
+                  console.log("this.dialogInboundDetailNew")
+                  console.log(this.dialogInboundDetailNew)
                 }
 
               })
