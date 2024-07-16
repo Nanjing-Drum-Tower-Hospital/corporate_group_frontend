@@ -52,13 +52,13 @@
           @row-click="handleRowClick"
       >
         <el-table-column
-            prop="inboundInfo.inboundNo"
+            prop="inboundNo"
             label="入库单号"
             width="150"
         >
         </el-table-column>
         <el-table-column
-            prop="inboundInfo.inboundDate"
+            prop="inboundDate"
             label="入库时间"
             width="150">
         </el-table-column>
@@ -70,7 +70,7 @@
 
 
         <el-table-column
-            prop="inboundInfo.remark"
+            prop="remark"
             label="备注"
             width="150">
         </el-table-column>
@@ -79,9 +79,9 @@
           <template slot-scope="scope">
             <el-button @click="handleInboundEdit(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="handleInboundDelete(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(scope.row.inboundInfo.inboundDate)">删除</el-button>
+                       :disabled="!isCurrentMonth(scope.row.inboundDate)">删除</el-button>
             <el-button @click="handleInboundAccountingReversal(scope.row)" type="text" size="small"
-                       :disabled="isCurrentMonth(scope.row.inboundInfo.inboundDate) || (scope.row.inboundInfo.accountingReversalInboundNo)">
+                       :disabled="isCurrentMonth(scope.row.inboundDate) || !!(scope.row.accountingReversalInboundNo)">
               冲红</el-button>
 
           </template>
@@ -171,23 +171,23 @@
           border
           style="width: 100%;">
         <el-table-column
-            prop="item.itemDetail.code"
+            prop="item.code"
             label="编码"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="item.itemDetail.name"
+            prop="item.name"
             label="货品名称"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="item.itemDetail.model"
+            prop="item.model"
             label="货品型号"
             width="120">
         </el-table-column>
 
         <el-table-column
-            prop="inboundItem.itemAmount"
+            prop="itemAmount"
             label="数量"
             width="120">
         </el-table-column>
@@ -224,9 +224,9 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleInboundDetailEdit(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(currentInbound.inboundInfo.inboundDate) || currentInbound.inboundInfo.accountingReversalInboundNo">编辑</el-button>
+                       :disabled="!isCurrentMonth(currentInbound.inboundDate) || !!currentInbound.accountingReversalInboundNo">编辑</el-button>
             <el-button @click="handleInboundDetailDelete(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(currentInbound.inboundInfo.inboundDate) || currentInbound.inboundInfo.accountingReversalInboundNo">删除</el-button>
+                       :disabled="!isCurrentMonth(currentInbound.inboundDate) || !!currentInbound.accountingReversalInboundNo">删除</el-button>
           </template>
         </el-table-column>
 
@@ -239,7 +239,7 @@
             :page-sizes="[inboundDetailPageSize]"
             :page-size="inboundDetailPageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="inboundDetailsCount">
+            :total="inboundDetailListCount">
         </el-pagination>
       </div>
     </div>
@@ -269,7 +269,7 @@ export default {
       itemDetails: [],
       inboundDetailCurrentPage: 1,
       inboundDetailPageSize: 5,
-      inboundDetailsCount: 0,
+      inboundDetailListCount: 0,
 
       inboundCurrentPage: 1,
       inboundPageSize: 5,
@@ -343,7 +343,7 @@ export default {
 
     },
     handleInboundDelete(row) {
-      MessageBox.confirm("请确认是否删除入库单号为" + row.inboundInfo.inboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
+      MessageBox.confirm("请确认是否删除入库单号为" + row.inboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
@@ -351,9 +351,9 @@ export default {
       }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteInbound', {
+        service.get('/deleteInboundByInboundNo ', {
           params: {
-            inboundNo: row.inboundInfo.inboundNo
+            inboundNo: row.inboundNo
           }
         }).then(response => {
           console.log(response);
@@ -378,7 +378,6 @@ export default {
       });
     },
     handleInboundSave() {
-
       console.log(this.formInbound);
       service.post('/addOrUpdateInbound', this.formInbound
       ).then(
@@ -404,7 +403,7 @@ export default {
     },
     handleInboundEdit(row) {
       console.log(row);
-      this.formInbound = JSON.parse(JSON.stringify(row.inboundInfo));
+      this.formInbound = JSON.parse(JSON.stringify(row));
       this.dialogFormInboundVisible = true;
     },
     openAddDialog() {
@@ -542,7 +541,7 @@ export default {
       // Create a Promise for each service.get call
       const fetchInboundDetailData = service.get('/queryInboundDetailList', {
         params: {
-          inboundNo: this.currentInbound.inboundInfo.inboundNo,
+          inboundNo: this.currentInbound.inboundNo,
           currentPage: this.inboundDetailCurrentPage,
           pageSize: this.inboundDetailPageSize,
         }
@@ -553,21 +552,21 @@ export default {
         console.error(error);
       });
 
-      const fetchInboundDetailsCount = service.get('/countInboundDetailList', {
+      const fetchInboundDetailListCount = service.get('/queryInboundDetailListCount', {
         params: {
-          inboundNo: this.currentInbound.inboundInfo.inboundNo,
+          inboundNo: this.currentInbound.inboundNo,
           currentPage: this.inboundDetailCurrentPage,
           pageSize: this.inboundDetailPageSize,
         }
       }).then(response => {
         console.log(response);
-        this.inboundDetailsCount = response.data.data;
+        this.inboundDetailListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchInboundDetailData, fetchInboundDetailsCount]);
+      return Promise.all([fetchInboundDetailData, fetchInboundDetailListCount]);
     },
 
 
@@ -587,7 +586,7 @@ export default {
         console.error(error);
       });
 
-      const fetchInboundCount = service.get('/queryInboundCount', {
+      const fetchInboundCount = service.get('/queryInboundListCount', {
         params: {
           currentPage: this.inboundCurrentPage,
           pageSize: this.inboundPageSize,
