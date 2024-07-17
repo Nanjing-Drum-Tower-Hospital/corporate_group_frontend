@@ -143,7 +143,7 @@
           </template>
         </el-table-column>
         <el-table-column
-            prop="tax"
+            prop="unitTax"
             label="税额"
             width="150">
           <template slot-scope="scope">
@@ -163,31 +163,7 @@
             label="制造商"
             width="150">
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop="itemDetail.billItem"-->
-<!--            label="账单码"-->
-<!--            width="150">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="itemDetail.standards"-->
-<!--            label="执行标准"-->
-<!--            width="120">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="itemDetail.approvalNo"-->
-<!--            label="批准文号"-->
-<!--            width="120">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="itemDetail.type"-->
-<!--            label="类型"-->
-<!--            width="150">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="itemDetail.expireDate"-->
-<!--            label="有效期"-->
-<!--            width="120">-->
-<!--        </el-table-column>-->
+
         <el-table-column
             prop="itemDetail.createDate"
             label="创建时间"
@@ -231,7 +207,7 @@ export default {
         beginDate:'',
         endDate:''
       },
-      tableData:{},
+      tableData:[],
       dialogFormVisible: false,
       form:{},
       manufacturerList:[],
@@ -268,7 +244,7 @@ export default {
     },
     handleClickEdit(row){
       console.log(row);
-      this.form = JSON.parse(JSON.stringify(row.itemDetail));
+      this.form = JSON.parse(JSON.stringify(row));
       this.dialogFormVisible = true;
     },
 
@@ -282,7 +258,7 @@ export default {
         console.log(row);
         service.get('/deleteItem', {
           params: {
-            id: row.itemDetail.id,
+            id: row.id,
           }
         }).then(response => {
           console.log(response);
@@ -313,8 +289,12 @@ export default {
       ).then(
           (response) => {
             console.log(response);
-            this.dialogFormVisible = false;
-            this.form={}
+            if(response.data.code<400){
+              this.dialogFormVisible = false;
+              this.form={}
+            }
+
+
             return this.queryItemInformation();
           })
           .catch(

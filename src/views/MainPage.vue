@@ -9,8 +9,7 @@
 
                class="el-menu-vertical-demo"
                @select="handleMenuSelection"
-               @open="handleOpen"
-               @close="handleClose"
+
                background-color="#001529"
                text-color="#fff"
                active-text-color="#ffd04b">

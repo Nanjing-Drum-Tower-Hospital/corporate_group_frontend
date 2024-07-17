@@ -37,19 +37,29 @@
           @row-click="handleRowClick"
       >
         <el-table-column
-            prop="outboundInfo.outboundNo"
+            prop="outboundNo"
             label="入库单号"
             width="150"
         >
         </el-table-column>
         <el-table-column
-            prop="outboundInfo.outboundDate"
+            prop="outboundDate"
             label="入库时间"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="outboundPriceExcludingTax"
+            label="金额"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="outboundPriceIncludingTax"
+            label="价税合计"
             width="150">
         </el-table-column>
 
         <el-table-column
-            prop="outboundInfo.remark"
+            prop="remark"
             label="备注"
             width="150">
         </el-table-column>
@@ -58,9 +68,9 @@
           <template slot-scope="scope">
             <el-button @click="handleOutboundEdit(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="handleOutboundDelete(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(scope.row.outboundInfo.outboundDate) ">删除</el-button>
+                       :disabled="!isCurrentMonth(scope.row.outboundDate) ">删除</el-button>
             <el-button @click="handleOutboundAccountingReversal(scope.row)" type="text" size="small"
-                       :disabled="isCurrentMonth(scope.row.outboundInfo.outboundDate) || (scope.row.outboundInfo.accountingReversalOutboundNo)">
+                       :disabled="isCurrentMonth(scope.row.outboundDate) || !!(scope.row.accountingReversalOutboundNo)">
               冲红
             </el-button>
 
@@ -81,15 +91,15 @@
       </div>
     </div>
     <div class="half">
-      <div v-if="currentOutbound && currentOutbound.outboundInfo">
+      <div v-if="currentOutbound">
               <span  >
-  入库单号：{{ currentOutbound.outboundInfo.outboundNo }}
+  入库单号：{{ currentOutbound.outboundNo }}
 
 </span>
 
 
         <el-button @click="openAddOutboundDetailDialog" type="primary"
-                   :disabled="!isCurrentMonth(currentOutbound.outboundInfo.outboundDate) || currentOutbound.outboundInfo.accountingReversalOutboundNo">
+                   :disabled="!isCurrentMonth(currentOutbound.outboundDate) || !!currentOutbound.accountingReversalOutboundNo">
           添加
         </el-button>
       </div>
@@ -102,8 +112,8 @@
 
 
         <el-form :model="formOutboundDetail">
-          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentOutbound && currentOutbound.outboundInfo">
-            {{ currentOutbound.outboundInfo.outboundNo }}
+          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentOutbound ">
+            {{ currentOutbound.outboundNo }}
           </el-form-item>
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="货品编码名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
@@ -156,28 +166,44 @@
           border
           style="width: 100%;">
         <el-table-column
-            prop="item.itemDetail.code"
+            prop="item.code"
             label="编码"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="item.itemDetail.name"
+            prop="item.name"
             label="货品名称"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="item.itemDetail.model"
+            prop="item.model"
             label="货品型号"
             width="120">
         </el-table-column>
 
         <el-table-column
-            prop="outboundItem.itemAmount"
+            prop="itemAmount"
             label="数量"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="outboundItem.remark"
+            prop="outboundDetailPriceExcludingTax"
+            label="金额"
+            width="150">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.outboundDetailPriceExcludingTax) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="outboundDetailPriceIncludingTax"
+            label="价税合计"
+            width="150">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.outboundDetailPriceIncludingTax) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="remark"
             label="备注"
             width="120">
         </el-table-column>
@@ -185,9 +211,9 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleOutboundDetailEdit(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(currentOutbound.outboundInfo.outboundDate) || currentOutbound.outboundInfo.accountingReversalOutboundNo">编辑</el-button>
+                       :disabled="!isCurrentMonth(currentOutbound.outboundDate) || !!currentOutbound.accountingReversalOutboundNo">编辑</el-button>
             <el-button @click="handleOutboundDetailDelete(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(currentOutbound.outboundInfo.outboundDate) || currentOutbound.outboundInfo.accountingReversalOutboundNo">删除</el-button>
+                       :disabled="!isCurrentMonth(currentOutbound.outboundDate) || !!currentOutbound.accountingReversalOutboundNo">删除</el-button>
           </template>
         </el-table-column>
 
@@ -258,6 +284,9 @@ export default {
     this.queryOutboundList()
   },
   methods: {
+    formatNumber(value) {
+      return Number(value).toFixed(10);
+    },
     queryExistingInventoryAmount(){
       service.get('/queryExistingInventoryAmount', {
         params: {
@@ -278,7 +307,7 @@ export default {
       return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
     },
     handleOutboundAccountingReversal(row){
-      MessageBox.confirm("请确认是否对入库单号为" + row.outboundInfo.outboundNo + "的入库信息进行冲红？",
+      MessageBox.confirm("请确认是否对入库单号为" + row.outboundNo + "的入库信息进行冲红？",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -288,7 +317,7 @@ export default {
         console.log(row);
         service.get('/outboundAccountingReversal', {
           params: {
-            outboundNo: row.outboundInfo.outboundNo
+            outboundNo: row.outboundNo
           }
         }).then(response => {
           console.log(response);
@@ -314,7 +343,7 @@ export default {
 
     },
     handleOutboundDelete(row) {
-      MessageBox.confirm("请确认是否删除入库单号为" + row.outboundInfo.outboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
+      MessageBox.confirm("请确认是否删除入库单号为" + row.outboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -322,9 +351,9 @@ export default {
           }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteOutbound', {
+        service.get('/deleteOutboundByOutboundNo', {
           params: {
-            outboundNo: row.outboundInfo.outboundNo
+            outboundNo: row.outboundNo
           }
         }).then(response => {
           console.log(response);
@@ -373,7 +402,7 @@ export default {
     },
     handleOutboundEdit(row) {
       console.log(row);
-      this.formOutbound = JSON.parse(JSON.stringify(row.outboundInfo));
+      this.formOutbound = JSON.parse(JSON.stringify(row));
       this.dialogFormOutboundVisible = true;
     },
     openAddDialog() {
@@ -397,17 +426,17 @@ export default {
 
 
     handleOutboundDetailDelete(row) {
-      this.formOutboundDetail.itemId = row.outboundItem.itemId
-      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
+      this.formOutboundDetail.itemId = row.itemId
+      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundNo
       MessageBox.confirm("请确认是否删除入库单号为" + this.formOutboundDetail.outboundNo +
-          "编码为" + row.item.itemDetail.code + "的所有入库信息？", '警告', {
+          "编码为" + row.item.code + "的所有入库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
         type: 'warning'
       }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteOutboundItemListByOutboundNoAndItemId', {
+        service.get('/deleteOutboundDetailByOutboundNoAndItemId', {
           params: {
             outboundNo: this.formOutboundDetail.outboundNo,
             itemId: this.formOutboundDetail.itemId,
@@ -437,9 +466,9 @@ export default {
       console.log(row)
       this.openAddOutboundDetailDialog()
       let item = {}
-      item.value = row.outboundItem.itemId
+      item.value = row.itemId
       console.log(item)
-      this.selectedItem = row.item.itemDetail.code + " - " + row.item.itemDetail.name
+      this.selectedItem = row.item.code + " - " + row.item.name
       this.handleItemDetailSelection(item)
 
 
@@ -476,7 +505,7 @@ export default {
 
     openAddOutboundDetailDialog() {
       this.selectedItem = ""
-      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundInfo.outboundNo
+      this.formOutboundDetail.outboundNo = this.currentOutbound.outboundNo
       this.dialogFormOutboundDetailVisible = true
     },
     handleOutboundDetailCurrentChange(outboundDetailCurrentPage) {
@@ -510,7 +539,7 @@ export default {
       // Create a Promise for each service.get call
       const fetchOutboundDetailData = service.get('/queryOutboundDetailList', {
         params: {
-          outboundNo: this.currentOutbound.outboundInfo.outboundNo,
+          outboundNo: this.currentOutbound.outboundNo,
           currentPage: this.outboundDetailCurrentPage,
           pageSize: this.outboundDetailPageSize,
         }
@@ -521,9 +550,9 @@ export default {
         console.error(error);
       });
 
-      const fetchOutboundDetailsCount = service.get('/countOutboundDetailList', {
+      const fetchOutboundDetailsCount = service.get('/queryOutboundDetailListCount', {
         params: {
-          outboundNo: this.currentOutbound.outboundInfo.outboundNo,
+          outboundNo: this.currentOutbound.outboundNo,
           currentPage: this.outboundDetailCurrentPage,
           pageSize: this.outboundDetailPageSize,
         }
@@ -555,7 +584,7 @@ export default {
         console.error(error);
       });
 
-      const fetchOutboundCount = service.get('/queryOutboundCount', {
+      const fetchOutboundCount = service.get('/queryOutboundListCount', {
         params: {
           currentPage: this.outboundCurrentPage,
           pageSize: this.outboundPageSize,

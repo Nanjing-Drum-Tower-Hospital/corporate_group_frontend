@@ -78,11 +78,7 @@
             width="150">
         </el-table-column>
 
-<!--        <el-table-column-->
-<!--            prop="inboundTax"-->
-<!--            label="供应商"-->
-<!--            width="150">-->
-<!--        </el-table-column>-->
+
 
         <el-table-column
             prop="remark"
@@ -124,7 +120,7 @@
 
 
         <el-button @click="openAddInboundDetailDialog" type="primary"
-                   :disabled="!isCurrentMonth(currentInbound.inboundDate) || currentInbound.accountingReversalInboundNo">
+                   :disabled="!isCurrentMonth(currentInbound.inboundDate) || !!currentInbound.accountingReversalInboundNo">
           添加
         </el-button>
       </div>
@@ -214,14 +210,6 @@
             {{ formatNumber(scope.row.inboundDetailPriceExcludingTax) }}
           </template>
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop="inboundDetailTax"-->
-<!--            label="税额"-->
-<!--            width="150">-->
-<!--          <template slot-scope="scope">-->
-<!--            {{ formatNumber(scope.row.inboundDetailTax) }}-->
-<!--          </template>-->
-<!--        </el-table-column>-->
         <el-table-column
             prop="inboundDetailPriceIncludingTax"
             label="价税合计"
@@ -510,6 +498,7 @@ export default {
             console.log(response);
             if(response.data.code<400){
               this.queryInboundDetail()
+              this.queryInboundList()
               this.handleInboundDetailClose()
             }
 
