@@ -165,7 +165,7 @@
         </el-table-column>
 
         <el-table-column
-            prop="itemDetail.createDate"
+            prop="createDate"
             label="创建时间"
             width="150">
         </el-table-column>
