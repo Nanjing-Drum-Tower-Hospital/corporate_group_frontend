@@ -9,6 +9,11 @@
       <el-button type="primary" @click="openAddDialog">
         添加
       </el-button>
+      <el-button type="primary" @click="handleCheckOutOpen">
+        结账
+      </el-button>
+
+
 
       <el-dialog title="添加修改入库信息" :visible.sync="dialogFormInboundVisible" :before-close="handleInboundClose"
                  :close-on-click-modal="false">
@@ -43,6 +48,18 @@
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleInboundClose">取 消</el-button>
           <el-button type="primary" @click="handleInboundSave">保 存</el-button>
+        </div>
+      </el-dialog>
+
+
+      <el-dialog title="入库结账管理" :visible.sync="dialogCheckOutVisible" :before-close="handleCheckOutClose"
+                 :close-on-click-modal="false">
+
+
+
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="handleCheckOutClose">取 消</el-button>
+          <el-button type="primary" @click="handleCheckOutSave">保 存</el-button>
         </div>
       </el-dialog>
       <el-table
@@ -155,7 +172,7 @@
 
           <div >
             <el-form-item label="数量" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input-number v-model="dialogInboundDetailNew.itemAmount"  ></el-input-number>
+              <el-input-number v-model="dialogInboundDetailNew.itemAmount"  :precision="1"></el-input-number>
             </el-form-item>
 
           </div>
@@ -280,7 +297,9 @@ export default {
 
 
       dialogInboundDetailOld:[],
-      dialogInboundDetailNew:[]
+      dialogInboundDetailNew:[],
+      dialogCheckOutVisible: false,
+
     }
 
   },
@@ -299,6 +318,23 @@ export default {
     this.queryInboundList()
   },
   methods: {
+    handleCheckOutClose() {
+      this.dialogCheckOutVisible = false;
+      service.get('/queryCheckOutList', {
+        params: {
+          type: "inbound",
+        }
+      }).then(response => {
+        console.log(response);
+        // Call queryItemInformation and wait for it to finish
+
+      })
+
+    },
+    handleCheckOutOpen(){
+      this.dialogCheckOutVisible=true
+
+    },
     formatNumber(value) {
       return Number(value).toFixed(10);
     },
