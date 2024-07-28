@@ -76,7 +76,7 @@
 </template>
 <script >
 export default {
-  name: "inventoryManagement",
+  name: "InventoryManagement",
   data() {
     return {
       form: {

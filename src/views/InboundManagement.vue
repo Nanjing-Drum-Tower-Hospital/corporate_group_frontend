@@ -9,9 +9,7 @@
       <el-button type="primary" @click="openAddDialog">
         添加
       </el-button>
-      <el-button type="primary" @click="handleCheckOutOpen">
-        结账
-      </el-button>
+
 
 
 
@@ -52,16 +50,7 @@
       </el-dialog>
 
 
-      <el-dialog title="入库结账管理" :visible.sync="dialogCheckOutVisible" :before-close="handleCheckOutClose"
-                 :close-on-click-modal="false">
 
-
-
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="handleCheckOutClose">取 消</el-button>
-          <el-button type="primary" @click="handleCheckOutSave">保 存</el-button>
-        </div>
-      </el-dialog>
       <el-table
           :data="inboundTableData"
           border
@@ -78,6 +67,14 @@
             prop="inboundDate"
             label="入库时间"
             width="150">
+        </el-table-column>
+        <el-table-column
+            prop="checkOut"
+            label="状态"
+            width="150">
+          <template slot-scope="scope">
+            {{ scope.row.checkOut === null ? '未结算' : '已结算' }}
+          </template>
         </el-table-column>
         <el-table-column
             prop="supplier.supplierName"
@@ -107,9 +104,9 @@
           <template slot-scope="scope">
             <el-button @click="handleInboundEdit(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="handleInboundDelete(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(scope.row.inboundDate)">删除</el-button>
+                       :disabled="scope.row.checkOut">删除</el-button>
             <el-button @click="handleInboundAccountingReversal(scope.row)" type="text" size="small"
-                       :disabled="isCurrentMonth(scope.row.inboundDate) || !!(scope.row.accountingReversalInboundNo)">
+                       :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalInboundNo)">
               冲红</el-button>
 
           </template>
@@ -137,7 +134,7 @@
 
 
         <el-button @click="openAddInboundDetailDialog" type="primary"
-                   :disabled="!isCurrentMonth(currentInbound.inboundDate) || !!currentInbound.accountingReversalInboundNo">
+                   :disabled="currentInbound.checkOut || !!currentInbound.accountingReversalInboundNo">
           添加
         </el-button>
       </div>
@@ -244,9 +241,9 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleInboundDetailEdit(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(currentInbound.inboundDate) || !!currentInbound.accountingReversalInboundNo">编辑</el-button>
+                       :disabled="currentInbound.checkOut || !!currentInbound.accountingReversalInboundNo">编辑</el-button>
             <el-button @click="handleInboundDetailDelete(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(currentInbound.inboundDate) || !!currentInbound.accountingReversalInboundNo">删除</el-button>
+                       :disabled="currentInbound.checkOut || !!currentInbound.accountingReversalInboundNo">删除</el-button>
           </template>
         </el-table-column>
 
@@ -272,7 +269,7 @@ import service from "@/main";
 import {MessageBox} from "element-ui";
 
 export default {
-  name: "inboundManagement",
+  name: "InboundManagement",
   data() {
     return {
       formInbound: {},
@@ -298,7 +295,7 @@ export default {
 
       dialogInboundDetailOld:[],
       dialogInboundDetailNew:[],
-      dialogCheckOutVisible: false,
+
 
     }
 
@@ -318,23 +315,7 @@ export default {
     this.queryInboundList()
   },
   methods: {
-    handleCheckOutClose() {
-      this.dialogCheckOutVisible = false;
-      service.get('/queryCheckOutList', {
-        params: {
-          type: "inbound",
-        }
-      }).then(response => {
-        console.log(response);
-        // Call queryItemInformation and wait for it to finish
 
-      })
-
-    },
-    handleCheckOutOpen(){
-      this.dialogCheckOutVisible=true
-
-    },
     formatNumber(value) {
       return Number(value).toFixed(10);
     },

@@ -8,6 +8,7 @@ import OutboundManagement from "@/views/OutboundManagement.vue";
 import InventoryManagement from "@/views/InventoryManagement.vue";
 import SupplierInformationManagement from "@/views/SupplierInformationManagement.vue";
 import ManufacturerInformationManagement from "@/views/ManufacturerInformationManagement.vue";
+import CheckOutManagement from "@/views/CheckOutManagement.vue";
 
 
 
@@ -36,34 +37,38 @@ export default new VueRouter({
 
             children: [
                 {
-                    name: 'itemInformationMaintenance',
+                    name: 'ItemInformationMaintenance',
                     path: '/itemInformationMaintenance',
                     component: ItemInformationMaintenance,
                 },
                 {
-                    name: 'inboundManagement',
+                    name: 'InboundManagement',
                     path: '/inboundManagement',
                     component: InboundManagement,
                 },
                 {
-                    name: 'outboundManagement',
+                    name: 'OutboundManagement',
                     path: '/outboundManagement',
                     component: OutboundManagement,
                 },
                 {
-                    name: 'inventoryManagement',
+                    name: 'CheckOutManagement',
+                    path: '/checkOutManagement',
+                    component: CheckOutManagement,
+                },
+                {
+                    name: 'InventoryManagement',
                     path: '/inventoryManagement',
                     component: InventoryManagement,
                 },
                 {
-                    name: 'supplierInformationManagement',
+                    name: 'SupplierInformationManagement',
                     path: '/supplierInformationManagement',
                     component: SupplierInformationManagement,
                 },
                 {
-                    name: 'manufacturerInformationManagement',
+                    name: 'ManufacturerInformationManagement',
                     path: '/manufacturerInformationManagement',
-
                     component: ManufacturerInformationManagement,
                 },
 

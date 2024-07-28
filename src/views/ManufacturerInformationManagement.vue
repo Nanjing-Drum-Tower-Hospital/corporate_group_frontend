@@ -73,7 +73,7 @@ import service from "@/main";
 import {MessageBox} from "element-ui";
 
 export default {
-  name: "manufacturerInformationMaintenance",
+  name: "ManufacturerInformationMaintenance",
   data() {
     return {
 

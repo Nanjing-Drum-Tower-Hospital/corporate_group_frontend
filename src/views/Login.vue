@@ -28,7 +28,7 @@ import service from "@/main";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: "login",
+  name: "Login",
   data() {
     return {
       loginData: {

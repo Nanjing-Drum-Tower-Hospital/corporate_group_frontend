@@ -27,9 +27,12 @@
             <el-menu-item index="1-1">货品基本信息维护</el-menu-item>
             <el-menu-item index="1-2">货品入库</el-menu-item>
             <el-menu-item index="1-3">货品出库</el-menu-item>
-            <el-menu-item index="1-4">货品库存管理</el-menu-item>
+            <el-menu-item index="1-4">入出库结算管理</el-menu-item>
+            <el-menu-item index="1-5">货品库存管理</el-menu-item>
             <el-menu-item index="1-6">制造商信息管理</el-menu-item>
-            <el-menu-item index="1-5">供应商信息管理</el-menu-item>
+            <el-menu-item index="1-7">供应商信息管理</el-menu-item>
+
+
 
           </el-menu-item-group>
         </el-submenu>
@@ -74,7 +77,7 @@
 
 
 export default {
-  name: "mainPage",
+  name: "MainPage",
   data() {
     return {
       status:"注册",
@@ -118,23 +121,27 @@ export default {
   methods: {
     handleMenuSelection(index){
       if(index==="1-1"){
-        this.$router.push({name: 'itemInformationMaintenance'})
+        this.$router.push({name: 'ItemInformationMaintenance'})
       }
       else if(index==="1-2"){
-        this.$router.push({name: 'inboundManagement'})
+        this.$router.push({name: 'InboundManagement'})
       }
       else if(index==="1-3"){
-        this.$router.push({name: 'outboundManagement'})
+        this.$router.push({name: 'OutboundManagement'})
       }
       else if(index==="1-4"){
-        this.$router.push({name: 'inventoryManagement'})
+        this.$router.push({name: 'CheckOutManagement'})
       }
       else if(index==="1-5"){
-        this.$router.push({name: 'supplierInformationManagement'})
+        this.$router.push({name: 'InventoryManagement'})
       }
       else if(index==="1-6"){
-        this.$router.push({name: 'manufacturerInformationManagement'})
+        this.$router.push({name: 'ManufacturerInformationManagement'})
       }
+      else if(index==="1-7"){
+        this.$router.push({name: 'SupplierInformationManagement'})
+      }
+
 
     },
 

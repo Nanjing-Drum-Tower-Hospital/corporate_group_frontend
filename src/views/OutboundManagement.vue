@@ -68,9 +68,9 @@
           <template slot-scope="scope">
             <el-button @click="handleOutboundEdit(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="handleOutboundDelete(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(scope.row.outboundDate) ">删除</el-button>
+                       :disabled="scope.row.checkOut" >删除</el-button>
             <el-button @click="handleOutboundAccountingReversal(scope.row)" type="text" size="small"
-                       :disabled="isCurrentMonth(scope.row.outboundDate) || !!(scope.row.accountingReversalOutboundNo)">
+                       :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalOutboundNo)">
               冲红
             </el-button>
 
@@ -99,7 +99,7 @@
 
 
         <el-button @click="openAddOutboundDetailDialog" type="primary"
-                   :disabled="!isCurrentMonth(currentOutbound.outboundDate) || !!currentOutbound.accountingReversalOutboundNo">
+                   :disabled="currentOutbound.checkOut || !!currentOutbound.accountingReversalOutboundNo">
           添加
         </el-button>
       </div>
@@ -211,9 +211,9 @@
             label="操作">
           <template slot-scope="scope">
             <el-button @click="handleOutboundDetailEdit(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(currentOutbound.outboundDate) || !!currentOutbound.accountingReversalOutboundNo">编辑</el-button>
+                       :disabled="currentOutbound.checkOut || !!currentOutbound.accountingReversalOutboundNo">编辑</el-button>
             <el-button @click="handleOutboundDetailDelete(scope.row)" type="text" size="small"
-                       :disabled="!isCurrentMonth(currentOutbound.outboundDate) || !!currentOutbound.accountingReversalOutboundNo">删除</el-button>
+                       :disabled="currentOutbound.checkOut || !!currentOutbound.accountingReversalOutboundNo">删除</el-button>
           </template>
         </el-table-column>
 
@@ -239,7 +239,7 @@ import service from "@/main";
 import {MessageBox} from "element-ui";
 
 export default {
-  name: "outboundManagement",
+  name: "OutboundManagement",
   data() {
     return {
       formOutbound: {},
