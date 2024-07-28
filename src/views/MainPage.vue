@@ -31,7 +31,7 @@
             <el-menu-item index="1-5">货品库存管理</el-menu-item>
             <el-menu-item index="1-6">制造商信息管理</el-menu-item>
             <el-menu-item index="1-7">供应商信息管理</el-menu-item>
-
+            <el-menu-item index="1-8">报表管理</el-menu-item>
 
 
           </el-menu-item-group>
@@ -141,7 +141,9 @@ export default {
       else if(index==="1-7"){
         this.$router.push({name: 'SupplierInformationManagement'})
       }
-
+      else if(index==="1-8"){
+        this.$router.push({name: 'StatementManagement'})
+      }
 
     },
 

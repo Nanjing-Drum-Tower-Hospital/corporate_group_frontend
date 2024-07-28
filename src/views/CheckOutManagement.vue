@@ -129,7 +129,7 @@
         <div>
           <template>
             <el-form :model="dateRange" :inline="true" style="display: inline-block;">
-              <el-form-item label="结算范围：">
+              <el-form-item label="结算时间范围：">
                 <el-row :gutter="10">
                   <el-col :span="11">
                     <el-date-picker type="date" placeholder="选择日期"

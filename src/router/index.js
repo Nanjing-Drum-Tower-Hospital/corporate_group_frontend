@@ -9,6 +9,7 @@ import InventoryManagement from "@/views/InventoryManagement.vue";
 import SupplierInformationManagement from "@/views/SupplierInformationManagement.vue";
 import ManufacturerInformationManagement from "@/views/ManufacturerInformationManagement.vue";
 import CheckOutManagement from "@/views/CheckOutManagement.vue";
+import StatementManagement from "@/views/StatementManagement.vue";
 
 
 
@@ -71,7 +72,11 @@ export default new VueRouter({
                     path: '/manufacturerInformationManagement',
                     component: ManufacturerInformationManagement,
                 },
-
+                {
+                    name: 'StatementManagement',
+                    path: '/statementManagement',
+                    component: StatementManagement,
+                },
 
 
             ]
