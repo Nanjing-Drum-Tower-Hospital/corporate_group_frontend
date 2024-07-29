@@ -21,8 +21,6 @@
 
             <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">
               <el-select v-model="formInbound.supplierId" placeholder="请选择制造商" style="width: 70%;">
-                <!-- You can dynamically populate the options here -->
-                <!-- For example, using a loop to iterate over a manufacturers array -->
                 <el-option
                     v-for="supplier in supplierList"
                     :key="supplier.id"
@@ -108,7 +106,9 @@
             <el-button @click="handleInboundAccountingReversal(scope.row)" type="text" size="small"
                        :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalInboundNo)">
               冲红</el-button>
-
+            <el-button @click="handleInboundStatementExport(scope.row)" type="text" size="small"
+                       :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalInboundNo)">
+              入库单</el-button>
           </template>
         </el-table-column>
 
@@ -304,17 +304,32 @@ export default {
     // Call your backend API to fetch the list of manufacturers
     service.get('/querySupplierList')
         .then(response => {
-          // Assign the received data to the manufacturers array
           this.supplierList = response.data.data;
           console.log(this.supplierList)
         })
         .catch(error => {
           console.error('Error fetching manufacturer list:', error);
-          // Handle errors if needed
         });
     this.queryInboundList()
   },
   methods: {
+    handleInboundStatementExport(row){
+      service.post('/exportInboundStatement',
+          row
+      ).then(
+          (response) => {
+
+            if(response.data.code<400){
+              console.log(response);
+            }
+          })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+
+
+    },
 
     formatNumber(value) {
       return Number(value).toFixed(10);
