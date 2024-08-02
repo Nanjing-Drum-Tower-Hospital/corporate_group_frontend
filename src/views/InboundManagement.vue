@@ -313,6 +313,14 @@ export default {
     this.queryInboundList()
   },
   methods: {
+    downloadFile(fileName, base64Content) {
+      const link = document.createElement('a');
+      link.href = `data:application/octet-stream;base64,${base64Content}`;
+      link.download = fileName;
+      document.body.appendChild(link); // Required for FF
+      link.click();
+      document.body.removeChild(link);
+    },
     handleInboundStatementExport(row){
       service.post('/exportInboundStatement',
           row
@@ -320,7 +328,13 @@ export default {
           (response) => {
 
             if(response.data.code<400){
-              console.log(response);
+              const fileData = response.data.data; // Assuming this is the structure based on your backend
+              const fileName = fileData.fileName; // Access the fileName
+              const fileContent = fileData.fileContent; // Access the Base64 encoded content
+              console.log("File Name:", fileName);
+              console.log("File Content (Base64):", fileContent);
+              // If you want to download the file on the client side
+              this.downloadFile(fileName, fileContent);
             }
           })
           .catch(
