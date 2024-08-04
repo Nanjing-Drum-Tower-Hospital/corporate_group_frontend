@@ -217,17 +217,6 @@ export default {
     }
   },
   mounted() {
-    // Call your backend API to fetch the list of manufacturers
-    service.get('/queryManufacturerList')
-        .then(response => {
-          // Assign the received data to the manufacturers array
-          this.manufacturerList = response.data.data;
-          console.log(this.manufacturerList)
-        })
-        .catch(error => {
-          console.error('Error fetching manufacturer list:', error);
-          // Handle errors if needed
-        });
     this.queryItemInformation()
   },
   methods:{

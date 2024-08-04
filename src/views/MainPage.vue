@@ -28,10 +28,9 @@
             <el-menu-item index="1-2">货品入库</el-menu-item>
             <el-menu-item index="1-3">货品出库</el-menu-item>
             <el-menu-item index="1-4">入出库结算管理</el-menu-item>
-            <el-menu-item index="1-5">货品库存管理</el-menu-item>
-            <el-menu-item index="1-6">制造商信息管理</el-menu-item>
-            <el-menu-item index="1-7">供应商信息管理</el-menu-item>
-            <el-menu-item index="1-8">报表管理</el-menu-item>
+            <el-menu-item index="1-5">制造商信息管理</el-menu-item>
+            <el-menu-item index="1-6">供应商信息管理</el-menu-item>
+            <el-menu-item index="1-7">报表管理</el-menu-item>
 
 
           </el-menu-item-group>
@@ -133,15 +132,12 @@ export default {
         this.$router.push({name: 'CheckOutManagement'})
       }
       else if(index==="1-5"){
-        this.$router.push({name: 'InventoryManagement'})
-      }
-      else if(index==="1-6"){
         this.$router.push({name: 'ManufacturerInformationManagement'})
       }
-      else if(index==="1-7"){
+      else if(index==="1-6"){
         this.$router.push({name: 'SupplierInformationManagement'})
       }
-      else if(index==="1-8"){
+      else if(index==="1-7"){
         this.$router.push({name: 'StatementManagement'})
       }
 

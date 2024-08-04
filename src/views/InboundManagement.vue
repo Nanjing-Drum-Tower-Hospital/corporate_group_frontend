@@ -107,8 +107,8 @@
                        :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalInboundNo)">
               冲红</el-button>
             <el-button @click="handleInboundStatementExport(scope.row)" type="text" size="small"
-                       :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalInboundNo)">
-              入库单</el-button>
+                       :disabled="!scope.row.checkOut ">
+              导出</el-button>
           </template>
         </el-table-column>
 
@@ -301,15 +301,6 @@ export default {
 
   },
   mounted() {
-    // Call your backend API to fetch the list of manufacturers
-    service.get('/querySupplierList')
-        .then(response => {
-          this.supplierList = response.data.data;
-          console.log(this.supplierList)
-        })
-        .catch(error => {
-          console.error('Error fetching manufacturer list:', error);
-        });
     this.queryInboundList()
   },
   methods: {

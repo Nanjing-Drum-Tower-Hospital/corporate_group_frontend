@@ -73,7 +73,9 @@
                        :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalOutboundNo)">
               冲红
             </el-button>
-
+            <el-button @click="handleOutboundStatementExport(scope.row)" type="text" size="small"
+                       :disabled="!scope.row.checkOut ">
+              导出</el-button>
           </template>
         </el-table-column>
 
@@ -270,20 +272,40 @@ export default {
 
   },
   mounted() {
-    // Call your backend API to fetch the list of manufacturers
-    service.get('/querySupplierList')
-        .then(response => {
-          // Assign the received data to the manufacturers array
-          this.supplierList = response.data.data;
-          console.log(this.supplierList)
-        })
-        .catch(error => {
-          console.error('Error fetching manufacturer list:', error);
-          // Handle errors if needed
-        });
     this.queryOutboundList()
   },
   methods: {
+    downloadFile(fileName, base64Content) {
+      const link = document.createElement('a');
+      link.href = `data:application/octet-stream;base64,${base64Content}`;
+      link.download = fileName;
+      document.body.appendChild(link); // Required for FF
+      link.click();
+      document.body.removeChild(link);
+    },
+    handleOutboundStatementExport(row){
+      service.post('/exportOutboundStatement',
+          row
+      ).then(
+          (response) => {
+
+            if(response.data.code<400){
+              const fileData = response.data.data; // Assuming this is the structure based on your backend
+              const fileName = fileData.fileName; // Access the fileName
+              const fileContent = fileData.fileContent; // Access the Base64 encoded content
+              console.log("File Name:", fileName);
+              console.log("File Content (Base64):", fileContent);
+              // If you want to download the file on the client side
+              this.downloadFile(fileName, fileContent);
+            }
+          })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+
+
+    },
     formatNumber(value) {
       return Number(value).toFixed(10);
     },

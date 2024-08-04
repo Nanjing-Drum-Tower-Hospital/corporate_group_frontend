@@ -32,7 +32,7 @@
       <el-button type="primary" >出库汇总表</el-button>
     </div>
     <div style="padding-top: 50px">
-      <el-button type="primary" >收发存汇总表</el-button>
+      <el-button type="primary" @click="inventoryManagementStatement">收发存汇总表</el-button>
     </div>
   </div>
 </template>
@@ -40,6 +40,8 @@
 <script>
 
 
+
+import service from "@/main";
 
 export default {
   name: "StatementManagement",
@@ -53,6 +55,34 @@ export default {
   },
 
   methods: {
+    downloadFile(fileName, base64Content) {
+      const link = document.createElement('a');
+      link.href = `data:application/octet-stream;base64,${base64Content}`;
+      link.download = fileName;
+      document.body.appendChild(link); // Required for FF
+      link.click();
+      document.body.removeChild(link);
+    },
+    inventoryManagementStatement(){
+      service.get('/inventoryManagementStatement', {
+        params: {
+          beginDate: this.dateRange.beginDate,
+          endDate: this.dateRange.endDate,
+        }
+      }).then(response => {
+        if(response.data.code<400){
+          const fileData = response.data.data; // Assuming this is the structure based on your backend
+          const fileName = fileData.fileName; // Access the fileName
+          const fileContent = fileData.fileContent; // Access the Base64 encoded content
+          console.log("File Name:", fileName);
+          console.log("File Content (Base64):", fileContent);
+          // If you want to download the file on the client side
+          this.downloadFile(fileName, fileContent);
+        }
+      }).catch(error => {
+        console.error(error);
+      });
+    }
   }
 }
 </script>

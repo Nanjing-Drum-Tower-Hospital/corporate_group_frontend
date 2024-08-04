@@ -77,11 +77,7 @@ export default {
   data() {
     return {
 
-      searchInput: {
-        name: '',
-        beginDate: '',
-        endDate: ''
-      },
+
       tableData: {},
       dialogFormVisible: false,
       form: {},
@@ -92,17 +88,6 @@ export default {
     }
   },
   mounted() {
-    // Call your backend API to fetch the list of manufacturers
-    service.get('/queryManufacturerList')
-        .then(response => {
-          // Assign the received data to the manufacturers array
-          this.manufacturerList = response.data.data;
-          console.log(this.manufacturerList)
-        })
-        .catch(error => {
-          console.error('Error fetching manufacturer list:', error);
-          // Handle errors if needed
-        });
     this.queryManufacturerInformation()
   },
   methods: {
@@ -177,9 +162,6 @@ export default {
       // Create a Promise for each service.get call
       const fetchManufacturerList = service.get('/queryManufacturerList', {
         params: {
-          code: this.searchInput.name,
-          beginDate: this.searchInput.beginDate,
-          endDate: this.searchInput.endDate,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
         }
@@ -192,9 +174,6 @@ export default {
 
       const fetchManufacturersCount = service.get('/queryManufacturersCount', {
         params: {
-          code: this.searchInput.name,
-          beginDate: this.searchInput.beginDate,
-          endDate: this.searchInput.endDate,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
         }

@@ -5,7 +5,6 @@ import MainPage from "@/views/MainPage.vue";
 import ItemInformationMaintenance from "@/views/ItemInformationMaintenance.vue";
 import InboundManagement from "@/views/InboundManagement.vue";
 import OutboundManagement from "@/views/OutboundManagement.vue";
-import InventoryManagement from "@/views/InventoryManagement.vue";
 import SupplierInformationManagement from "@/views/SupplierInformationManagement.vue";
 import ManufacturerInformationManagement from "@/views/ManufacturerInformationManagement.vue";
 import CheckOutManagement from "@/views/CheckOutManagement.vue";
@@ -56,11 +55,6 @@ export default new VueRouter({
                     name: 'CheckOutManagement',
                     path: '/checkOutManagement',
                     component: CheckOutManagement,
-                },
-                {
-                    name: 'InventoryManagement',
-                    path: '/inventoryManagement',
-                    component: InventoryManagement,
                 },
                 {
                     name: 'SupplierInformationManagement',

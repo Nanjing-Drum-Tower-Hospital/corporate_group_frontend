@@ -92,17 +92,6 @@ export default {
     }
   },
   mounted() {
-    // Call your backend API to fetch the list of suppliers
-    service.get('/querySupplierList')
-        .then(response => {
-          // Assign the received data to the suppliers array
-          this.supplierList = response.data.data;
-          console.log(this.supplierList)
-        })
-        .catch(error => {
-          console.error('Error fetching supplier list:', error);
-          // Handle errors if needed
-        });
     this.querySupplierInformation()
   },
   methods: {
@@ -177,9 +166,6 @@ export default {
       // Create a Promise for each service.get call
       const fetchSupplierList = service.get('/querySupplierList', {
         params: {
-          code: this.searchInput.name,
-          beginDate: this.searchInput.beginDate,
-          endDate: this.searchInput.endDate,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
         }
@@ -192,9 +178,6 @@ export default {
 
       const fetchSuppliersCount = service.get('/querySuppliersCount', {
         params: {
-          code: this.searchInput.name,
-          beginDate: this.searchInput.beginDate,
-          endDate: this.searchInput.endDate,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
         }
