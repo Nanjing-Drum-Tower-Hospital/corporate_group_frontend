@@ -218,8 +218,38 @@ export default {
   },
   mounted() {
     this.queryItemInformation()
+    this.queryManufacturerInformation()
   },
   methods:{
+    queryManufacturerInformation() {
+      // Create a Promise for each service.get call
+      const fetchManufacturerList = service.get('/queryManufacturerList', {
+        params: {
+          currentPage: 1,
+          pageSize: 2**31 - 1,
+        }
+      }).then(response => {
+        console.log(response);
+        this.manufacturerList = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      const fetchManufacturersCount = service.get('/queryManufacturersCount', {
+        params: {
+          currentPage: 1,
+          pageSize: 2**31 - 1,
+        }
+      }).then(response => {
+        console.log(response);
+        this.manufacturersCount = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      // Return a Promise that resolves when both requests are completed
+      return Promise.all([fetchManufacturerList, fetchManufacturersCount]);
+    },
     formatNumber(value) {
       return Number(value).toFixed(10);
     },

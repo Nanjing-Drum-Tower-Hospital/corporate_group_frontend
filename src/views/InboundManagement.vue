@@ -302,8 +302,38 @@ export default {
   },
   mounted() {
     this.queryInboundList()
+    this.querySupplierInformation()
   },
   methods: {
+    querySupplierInformation() {
+      // Create a Promise for each service.get call
+      const fetchSupplierList = service.get('/querySupplierList', {
+        params: {
+          currentPage: 1,
+          pageSize: 2**31 - 1,
+        }
+      }).then(response => {
+        console.log(response);
+        this.supplierList = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      const fetchSuppliersCount = service.get('/querySuppliersCount', {
+        params: {
+          currentPage: 1,
+          pageSize: 2**31 - 1,
+        }
+      }).then(response => {
+        console.log(response);
+        this.suppliersCount = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      // Return a Promise that resolves when both requests are completed
+      return Promise.all([fetchSupplierList, fetchSuppliersCount]);
+    },
     downloadFile(fileName, base64Content) {
       const link = document.createElement('a');
       link.href = `data:application/octet-stream;base64,${base64Content}`;
