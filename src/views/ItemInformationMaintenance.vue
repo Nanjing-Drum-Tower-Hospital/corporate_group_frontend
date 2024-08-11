@@ -186,7 +186,7 @@
           :page-sizes="[pageSize]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="itemsCount">
+          :total="itemListCount">
       </el-pagination>
     </div>
   </div>
@@ -211,8 +211,9 @@ export default {
       dialogFormVisible: false,
       form:{},
       manufacturerList:[],
+      manufacturerListCount:0,
       currentPage:1,
-      itemsCount:0,
+      itemListCount:0,
       pageSize:10,
     }
   },
@@ -235,20 +236,20 @@ export default {
         console.error(error);
       });
 
-      const fetchManufacturersCount = service.get('/queryManufacturersCount', {
+      const fetchManufacturerListCount = service.get('/queryManufacturerListCount', {
         params: {
           currentPage: 1,
           pageSize: 2**31 - 1,
         }
       }).then(response => {
         console.log(response);
-        this.manufacturersCount = response.data.data;
+        this.manufacturerListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchManufacturerList, fetchManufacturersCount]);
+      return Promise.all([fetchManufacturerList, fetchManufacturerListCount]);
     },
     formatNumber(value) {
       return Number(value).toFixed(10);
@@ -342,7 +343,7 @@ export default {
         console.error(error);
       });
 
-      const fetchItemsCount = service.get('/queryItemsCount', {
+      const fetchItemListCount = service.get('/queryItemListCount', {
         params: {
           code: this.searchInput.name,
           beginDate: this.searchInput.beginDate,
@@ -352,13 +353,13 @@ export default {
         }
       }).then(response => {
         console.log(response);
-        this.itemsCount = response.data.data;
+        this.itemListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchItemList, fetchItemsCount]);
+      return Promise.all([fetchItemList, fetchItemListCount]);
     }
   }
 }

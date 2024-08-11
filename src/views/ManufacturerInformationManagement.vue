@@ -61,7 +61,7 @@
           :page-sizes="[pageSize]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="manufacturersCount">
+          :total="manufacturerListCount">
       </el-pagination>
     </div>
   </div>
@@ -83,7 +83,7 @@ export default {
       form: {},
       manufacturerList: [],
       currentPage: 1,
-      manufacturersCount: 0,
+      manufacturerListCount: 0,
       pageSize: 10,
     }
   },
@@ -172,20 +172,20 @@ export default {
         console.error(error);
       });
 
-      const fetchManufacturersCount = service.get('/queryManufacturersCount', {
+      const fetchManufacturerListCount = service.get('/queryManufacturerListCount', {
         params: {
           currentPage: this.currentPage,
           pageSize: this.pageSize,
         }
       }).then(response => {
         console.log(response);
-        this.manufacturersCount = response.data.data;
+        this.manufacturerListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchManufacturerList, fetchManufacturersCount]);
+      return Promise.all([fetchManufacturerList, fetchManufacturerListCount]);
     }
   }
 }

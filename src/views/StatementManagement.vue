@@ -37,9 +37,7 @@
 
     <div class="half">
 
-      <el-button type="primary" @click="queryInboundList">
-        搜索
-      </el-button>
+
 
       <el-button type="primary" @click="openAddDialog">
         添加
@@ -85,73 +83,59 @@
 
 
       <el-table
-          :data="inboundTableData"
+          :data="unitRatioTableData"
           border
           style="width: 100%"
-          @row-click="handleRowClick"
       >
         <el-table-column
-            prop="inboundNo"
-            label="入库单号"
+            prop="unitNameLeft"
+            label="左"
             width="150"
         >
         </el-table-column>
+
         <el-table-column
-            prop="inboundDate"
-            label="入库时间"
+            label="="
+            width="150">
+          <template>
+            <!-- Display '=' for each row -->
+            =
+          </template>
+        </el-table-column>
+
+        <el-table-column
+            prop="ratio"
+            label="比例"
             width="150">
         </el-table-column>
 
         <el-table-column
-            prop="supplier.supplierName"
-            label="供应商"
-            width="150">
-        </el-table-column>
-        <el-table-column
-            prop="inboundPriceExcludingTax"
-            label="金额"
-            width="150">
-        </el-table-column>
-        <el-table-column
-            prop="inboundPriceIncludingTax"
-            label="价税合计"
+            prop="unitNameRight"
+            label="右"
             width="150">
         </el-table-column>
 
 
-
         <el-table-column
-            prop="remark"
-            label="备注"
-            width="150">
+            label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleUnitRatioDelete(scope.row)" type="text" size="small">删除</el-button>
+
+          </template>
         </el-table-column>
-<!--        <el-table-column-->
-<!--            label="操作">-->
-<!--          <template slot-scope="scope">-->
-<!--            <el-button @click="handleInboundEdit(scope.row)" type="text" size="small">编辑</el-button>-->
-<!--            <el-button @click="handleInboundDelete(scope.row)" type="text" size="small"-->
-<!--                       :disabled="scope.row.checkOut">删除</el-button>-->
-<!--            <el-button @click="handleInboundAccountingReversal(scope.row)" type="text" size="small"-->
-<!--                       :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalInboundNo)">-->
-<!--              冲红</el-button>-->
-<!--            <el-button @click="handleInboundStatementExport(scope.row)" type="text" size="small"-->
-<!--                       :disabled="!scope.row.checkOut ">-->
-<!--              导出</el-button>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
 
 
       </el-table>
-<!--      <div class="block">-->
-<!--        <el-pagination-->
-<!--            @current-change="handleInboundCurrentChange"-->
-<!--            :current-page="inboundCurrentPage"-->
-<!--            :page-sizes="[inboundPageSize]"-->
-<!--            :page-size="inboundPageSize"-->
-<!--            layout="total, sizes, prev, pager, next, jumper"-->
-<!--            :total="inboundsCount">-->
-<!--        </el-pagination>-->
-<!--      </div>-->
+      <div class="block">
+        <el-pagination
+            @current-change="handleUnitRatioCurrentChange"
+            :current-page="unitRatioCurrentPage"
+            :page-sizes="[unitRatioPageSize]"
+            :page-size="unitRatioPageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="unitRatioListCount">
+        </el-pagination>
+      </div>
     </div>
   </div>
 
@@ -171,36 +155,68 @@ export default {
 
 
 
-      formInbound: {},
-      formInboundDetail: {},
-      inboundTableData: [],
-      currentInbound: {},
-      inboundDetailTableData: [],
-      dialogFormInboundVisible: false,
-      dialogFormInboundDetailVisible: false,
-      supplierList: [],
 
+      unitRatioCurrentPage: 1,
+      unitRatioPageSize: 5,
+      unitRatioListCount: 0,
+      unitRatioTableData: [],
 
-      selectedItem: null,
-      itemDetails: [],
-      inboundDetailCurrentPage: 1,
-      inboundDetailPageSize: 5,
-      inboundDetailListCount: 0,
-
-      inboundCurrentPage: 1,
-      inboundPageSize: 5,
-      inboundsCount: 0,
-
-
-      dialogInboundDetailOld:[],
-      dialogInboundDetailNew:[],
+      // dialogInboundDetailOld:[],
+      // dialogInboundDetailNew:[],
     }
   },
   mounted() {
-
+    this.queryUnitRatioList()
   },
 
   methods: {
+    handleUnitRatioDelete(row){
+      console.log(row);
+      service.post('/deleteUnitRatio', {
+        id: row.id
+      }).then(response => {
+        console.log(response);
+        this.queryUnitRatioList()
+      }).catch(error => {
+        console.error(error);
+      });
+    },
+    handleUnitRatioCurrentChange(unitRatioCurrentPage){
+      this.inboundCurrentPage = unitRatioCurrentPage;
+      this.queryUnitRatioList()
+    },
+
+    queryUnitRatioList(){
+      // Create a Promise for each service.get call
+      const fetchInboundDetailData = service.get('/queryUnitRatioList', {
+        params: {
+          currentPage: this.unitRatioCurrentPage,
+          pageSize: this.unitRatioPageSize,
+        }
+      }).then(response => {
+        console.log(response);
+        this.unitRatioTableData = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      const fetchInboundDetailListCount = service.get('/queryUnitRatioListCount', {
+        params: {
+          currentPage: this.unitRatioCurrentPage,
+          pageSize: this.unitRatioPageSize,
+        }
+      }).then(response => {
+        console.log(response);
+        this.unitRatioListCount = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      // Return a Promise that resolves when both requests are completed
+      return Promise.all([fetchInboundDetailData, fetchInboundDetailListCount]);
+    },
+
+
     downloadFile(fileName, base64Content) {
       const link = document.createElement('a');
       link.href = `data:application/octet-stream;base64,${base64Content}`;

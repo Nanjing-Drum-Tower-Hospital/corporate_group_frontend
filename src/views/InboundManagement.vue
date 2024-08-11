@@ -121,7 +121,7 @@
             :page-sizes="[inboundPageSize]"
             :page-size="inboundPageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="inboundsCount">
+            :total="inboundListCount">
         </el-pagination>
       </div>
     </div>
@@ -290,7 +290,7 @@ export default {
 
       inboundCurrentPage: 1,
       inboundPageSize: 5,
-      inboundsCount: 0,
+      inboundListCount: 0,
 
 
       dialogInboundDetailOld:[],
@@ -319,20 +319,20 @@ export default {
         console.error(error);
       });
 
-      const fetchSuppliersCount = service.get('/querySuppliersCount', {
+      const fetchSupplierListCount = service.get('/querySupplierListCount', {
         params: {
           currentPage: 1,
           pageSize: 2**31 - 1,
         }
       }).then(response => {
         console.log(response);
-        this.suppliersCount = response.data.data;
+        this.supplierListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchSupplierList, fetchSuppliersCount]);
+      return Promise.all([fetchSupplierList, fetchSupplierListCount]);
     },
     downloadFile(fileName, base64Content) {
       const link = document.createElement('a');
@@ -664,7 +664,7 @@ export default {
         }
       }).then(response => {
         console.log(response);
-        this.inboundsCount = response.data.data;
+        this.inboundListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });

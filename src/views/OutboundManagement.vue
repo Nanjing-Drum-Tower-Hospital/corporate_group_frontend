@@ -88,7 +88,7 @@
             :page-sizes="[outboundPageSize]"
             :page-size="outboundPageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="outboundsCount">
+            :total="outboundListCount">
         </el-pagination>
       </div>
     </div>
@@ -228,7 +228,7 @@
             :page-sizes="[outboundDetailPageSize]"
             :page-size="outboundDetailPageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="outboundDetailsCount">
+            :total="outboundDetailListCount">
         </el-pagination>
       </div>
     </div>
@@ -258,11 +258,11 @@ export default {
       itemDetails: [],
       outboundDetailCurrentPage: 1,
       outboundDetailPageSize: 5,
-      outboundDetailsCount: 0,
+      outboundDetailListCount: 0,
 
       outboundCurrentPage: 1,
       outboundPageSize: 5,
-      outboundsCount: 0,
+      outboundListCount: 0,
 
 
       dialogOutboundDetailOld:[],
@@ -290,20 +290,20 @@ export default {
         console.error(error);
       });
 
-      const fetchSuppliersCount = service.get('/querySuppliersCount', {
+      const fetchSupplierListCount = service.get('/querySupplierListCount', {
         params: {
           currentPage: 1,
           pageSize: 2**31 - 1,
         }
       }).then(response => {
         console.log(response);
-        this.suppliersCount = response.data.data;
+        this.supplierListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchSupplierList, fetchSuppliersCount]);
+      return Promise.all([fetchSupplierList, fetchSupplierListCount]);
     },
     downloadFile(fileName, base64Content) {
       const link = document.createElement('a');
@@ -602,7 +602,7 @@ export default {
         console.error(error);
       });
 
-      const fetchOutboundDetailsCount = service.get('/queryOutboundDetailListCount', {
+      const fetchOutboundDetailListCount = service.get('/queryOutboundDetailListCount', {
         params: {
           outboundNo: this.currentOutbound.outboundNo,
           currentPage: this.outboundDetailCurrentPage,
@@ -610,13 +610,13 @@ export default {
         }
       }).then(response => {
         console.log(response);
-        this.outboundDetailsCount = response.data.data;
+        this.outboundDetailListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchOutboundDetailData, fetchOutboundDetailsCount]);
+      return Promise.all([fetchOutboundDetailData, fetchOutboundDetailListCount]);
     },
 
 
@@ -643,7 +643,7 @@ export default {
         }
       }).then(response => {
         console.log(response);
-        this.outboundsCount = response.data.data;
+        this.outboundListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
