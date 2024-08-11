@@ -23,6 +23,20 @@
             </el-row>
           </el-form-item>
         </el-form>
+        <el-form :inline="true" style="display: inline-block;">
+          <el-form-item  style="flex: 1;"  label="合计单位：">
+            <el-select v-model="mainUnitName" placeholder="请选择" >
+              <el-option
+                  v-for="unitName in unitNameList"
+                  :key="unitName"
+                  :label="unitName"
+                  :value="unitName">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+
+
       </template>
     </div>
 
@@ -46,39 +60,55 @@
 
 
 
-<!--      <el-dialog title="添加修改入库信息" :visible.sync="dialogFormInboundVisible" :before-close="handleInboundClose"-->
-<!--                 :close-on-click-modal="false">-->
-<!--        <el-form :model="formInbound">-->
+      <el-dialog title="添加修改入库信息" :visible.sync="dialogFormVisible" :before-close="handleUnitRatioClose"
+                 :close-on-click-modal="false">
+        <el-form :model="formUnitRatio">
 
-<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
-
-<!--            <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">-->
-<!--              <el-select v-model="formInbound.supplierId" placeholder="请选择制造商" style="width: 70%;">-->
-<!--                <el-option-->
-<!--                    v-for="supplier in supplierList"-->
-<!--                    :key="supplier.id"-->
-<!--                    :label="supplier.supplierName"-->
-<!--                    :value="supplier.id">-->
-<!--                </el-option>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--          </div>-->
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
 
 
-<!--          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">-->
-<!--            <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
-<!--              <el-input v-model="formInbound.remark" autocomplete="off" style="width: 70%;"></el-input>-->
-<!--            </el-form-item>-->
+            <el-form-item  style="flex: 1; ">
+              <el-select v-model="formUnitRatio.unitNameLeft" placeholder="左侧单位" >
+                <el-option
+                    v-for="unitName in unitNameList"
+                    :key="unitName"
+                    :label="unitName"
+                    :value="unitName">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <span style="font-size: 24px; align-self: center;">
+    =
+  </span>
 
-<!--          </div>-->
+            <el-form-item  style="flex: 1;" :label-width="'100px'">
+              <el-form-item  style="flex: 1; margin-right: 10px;">
+                <el-input-number v-model="formUnitRatio.ratio" :min="0" ></el-input-number>
+              </el-form-item>
+            </el-form-item>
+
+            <el-form-item  style="flex: 1;" >
+              <el-select v-model="formUnitRatio.unitNameRight" placeholder="右侧单位" >
+                <el-option
+                    v-for="unitName in unitNameList"
+                    :key="unitName"
+                    :label="unitName"
+                    :value="unitName">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
 
 
-<!--        </el-form>-->
-<!--        <div slot="footer" class="dialog-footer">-->
-<!--          <el-button @click="handleInboundClose">取 消</el-button>-->
-<!--          <el-button type="primary" @click="handleInboundSave">保 存</el-button>-->
-<!--        </div>-->
-<!--      </el-dialog>-->
+
+
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="handleUnitRatioClose">取 消</el-button>
+          <el-button type="primary" @click="handleUnitRatioSave">保 存</el-button>
+        </div>
+      </el-dialog>
 
 
 
@@ -146,40 +176,113 @@
 
 
 import service from "@/main";
+import {MessageBox} from "element-ui";
 
 export default {
   name: "StatementManagement",
   data() {
     return {
       dateRange: {},
+      formUnitRatio: {
+        unitNameLeft: null,
+        unitNameRight: null,
+        ratio: 0
+      },
 
-
-
+      dialogFormVisible:false,
 
       unitRatioCurrentPage: 1,
       unitRatioPageSize: 5,
       unitRatioListCount: 0,
       unitRatioTableData: [],
+      unitNameList:[],
+      mainUnitName:null
 
-      // dialogInboundDetailOld:[],
-      // dialogInboundDetailNew:[],
+
     }
   },
   mounted() {
     this.queryUnitRatioList()
+    this.queryUnitNameList()
   },
 
   methods: {
-    handleUnitRatioDelete(row){
-      console.log(row);
-      service.post('/deleteUnitRatio', {
-        id: row.id
-      }).then(response => {
+    handleUnitRatioSave(){
+      service.post('/addUnitRatio', this.formUnitRatio).then(response => {
         console.log(response);
-        this.queryUnitRatioList()
+        if(response.data.code<400){
+          this.queryUnitRatioList()
+          this.handleUnitRatioClose()
+        }
       }).catch(error => {
         console.error(error);
       });
+    },
+    queryUnitNameList(){
+      service.get('/queryItemList', {
+        params: {
+          code: null,
+          beginDate: null,
+          endDate: null,
+          currentPage: 1,
+          pageSize: 2147483647,
+        }
+      }).then(response => {
+        console.log(response);
+        this.unitNameList = Array.from(new Set(response.data.data.map(item => item.unitName)));
+        console.log(this.unitNameList)
+      }).catch(error => {
+        console.error(error);
+      });
+    },
+    handleUnitRatioClose(){
+      this.formUnitRatio = {}
+      this.dialogFormVisible = false;
+    },
+    openAddDialog(){
+      this.dialogFormVisible=true
+    },
+    handleUnitRatioDelete(row){
+      console.log(row);
+      MessageBox.confirm("请确认是否删除"+ row.unitNameLeft + "与" + row.unitNameRight + "的比例？",
+          '警告', {
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+            type: 'warning'
+          }).then(() => {
+        // User confirmed deletion
+        console.log(row);
+        service.get('/deleteUnitRatio', {
+          params:{
+            id: row.id
+          }
+
+        }).then(response => {
+          console.log(response);
+          this.queryUnitRatioList()
+        }).catch(error => {
+          console.error(error);
+        }).then(() => {
+          this.unitRatioCurrentPage = 1;
+          this.unitRatioTableData = [];
+          console.log(this.unitRatioTableData)
+          // After queryItemInformation is finished
+          if (this.unitRatioTableData.length === 0 && this.unitRatioTableData > 1) {
+            this.unitRatioCurrentPage--;
+            // Call queryItemInformation again after updating currentPage
+            return this.queryUnitRatioList();
+          }
+        }).catch(error => {
+          console.error(error);
+        });
+      }).catch(() => {
+        // User cancelled the deletion
+        console.log('Deletion cancelled');
+      });
+
+
+
+
     },
     handleUnitRatioCurrentChange(unitRatioCurrentPage){
       this.inboundCurrentPage = unitRatioCurrentPage;
@@ -188,7 +291,7 @@ export default {
 
     queryUnitRatioList(){
       // Create a Promise for each service.get call
-      const fetchInboundDetailData = service.get('/queryUnitRatioList', {
+      const queryUnitRatioList = service.get('/queryUnitRatioList', {
         params: {
           currentPage: this.unitRatioCurrentPage,
           pageSize: this.unitRatioPageSize,
@@ -200,7 +303,7 @@ export default {
         console.error(error);
       });
 
-      const fetchInboundDetailListCount = service.get('/queryUnitRatioListCount', {
+      const queryUnitRatioListCount = service.get('/queryUnitRatioListCount', {
         params: {
           currentPage: this.unitRatioCurrentPage,
           pageSize: this.unitRatioPageSize,
@@ -213,7 +316,7 @@ export default {
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchInboundDetailData, fetchInboundDetailListCount]);
+      return Promise.all([queryUnitRatioList, queryUnitRatioListCount]);
     },
 
 
@@ -230,6 +333,7 @@ export default {
         params: {
           beginDate: this.dateRange.beginDate,
           endDate: this.dateRange.endDate,
+          mainUnitName: this.mainUnitName
         }
       }).then(response => {
         if(response.data.code<400){
