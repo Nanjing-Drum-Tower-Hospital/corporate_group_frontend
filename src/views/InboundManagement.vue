@@ -134,9 +134,10 @@
 
 
         <el-button @click="openAddInboundDetailDialog" type="primary"
-                   :disabled="currentInbound.checkOut || !!currentInbound.accountingReversalInboundNo">
+                   :disabled="currentInbound.checkOut   || currentInbound.accountingReversalInboundNo !== null">
           添加
         </el-button>
+
       </div>
       <div>
 

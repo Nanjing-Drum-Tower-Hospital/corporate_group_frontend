@@ -99,9 +99,8 @@
 
 </span>
 
-
         <el-button @click="openAddOutboundDetailDialog" type="primary"
-                   :disabled="currentOutbound.checkOut || !!currentOutbound.accountingReversalOutboundNo">
+                   :disabled="currentOutbound.checkOut   || currentOutbound.accountingReversalOutboundNo !== null">
           添加
         </el-button>
       </div>
