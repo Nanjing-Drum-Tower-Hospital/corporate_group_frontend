@@ -140,7 +140,7 @@
           </div>
           <div >
             <el-form-item label="数量" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input-number v-model="dialogOutboundDetailNew.itemAmount"  ></el-input-number>
+              <el-input-number v-model="dialogOutboundDetailNew.itemAmount"  :precision="1"></el-input-number>
             </el-form-item>
 
           </div>
@@ -313,7 +313,7 @@ export default {
       document.body.removeChild(link);
     },
     handleOutboundStatementExport(row){
-      service.post('/exportOutboundStatement',
+      service.post('/outboundStatement',
           row
       ).then(
           (response) => {

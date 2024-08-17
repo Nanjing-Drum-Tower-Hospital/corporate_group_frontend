@@ -208,10 +208,46 @@ export default {
 
   methods: {
     inboundSummaryStatement(){
-
+      service.get('/inboundSummaryStatement', {
+        params: {
+          beginDate: this.dateRange.beginDate,
+          endDate: this.dateRange.endDate,
+          mainUnitName: this.mainUnitName
+        }
+      }).then(response => {
+        if(response.data.code<400){
+          const fileData = response.data.data; // Assuming this is the structure based on your backend
+          const fileName = fileData.fileName; // Access the fileName
+          const fileContent = fileData.fileContent; // Access the Base64 encoded content
+          console.log("File Name:", fileName);
+          console.log("File Content (Base64):", fileContent);
+          // If you want to download the file on the client side
+          this.downloadFile(fileName, fileContent);
+        }
+      }).catch(error => {
+        console.error(error);
+      });
     },
     outboundSummaryStatement(){
-
+      service.get('/outboundSummaryStatement', {
+        params: {
+          beginDate: this.dateRange.beginDate,
+          endDate: this.dateRange.endDate,
+          mainUnitName: this.mainUnitName
+        }
+      }).then(response => {
+        if(response.data.code<400){
+          const fileData = response.data.data; // Assuming this is the structure based on your backend
+          const fileName = fileData.fileName; // Access the fileName
+          const fileContent = fileData.fileContent; // Access the Base64 encoded content
+          console.log("File Name:", fileName);
+          console.log("File Content (Base64):", fileContent);
+          // If you want to download the file on the client side
+          this.downloadFile(fileName, fileContent);
+        }
+      }).catch(error => {
+        console.error(error);
+      });
     },
     handleUnitRatioSave(){
       service.post('/addUnitRatio', this.formUnitRatio).then(response => {

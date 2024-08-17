@@ -344,7 +344,7 @@ export default {
       document.body.removeChild(link);
     },
     handleInboundStatementExport(row){
-      service.post('/exportInboundStatement',
+      service.post('/inboundStatement',
           row
       ).then(
           (response) => {
