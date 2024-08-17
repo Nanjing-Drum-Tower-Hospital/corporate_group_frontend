@@ -1,42 +1,45 @@
 <template>
   <div style="display: flex; height: 100vh;">
 
+    <div>
+      <el-col :span="12" style="width: 25vh; min-width: 200px">
+        <el-menu style="height: 100vh;"
+                 default-active="1"
+                 :default-openeds="['1']"
+
+                 class="el-menu-vertical-demo"
+                 @select="handleMenuSelection"
+
+                 background-color="#001529"
+                 text-color="#fff"
+                 active-text-color="#ffd04b">
+          <div style="text-align: center; color: #ffffff; font-size: 20px;">
+            <!-- <img src="../assets/logo.jpg" style="height: 18px;"/> -->
+            南京鼓楼医院集团管理系统
+          </div>
+
+          <el-submenu index="1" >
+            <template slot="title">
+              <i class="el-icon-document"></i>
+              <span>入出库管理</span>
+            </template>
+            <el-menu-item-group >
+              <el-menu-item index="1-1">货品基本信息维护</el-menu-item>
+              <el-menu-item index="1-2">货品入库</el-menu-item>
+              <el-menu-item index="1-3">货品出库</el-menu-item>
+              <el-menu-item index="1-4">入出库结算管理</el-menu-item>
+              <el-menu-item index="1-5">制造商信息管理</el-menu-item>
+              <el-menu-item index="1-6">供应商信息管理</el-menu-item>
+              <el-menu-item index="1-7">报表管理</el-menu-item>
+
+
+            </el-menu-item-group>
+          </el-submenu>
+        </el-menu>
+      </el-col>
+    </div>
     <!-- Sidebar -->
-    <el-col :span="12" style="width: 25vh">
-      <el-menu style="height: 100vh;"
-               default-active="1"
-               :default-openeds="['1']"
 
-               class="el-menu-vertical-demo"
-               @select="handleMenuSelection"
-
-               background-color="#001529"
-               text-color="#fff"
-               active-text-color="#ffd04b">
-        <div style="text-align: center; color: #ffffff; font-size: 20px;">
-          <!-- <img src="../assets/logo.jpg" style="height: 18px;"/> -->
-          南京鼓楼医院集团管理系统
-        </div>
-
-        <el-submenu index="1">
-          <template slot="title">
-            <i class="el-icon-document"></i>
-            <span>入出库管理</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="1-1">货品基本信息维护</el-menu-item>
-            <el-menu-item index="1-2">货品入库</el-menu-item>
-            <el-menu-item index="1-3">货品出库</el-menu-item>
-            <el-menu-item index="1-4">入出库结算管理</el-menu-item>
-            <el-menu-item index="1-5">制造商信息管理</el-menu-item>
-            <el-menu-item index="1-6">供应商信息管理</el-menu-item>
-            <el-menu-item index="1-7">报表管理</el-menu-item>
-
-
-          </el-menu-item-group>
-        </el-submenu>
-      </el-menu>
-    </el-col>
 
     <!-- Main Content -->
     <div style="flex-grow: 1; display: flex; flex-direction: column;">
@@ -193,5 +196,8 @@ export default {
 </script>
 
 <style scoped>
-
+.el-menu-item {
+  width: 100%; /* Ensures all menu items fill the container but do not exceed it */
+  max-width: 240px; /* Adjust this value based on your design needs */
+}
 </style>
