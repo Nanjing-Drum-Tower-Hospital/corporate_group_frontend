@@ -42,8 +42,8 @@
 
 
     <div style="padding-top: 50px">
-      <el-button type="primary" >入库汇总表</el-button>
-      <el-button type="primary" >出库汇总表</el-button>
+      <el-button type="primary" @click="inboundSummaryStatement">入库汇总表</el-button>
+      <el-button type="primary" @click="outboundSummaryStatement">出库汇总表</el-button>
       <el-button type="primary" @click="inventoryManagementStatement">收发存汇总表</el-button>
     </div>
 
@@ -207,6 +207,12 @@ export default {
   },
 
   methods: {
+    inboundSummaryStatement(){
+
+    },
+    outboundSummaryStatement(){
+
+    },
     handleUnitRatioSave(){
       service.post('/addUnitRatio', this.formUnitRatio).then(response => {
         console.log(response);
