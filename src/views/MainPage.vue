@@ -78,6 +78,8 @@
 
 
 
+import service from "@/main";
+
 export default {
   name: "MainPage",
   data() {
@@ -104,11 +106,8 @@ export default {
   watch: {
     $route: {
       //初始化就执行一次
-
       handler() {
-        if(localStorage.getItem("weakPassword")==="1"){
-          this.dialogFormVisible=true
-        }
+
         this.user= localStorage.getItem("user")
         if(localStorage.getItem("user")===null){
           this.dialogFormVisible=false
@@ -118,9 +117,41 @@ export default {
       immediate: true,
     }
   },
+  mounted() {
+    this.queryManufacturerInformation();
+  },
 
 
   methods: {
+    queryManufacturerInformation() {
+      // Create a Promise for each service.get call
+      const fetchManufacturerList = service.get('/queryManufacturerList', {
+        params: {
+          currentPage: 1,
+          pageSize: 2**31 - 1,
+        }
+      }).then(response => {
+        console.log(response);
+        this.manufacturerList = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      const fetchManufacturerListCount = service.get('/queryManufacturerListCount', {
+        params: {
+          currentPage: 1,
+          pageSize: 2**31 - 1,
+        }
+      }).then(response => {
+        console.log(response);
+        this.manufacturerListCount = response.data.data;
+      }).catch(error => {
+        console.error(error);
+      });
+
+      // Return a Promise that resolves when both requests are completed
+      return Promise.all([fetchManufacturerList, fetchManufacturerListCount]);
+    },
     handleMenuSelection(index){
       if(index==="1-1"){
         this.$router.push({name: 'ItemInformationMaintenance'})
