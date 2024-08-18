@@ -13,7 +13,7 @@ Vue.use(ElementUI);
 let baseURL = '/api';
 if (process.env.NODE_ENV === 'production') {
 
-  baseURL =  'http://10.1.16.112:8080';
+  baseURL =  'http://10.3.24.104:8080';
 
 }
 // let baseURL =  'http://10.2.37.60:8080';
