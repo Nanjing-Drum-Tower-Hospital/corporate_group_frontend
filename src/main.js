@@ -11,17 +11,11 @@ Vue.use(VueRouter)
 Vue.use(ElementUI);
 
 let baseURL = '/api';
-if (process.env.NODE_ENV === 'production') {
-
-  baseURL =  'http://10.3.24.104:8080';
-
-}
-// let baseURL =  'http://10.2.37.60:8080';
-Vue.config.productionTip = false
-axios.defaults.baseURL = baseURL
+Vue.config.productionTip = false;
+axios.defaults.baseURL = baseURL;
 const service = axios.create({
-  baseURL: axios.defaults.baseURL, // api的base_url
-})
+    baseURL: axios.defaults.baseURL, // API base URL
+});
 export default service
 
 service.interceptors.request.use(
