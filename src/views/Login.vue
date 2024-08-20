@@ -9,10 +9,10 @@
       <el-form class="login-form" ref="loginForm" :model="loginData" label-position="top">
         <h1>登录</h1>
         <el-form-item label="用户名">
-          <el-input v-model="loginData.username" placeholder="admin or test"></el-input>
+          <el-input v-model="loginData.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input type="password" v-model="loginData.password" placeholder="admin or test"></el-input>
+          <el-input type="password" v-model="loginData.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <div class="form-actions">
           <el-button type="primary" @click="onLogin">登录</el-button>
