@@ -50,11 +50,7 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
     });
 };
 
-new Vue({
-    render: h => h(App),
-    router: router,
 
-}).$mount('#app')
 //response响应拦截
 let t=false
 service.interceptors.response.use(response => {
@@ -108,4 +104,8 @@ router.beforeEach((to, from, next) => {
 })
 
 
+new Vue({
+    render: h => h(App),
+    router: router,
 
+}).$mount('#app')
