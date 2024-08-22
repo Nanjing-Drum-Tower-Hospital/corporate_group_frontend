@@ -30,7 +30,12 @@
               </el-select>
             </el-form-item>
           </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <el-form-item label="发票号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input v-model="formInbound.fapiaoNo" autocomplete="off" style="width: 70%;"></el-input>
+            </el-form-item>
 
+          </div>
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
@@ -66,6 +71,7 @@
             label="入库时间"
             width="150">
         </el-table-column>
+
         <el-table-column
             prop="checkOut"
             label="状态"
@@ -77,6 +83,11 @@
         <el-table-column
             prop="supplier.supplierName"
             label="供应商"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="fapiaoNo"
+            label="发票号"
             width="150">
         </el-table-column>
         <el-table-column
@@ -107,7 +118,7 @@
                        :disabled="!scope.row.checkOut || !!(scope.row.accountingReversalInboundNo)">
               冲红</el-button>
             <el-button @click="handleInboundStatementExport(scope.row)" type="text" size="small"
-                       :disabled="!scope.row.checkOut ">
+                       >
               导出</el-button>
           </template>
         </el-table-column>

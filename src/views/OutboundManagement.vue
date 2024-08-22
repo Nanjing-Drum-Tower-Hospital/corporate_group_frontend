@@ -10,7 +10,7 @@
         添加
       </el-button>
 
-      <el-dialog title="添加修改入库信息" :visible.sync="dialogFormOutboundVisible" :before-close="handleOutboundClose"
+      <el-dialog title="添加修改出库信息" :visible.sync="dialogFormOutboundVisible" :before-close="handleOutboundClose"
                  :close-on-click-modal="false">
         <el-form :model="formOutbound">
 
@@ -38,13 +38,13 @@
       >
         <el-table-column
             prop="outboundNo"
-            label="入库单号"
+            label="出库单号"
             width="150"
         >
         </el-table-column>
         <el-table-column
             prop="outboundDate"
-            label="入库时间"
+            label="出库时间"
             width="150">
         </el-table-column>
         <el-table-column
@@ -74,7 +74,7 @@
               冲红
             </el-button>
             <el-button @click="handleOutboundStatementExport(scope.row)" type="text" size="small"
-                       :disabled="!scope.row.checkOut ">
+                       >
               导出</el-button>
           </template>
         </el-table-column>
@@ -95,7 +95,7 @@
     <div class="half">
       <div v-if="currentOutbound">
               <span  >
-  入库单号：{{ currentOutbound.outboundNo }}
+  出库单号：{{ currentOutbound.outboundNo }}
 
 </span>
 
@@ -108,12 +108,12 @@
 
       </div>
 
-      <el-dialog title="添加修改入库货品信息" :visible.sync="dialogFormOutboundDetailVisible"
+      <el-dialog title="添加修改出库货品信息" :visible.sync="dialogFormOutboundDetailVisible"
                  :before-close="handleOutboundDetailClose" :close-on-click-modal="false">
 
 
         <el-form :model="formOutboundDetail">
-          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentOutbound ">
+          <el-form-item label="出库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentOutbound ">
             {{ currentOutbound.outboundNo }}
           </el-form-item>
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
@@ -358,7 +358,7 @@ export default {
       return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
     },
     handleOutboundAccountingReversal(row){
-      MessageBox.confirm("请确认是否对入库单号为" + row.outboundNo + "的入库信息进行冲红？",
+      MessageBox.confirm("请确认是否对出库单号为" + row.outboundNo + "的出库信息进行冲红？",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -394,7 +394,7 @@ export default {
 
     },
     handleOutboundDelete(row) {
-      MessageBox.confirm("请确认是否删除入库单号为" + row.outboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
+      MessageBox.confirm("请确认是否删除出库单号为" + row.outboundNo + "的出库信息？该出库单号下所有出库信息都将被删除！",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -479,8 +479,8 @@ export default {
     handleOutboundDetailDelete(row) {
       this.formOutboundDetail.itemId = row.itemId
       this.formOutboundDetail.outboundNo = this.currentOutbound.outboundNo
-      MessageBox.confirm("请确认是否删除入库单号为" + this.formOutboundDetail.outboundNo +
-          "编码为" + row.item.code + "的所有入库信息？", '警告', {
+      MessageBox.confirm("请确认是否删除出库单号为" + this.formOutboundDetail.outboundNo +
+          "编码为" + row.item.code + "的所有出库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
         type: 'warning'
