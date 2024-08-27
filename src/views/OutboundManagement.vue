@@ -174,7 +174,7 @@
         <el-table-column
             prop="item.name"
             label="货品名称"
-            width="180">
+            width="240">
         </el-table-column>
         <el-table-column
             prop="item.model"
@@ -206,7 +206,7 @@
         <el-table-column
             prop="remark"
             label="备注"
-            width="120">
+            width="360">
         </el-table-column>
         <el-table-column
             label="操作">
@@ -583,6 +583,7 @@ export default {
         itemAmount: 0,
         remark: ""
       }
+      this.queryOutboundList();
     },
 
     queryOutboundDetail() {
@@ -672,6 +673,7 @@ export default {
     },
     handleItemDetailSelection(item) {
 
+
       // Handle the selection of an item from the autocomplete dropdown
       this.formOutboundDetail.itemId = item.value
 
@@ -685,7 +687,6 @@ export default {
               (response) => {
                 console.log(response);
                 if (response.data.data === null) {
-                  this.existingInventoryAmount=0
                   this.dialogOutboundDetailOld = {
                     id: 0,
                     outboundNo: this.formOutboundDetail.outboundNo,
@@ -701,11 +702,17 @@ export default {
                     remark: ""
                   }
                 } else {
-                  //to deep copy
                   this.dialogOutboundDetailOld = JSON.parse(JSON.stringify(response.data.data));
                   this.dialogOutboundDetailNew = JSON.parse(JSON.stringify(response.data.data));
-                  this.queryExistingInventoryAmount()
                 }
+
+                this.existingInventoryAmount=0
+                this.queryExistingInventoryAmount()
+
+                // else {
+                //   //to deep copy
+                //
+                // }
 
               })
           .catch(

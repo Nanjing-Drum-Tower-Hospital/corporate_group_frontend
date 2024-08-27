@@ -215,7 +215,7 @@
         <el-table-column
             prop="item.name"
             label="货品名称"
-            width="180">
+            width="240">
         </el-table-column>
         <el-table-column
             prop="item.model"
@@ -247,7 +247,7 @@
         <el-table-column
             prop="remark"
             label="备注"
-            width="120">
+            width="360">
         </el-table-column>
         <el-table-column
             label="操作">
@@ -617,6 +617,7 @@ export default {
         itemAmount: 0,
         remark: ""
       }
+      this.queryInboundList();
     },
 
     queryInboundDetail() {
