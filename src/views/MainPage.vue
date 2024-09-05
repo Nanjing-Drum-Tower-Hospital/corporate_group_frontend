@@ -4,8 +4,7 @@
     <div>
       <el-col :span="12" style="width: 25vh; min-width: 200px">
         <el-menu style="height: 100vh;"
-                 default-active="1"
-                 :default-openeds="['1']"
+
 
                  class="el-menu-vertical-demo"
                  @select="handleMenuSelection"
@@ -31,6 +30,18 @@
               <el-menu-item index="1-5">制造商信息管理</el-menu-item>
               <el-menu-item index="1-6">供应商信息管理</el-menu-item>
               <el-menu-item index="1-7">报表管理</el-menu-item>
+
+
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="2" >
+            <template slot="title">
+              <i class="el-icon-document"></i>
+              <span>销售管理</span>
+            </template>
+            <el-menu-item-group >
+              <el-menu-item index="2-1">客户基本信息维护</el-menu-item>
+
 
 
             </el-menu-item-group>
@@ -166,13 +177,18 @@ export default {
         this.$router.push({name: 'CheckOutManagement'})
       }
       else if(index==="1-5"){
-        this.$router.push({name: 'ManufacturerInformationManagement'})
+        this.$router.push({name: 'ManufacturerInformationMaintenance'})
       }
       else if(index==="1-6"){
-        this.$router.push({name: 'SupplierInformationManagement'})
+        this.$router.push({name: 'SupplierInformationMaintenance'})
       }
       else if(index==="1-7"){
         this.$router.push({name: 'StatementManagement'})
+      }
+
+
+      else if(index==="2-1"){
+        this.$router.push({name: 'CustomerInformationAndPurchaseRecordMaintenance'})
       }
 
     },
