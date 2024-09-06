@@ -2,7 +2,7 @@
   <div class="container">
     <div class="half">
 
-<!--      <el-button type="primary" @click="queryInboundList">-->
+<!--      <el-button type="primary" @click="queryCustomerList">-->
 <!--        搜索-->
 <!--      </el-button>-->
 
@@ -13,14 +13,14 @@
 
 
 
-      <el-dialog title="添加修改入库信息" :visible.sync="dialogFormInboundVisible" :before-close="handleInboundClose"
+      <el-dialog title="添加修改入库信息" :visible.sync="dialogFormCustomerVisible" :before-close="handleCustomerClose"
                  :close-on-click-modal="false">
-        <el-form :model="formInbound">
+        <el-form :model="formCustomer">
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
 
             <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">
-              <el-select v-model="formInbound.supplierId" placeholder="请选择制造商" style="width: 70%;">
+              <el-select v-model="formCustomer.supplierId" placeholder="请选择制造商" style="width: 70%;">
                 <el-option
                     v-for="supplier in supplierList"
                     :key="supplier.id"
@@ -32,14 +32,14 @@
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="发票号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input v-model="formInbound.fapiaoNo" autocomplete="off" style="width: 70%;"></el-input>
+              <el-input v-model="formCustomer.fapiaoNo" autocomplete="off" style="width: 70%;"></el-input>
             </el-form-item>
 
           </div>
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input v-model="formInbound.remark" autocomplete="off" style="width: 70%;"></el-input>
+              <el-input v-model="formCustomer.remark" autocomplete="off" style="width: 70%;"></el-input>
             </el-form-item>
 
           </div>
@@ -47,52 +47,52 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="handleInboundClose">取 消</el-button>
-          <el-button type="primary" @click="handleInboundSave">保 存</el-button>
+          <el-button @click="handleCustomerClose">取 消</el-button>
+          <el-button type="primary" @click="handleCustomerSave">保 存</el-button>
         </div>
       </el-dialog>
 
 
 
       <el-table
-          :data="inboundTableData"
+          :data="customerTableData"
           border
           style="width: 100%"
           @row-click="handleRowClick"
       >
         <el-table-column
-            prop="inboundNo"
+            prop="id"
             label="序号"
             width="150"
         >
         </el-table-column>
         <el-table-column
-            prop="inboundDate"
+            prop="name"
             label="姓名"
             width="150">
         </el-table-column>
 
         <el-table-column
-            prop="checkOut"
+            prop="gender"
             label="性别"
             width="150">
 
         </el-table-column>
         <el-table-column
-            prop="supplier.supplierName"
+            prop="phoneNumber"
             label="电话号码"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="fapiaoNo"
+            prop="emailAddress"
             label="邮箱地址"
             width="150">
         </el-table-column>
         <el-table-column
             label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleInboundEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleInboundDelete(scope.row)" type="text" size="small"
+            <el-button @click="handleCustomerEdit(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="handleCustomerDelete(scope.row)" type="text" size="small"
                        :disabled="scope.row.checkOut">删除</el-button>
 
           </template>
@@ -102,25 +102,25 @@
       </el-table>
       <div class="block">
         <el-pagination
-            @current-change="handleInboundCurrentChange"
-            :current-page="inboundCurrentPage"
-            :page-sizes="[inboundPageSize]"
-            :page-size="inboundPageSize"
+            @current-change="handleCustomerCurrentChange"
+            :current-page="customerCurrentPage"
+            :page-sizes="[customerPageSize]"
+            :page-size="customerPageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="inboundListCount">
+            :total="customerListCount">
         </el-pagination>
       </div>
     </div>
     <div class="half">
-      <div v-if="currentInbound ">
+      <div v-if="currentCustomer ">
               <span  >
-  入库单号：{{ currentInbound.inboundNo }}
+  入库单号：{{ currentCustomer.customerNo }}
 
 </span>
 
 
-        <el-button @click="openAddInboundDetailDialog" type="primary"
-                   :disabled="currentInbound.checkOut   || currentInbound.accountingReversalInboundNo !== null">
+        <el-button @click="openAddCustomerDetailDialog" type="primary"
+                   :disabled="currentCustomer.checkOut   || currentCustomer.accountingReversalCustomerNo !== null">
           添加
         </el-button>
 
@@ -129,13 +129,13 @@
 
       </div>
 
-      <el-dialog title="添加修改入库货品信息" :visible.sync="dialogFormInboundDetailVisible"
-                 :before-close="handleInboundDetailClose" :close-on-click-modal="false">
+      <el-dialog title="添加修改入库货品信息" :visible.sync="dialogFormCustomerDetailVisible"
+                 :before-close="handleCustomerDetailClose" :close-on-click-modal="false">
 
 
-        <el-form :model="formInboundDetail">
-          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentInbound">
-            {{ currentInbound.inboundNo }}
+        <el-form :model="formCustomerDetail">
+          <el-form-item label="入库单号：" style="flex: 1; margin-right: 10px;" :label-width="'100px'" v-if="currentCustomer">
+            {{ currentCustomer.customerNo }}
           </el-form-item>
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="货品编码名称" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
@@ -156,14 +156,14 @@
 
           <div >
             <el-form-item label="数量" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input-number v-model="dialogInboundDetailNew.itemAmount"  :precision="1"></el-input-number>
+              <el-input-number v-model="dialogCustomerDetailNew.itemAmount"  :precision="1"></el-input-number>
             </el-form-item>
 
           </div>
 
           <div  style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input v-model="dialogInboundDetailNew.remark" autocomplete="off" style="width: 70%;"></el-input>
+              <el-input v-model="dialogCustomerDetailNew.remark" autocomplete="off" style="width: 70%;"></el-input>
             </el-form-item>
 
           </div>
@@ -174,12 +174,12 @@
 
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="handleInboundDetailClose">取 消</el-button>
-          <el-button type="primary" @click="handleInboundDetailSave">保 存</el-button>
+          <el-button @click="handleCustomerDetailClose">取 消</el-button>
+          <el-button type="primary" @click="handleCustomerDetailSave">保 存</el-button>
         </div>
       </el-dialog>
       <el-table
-          :data="inboundDetailTableData"
+          :data="customerDetailTableData"
           border
           style="width: 100%;">
         <el-table-column
@@ -204,19 +204,19 @@
             width="120">
         </el-table-column>
         <el-table-column
-            prop="inboundDetailPriceExcludingTax"
+            prop="customerDetailPriceExcludingTax"
             label="金额"
             width="150">
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.inboundDetailPriceExcludingTax) }}
+            {{ formatNumber(scope.row.customerDetailPriceExcludingTax) }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="inboundDetailPriceIncludingTax"
+            prop="customerDetailPriceIncludingTax"
             label="价税合计"
             width="150">
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.inboundDetailPriceIncludingTax) }}
+            {{ formatNumber(scope.row.customerDetailPriceIncludingTax) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -227,10 +227,10 @@
         <el-table-column
             label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleInboundDetailEdit(scope.row)" type="text" size="small"
-                       :disabled="currentInbound.checkOut || !!currentInbound.accountingReversalInboundNo">编辑</el-button>
-            <el-button @click="handleInboundDetailDelete(scope.row)" type="text" size="small"
-                       :disabled="currentInbound.checkOut || !!currentInbound.accountingReversalInboundNo">删除</el-button>
+            <el-button @click="handleCustomerDetailEdit(scope.row)" type="text" size="small"
+                       :disabled="currentCustomer.checkOut || !!currentCustomer.accountingReversalCustomerNo">编辑</el-button>
+            <el-button @click="handleCustomerDetailDelete(scope.row)" type="text" size="small"
+                       :disabled="currentCustomer.checkOut || !!currentCustomer.accountingReversalCustomerNo">删除</el-button>
           </template>
         </el-table-column>
 
@@ -238,12 +238,12 @@
       </el-table>
       <div class="block">
         <el-pagination
-            @current-change="handleInboundDetailCurrentChange"
-            :current-page="inboundDetailCurrentPage"
-            :page-sizes="[inboundDetailPageSize]"
-            :page-size="inboundDetailPageSize"
+            @current-change="handleCustomerDetailCurrentChange"
+            :current-page="customerDetailCurrentPage"
+            :page-sizes="[customerDetailPageSize]"
+            :page-size="customerDetailPageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="inboundDetailListCount">
+            :total="customerDetailListCount">
         </el-pagination>
       </div>
     </div>
@@ -259,36 +259,36 @@ export default {
   name: "CustomerInformationAndPurchaseRecordMaintenance",
   data() {
     return {
-      formInbound: {},
-      formInboundDetail: {},
-      inboundTableData: [],
-      currentInbound: {},
-      inboundDetailTableData: [],
-      dialogFormInboundVisible: false,
-      dialogFormInboundDetailVisible: false,
+      formCustomer: {},
+      formCustomerDetail: {},
+      customerTableData: [],
+      currentCustomer: {},
+      customerDetailTableData: [],
+      dialogFormCustomerVisible: false,
+      dialogFormCustomerDetailVisible: false,
       supplierList: [],
 
 
       selectedItem: null,
       itemDetails: [],
-      inboundDetailCurrentPage: 1,
-      inboundDetailPageSize: 5,
-      inboundDetailListCount: 0,
+      customerDetailCurrentPage: 1,
+      customerDetailPageSize: 5,
+      customerDetailListCount: 0,
 
-      inboundCurrentPage: 1,
-      inboundPageSize: 5,
-      inboundListCount: 0,
+      customerCurrentPage: 1,
+      customerPageSize: 5,
+      customerListCount: 0,
 
 
-      dialogInboundDetailOld:[],
-      dialogInboundDetailNew:[],
+      dialogCustomerDetailOld:[],
+      dialogCustomerDetailNew:[],
 
 
     }
 
   },
   mounted() {
-    this.queryInboundList()
+    this.queryCustomerList()
     this.querySupplierInformation()
   },
   methods: {
@@ -329,8 +329,8 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
-    handleInboundStatementExport(row){
-      service.post('/inboundStatement',
+    handleCustomerStatementExport(row){
+      service.post('/customerStatement',
           row
       ).then(
           (response) => {
@@ -363,8 +363,8 @@ export default {
       const date = new Date(dateStr);
       return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
     },
-    handleInboundAccountingReversal(row){
-      MessageBox.confirm("请确认是否对入库单号为" + row.inboundNo + "的入库信息进行冲红？",
+    handleCustomerAccountingReversal(row){
+      MessageBox.confirm("请确认是否对入库单号为" + row.customerNo + "的入库信息进行冲红？",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -372,23 +372,23 @@ export default {
           }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/inboundAccountingReversal', {
+        service.get('/customerAccountingReversal', {
           params: {
-            inboundNo: row.inboundNo
+            customerNo: row.customerNo
           }
         }).then(response => {
           console.log(response);
           // Call queryItemInformation and wait for it to finish
-          return this.queryInboundList();
+          return this.queryCustomerList();
         }).then(() => {
-          this.currentInbound = {};
-          this.inboundDetailTableData= [];
-          console.log(this.inboundTableData)
+          this.currentCustomer = {};
+          this.customerDetailTableData= [];
+          console.log(this.customerTableData)
           // After queryItemInformation is finished
-          if (this.inboundTableData.length === 0 && this.inboundCurrentPage > 1) {
-            this.inboundCurrentPage--;
+          if (this.customerTableData.length === 0 && this.customerCurrentPage > 1) {
+            this.customerCurrentPage--;
             // Call queryItemInformation again after updating currentPage
-            return this.queryInboundList();
+            return this.queryCustomerList();
           }
         }).catch(error => {
           console.error(error);
@@ -399,8 +399,8 @@ export default {
       });
 
     },
-    handleInboundDelete(row) {
-      MessageBox.confirm("请确认是否删除入库单号为" + row.inboundNo + "的入库信息？该出库单号下所有入库信息都将被删除！",
+    handleCustomerDelete(row) {
+      MessageBox.confirm("请确认是否删除入库单号为" + row.id + "的入库信息？该出库单号下所有入库信息都将被删除！",
           '警告', {
             confirmButtonText: '是',
             cancelButtonText: '否',
@@ -408,23 +408,23 @@ export default {
           }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteInboundByInboundNo', {
+        service.get('/deleteCustomerById', {
           params: {
-            inboundNo: row.inboundNo
+            id: row.id
           }
         }).then(response => {
           console.log(response);
           // Call queryItemInformation and wait for it to finish
-          return this.queryInboundList();
+          return this.queryCustomerList();
         }).then(() => {
-          this.currentInbound = {};
-          this.inboundDetailTableData= [];
-          console.log(this.inboundTableData)
+          this.currentCustomer = {};
+          this.customerDetailTableData= [];
+          console.log(this.customerTableData)
           // After queryItemInformation is finished
-          if (this.inboundTableData.length === 0 && this.inboundCurrentPage > 1) {
-            this.inboundCurrentPage--;
+          if (this.customerTableData.length === 0 && this.customerCurrentPage > 1) {
+            this.customerCurrentPage--;
             // Call queryItemInformation again after updating currentPage
-            return this.queryInboundList();
+            return this.queryCustomerList();
           }
         }).catch(error => {
           console.error(error);
@@ -434,18 +434,18 @@ export default {
         console.log('Deletion cancelled');
       });
     },
-    handleInboundSave() {
-      console.log(this.formInbound);
-      service.post('/addOrUpdateInbound', this.formInbound
+    handleCustomerSave() {
+      console.log(this.formCustomer);
+      service.post('/addOrUpdateCustomer', this.formCustomer
       ).then(
           (response) => {
             console.log(response);
             if(response.data.code<400){
-              this.dialogFormInboundVisible = false;
-              this.formInbound = {}
-              this.currentInbound= {}
-              this.inboundDetailTableData = []
-              return this.queryInboundList();
+              this.dialogFormCustomerVisible = false;
+              this.formCustomer = {}
+              this.currentCustomer= {}
+              this.customerDetailTableData = []
+              return this.queryCustomerList();
             }
 
           })
@@ -454,39 +454,39 @@ export default {
                 console.log(error);
               });
     },
-    handleInboundClose() {
-      this.formInbound = {}
-      this.dialogFormInboundVisible = false;
+    handleCustomerClose() {
+      this.formCustomer = {}
+      this.dialogFormCustomerVisible = false;
     },
-    handleInboundEdit(row) {
+    handleCustomerEdit(row) {
       console.log(row);
-      this.formInbound = JSON.parse(JSON.stringify(row));
-      this.dialogFormInboundVisible = true;
+      this.formCustomer = JSON.parse(JSON.stringify(row));
+      this.dialogFormCustomerVisible = true;
     },
     openAddDialog() {
       //the dialog should contain all the fields above
-      this.dialogFormInboundVisible = true
+      this.dialogFormCustomerVisible = true
     },
 
-    handleInboundCurrentChange(inboundCurrentPage){
-      this.inboundCurrentPage = inboundCurrentPage;
-      this.queryInboundList()
+    handleCustomerCurrentChange(customerCurrentPage){
+      this.customerCurrentPage = customerCurrentPage;
+      this.queryCustomerList()
     },
 
     // eslint-disable-next-line no-unused-vars
     handleRowClick(row, column, event) {
-      this.currentInbound = row
+      this.currentCustomer = row
       console.log("Row clicked:", row);
-      this.queryInboundDetail()
+      this.queryCustomerDetail()
 
       // Additional logic here
     },
 
 
-    handleInboundDetailDelete(row) {
-      this.formInboundDetail.itemId = row.itemId
-      this.formInboundDetail.inboundNo = this.currentInbound.inboundNo
-      MessageBox.confirm("请确认是否删除入库单号为" + this.formInboundDetail.inboundNo +
+    handleCustomerDetailDelete(row) {
+      this.formCustomerDetail.itemId = row.itemId
+      this.formCustomerDetail.customerNo = this.currentCustomer.customerNo
+      MessageBox.confirm("请确认是否删除入库单号为" + this.formCustomerDetail.customerNo +
           "编码为" + row.item.code + "的所有入库信息？", '警告', {
         confirmButtonText: '是',
         cancelButtonText: '否',
@@ -494,22 +494,22 @@ export default {
       }).then(() => {
         // User confirmed deletion
         console.log(row);
-        service.get('/deleteInboundDetailByInboundNoAndItemId', {
+        service.get('/deleteCustomerDetailByCustomerNoAndItemId', {
           params: {
-            inboundNo: this.formInboundDetail.inboundNo,
-            itemId: this.formInboundDetail.itemId,
+            customerNo: this.formCustomerDetail.customerNo,
+            itemId: this.formCustomerDetail.itemId,
           }
         }).then(response => {
           console.log(response);
           // Call queryItemInformation and wait for it to finish
-          return this.queryInboundDetail();
+          return this.queryCustomerDetail();
         }).then(() => {
-          console.log(this.inboundDetailTableData)
+          console.log(this.customerDetailTableData)
           // After queryItemInformation is finished
-          if (this.inboundDetailTableData.length === 0 && this.inboundDetailCurrentPage > 1) {
-            this.inboundDetailCurrentPage--;
+          if (this.customerDetailTableData.length === 0 && this.customerDetailCurrentPage > 1) {
+            this.customerDetailCurrentPage--;
             // Call queryItemInformation again after updating currentPage
-            return this.queryInboundDetail();
+            return this.queryCustomerDetail();
           }
         }).catch(error => {
           console.error(error);
@@ -519,10 +519,10 @@ export default {
         console.log('Deletion cancelled');
       });
     },
-    handleInboundDetailEdit(row) {
+    handleCustomerDetailEdit(row) {
 
       console.log(row)
-      this.openAddInboundDetailDialog()
+      this.openAddCustomerDetailDialog()
       let item={}
       item.value=row.itemId
       console.log(item)
@@ -531,29 +531,29 @@ export default {
 
 
     },
-    handleInboundDetailSave() {
+    handleCustomerDetailSave() {
       console.log("this.selectedItem");
-      console.log(this.dialogInboundDetailNew);
-      const dialogInboundDetail = [
-        this.dialogInboundDetailOld,
-        this.dialogInboundDetailNew
+      console.log(this.dialogCustomerDetailNew);
+      const dialogCustomerDetail = [
+        this.dialogCustomerDetailOld,
+        this.dialogCustomerDetailNew
       ];
-      console.log(this.dialogInboundDetailOld)
-      console.log(this.dialogInboundDetailNew)
+      console.log(this.dialogCustomerDetailOld)
+      console.log(this.dialogCustomerDetailNew)
 
 
 
 
-      // Call the addOrUpdateInboundDetail endpoint with machineNumbers
-      service.post('/addOrUpdateInboundDetail',
-          dialogInboundDetail
+      // Call the addOrUpdateCustomerDetail endpoint with machineNumbers
+      service.post('/addOrUpdateCustomerDetail',
+          dialogCustomerDetail
       )
           .then(response => {
             console.log(response);
             if(response.data.code<400){
-              this.queryInboundDetail()
-              this.queryInboundList()
-              this.handleInboundDetailClose()
+              this.queryCustomerDetail()
+              this.queryCustomerList()
+              this.handleCustomerDetailClose()
             }
 
           })
@@ -564,101 +564,101 @@ export default {
     },
 
 
-    openAddInboundDetailDialog() {
+    openAddCustomerDetailDialog() {
       this.selectedItem = ""
-      this.formInboundDetail.inboundNo = this.currentInbound.inboundNo
-      this.dialogFormInboundDetailVisible = true
+      this.formCustomerDetail.customerNo = this.currentCustomer.customerNo
+      this.dialogFormCustomerDetailVisible = true
     },
-    handleInboundDetailCurrentChange(inboundDetailCurrentPage) {
-      this.inboundDetailCurrentPage = inboundDetailCurrentPage;
-      this.queryInboundDetail()
+    handleCustomerDetailCurrentChange(customerDetailCurrentPage) {
+      this.customerDetailCurrentPage = customerDetailCurrentPage;
+      this.queryCustomerDetail()
     },
 
-    handleInboundDetailClose() {
-      this.dialogFormInboundDetailVisible = false;
+    handleCustomerDetailClose() {
+      this.dialogFormCustomerDetailVisible = false;
       this.selectedItem = ""
-      this.formInboundDetail = {}
-      this.dialogInboundDetailOld = {
+      this.formCustomerDetail = {}
+      this.dialogCustomerDetailOld = {
         id: 0,
-        inboundNo:this.formInboundDetail.inboundNo,
-        itemId:this.formInboundDetail.itemId,
+        customerNo:this.formCustomerDetail.customerNo,
+        itemId:this.formCustomerDetail.itemId,
         itemAmount: 0,
         remark: ""
       }
-      this.dialogInboundDetailNew = {
+      this.dialogCustomerDetailNew = {
         id: 0,
-        inboundNo:this.formInboundDetail.inboundNo,
-        itemId:this.formInboundDetail.itemId,
+        customerNo:this.formCustomerDetail.customerNo,
+        itemId:this.formCustomerDetail.itemId,
         itemAmount: 0,
         remark: ""
       }
-      this.queryInboundList();
+      this.queryCustomerList();
     },
 
-    queryInboundDetail() {
+    queryCustomerDetail() {
 
       // Create a Promise for each service.get call
-      const fetchInboundDetailData = service.get('/queryInboundDetailList', {
+      const fetchCustomerDetailData = service.get('/queryCustomerDetailList', {
         params: {
-          inboundNo: this.currentInbound.inboundNo,
-          currentPage: this.inboundDetailCurrentPage,
-          pageSize: this.inboundDetailPageSize,
+          customerNo: this.currentCustomer.customerNo,
+          currentPage: this.customerDetailCurrentPage,
+          pageSize: this.customerDetailPageSize,
         }
       }).then(response => {
         console.log(response);
-        this.inboundDetailTableData = response.data.data;
+        this.customerDetailTableData = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
-      const fetchInboundDetailListCount = service.get('/queryInboundDetailListCount', {
+      const fetchCustomerDetailListCount = service.get('/queryCustomerDetailListCount', {
         params: {
-          inboundNo: this.currentInbound.inboundNo,
-          currentPage: this.inboundDetailCurrentPage,
-          pageSize: this.inboundDetailPageSize,
+          customerNo: this.currentCustomer.customerNo,
+          currentPage: this.customerDetailCurrentPage,
+          pageSize: this.customerDetailPageSize,
         }
       }).then(response => {
         console.log(response);
-        this.inboundDetailListCount = response.data.data;
+        this.customerDetailListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchInboundDetailData, fetchInboundDetailListCount]);
+      return Promise.all([fetchCustomerDetailData, fetchCustomerDetailListCount]);
     },
 
 
-    queryInboundList() {
-      console.log("queryInboundList");
+    queryCustomerList() {
+      console.log("queryCustomerList");
 
       // Create a Promise for each service.get call
-      const fetchInboundListData = service.get('/queryInboundList', {
+      const fetchCustomerListData = service.get('/queryCustomerList', {
         params: {
-          currentPage: this.inboundCurrentPage,
-          pageSize: this.inboundPageSize,
+          currentPage: this.customerCurrentPage,
+          pageSize: this.customerPageSize,
         }
       }).then(response => {
         console.log(response);
-        this.inboundTableData = response.data.data;
+        this.customerTableData = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
-      const fetchInboundCount = service.get('/queryInboundListCount', {
+      const fetchCustomerCount = service.get('/queryCustomerListCount', {
         params: {
-          currentPage: this.inboundCurrentPage,
-          pageSize: this.inboundPageSize,
+          currentPage: this.customerCurrentPage,
+          pageSize: this.customerPageSize,
         }
       }).then(response => {
         console.log(response);
-        this.inboundListCount = response.data.data;
+        this.customerListCount = response.data.data;
       }).catch(error => {
         console.error(error);
       });
 
       // Return a Promise that resolves when both requests are completed
-      return Promise.all([fetchInboundListData, fetchInboundCount]);
+      return Promise.all([fetchCustomerListData, fetchCustomerCount]);
     },
 
     querySearchItemDetail(queryString, cb) {
@@ -683,38 +683,38 @@ export default {
     handleItemDetailSelection(item) {
 
       // Handle the selection of an item from the autocomplete dropdown
-      this.formInboundDetail.itemId = item.value
+      this.formCustomerDetail.itemId = item.value
 
-      service.get('/queryInboundItemListByInboundNoAndItemId', {
+      service.get('/queryCustomerItemListByCustomerNoAndItemId', {
         params: {
-          inboundNo: this.formInboundDetail.inboundNo,
-          itemId: this.formInboundDetail.itemId,
+          customerNo: this.formCustomerDetail.customerNo,
+          itemId: this.formCustomerDetail.itemId,
         }
       })//axis后面的.get可以省略；
           .then(
               (response) => {
                 console.log(response);
                 if(response.data.data===null) {
-                  this.dialogInboundDetailOld = {
+                  this.dialogCustomerDetailOld = {
                     id: 0,
-                    inboundNo:this.formInboundDetail.inboundNo,
-                    itemId:this.formInboundDetail.itemId,
+                    customerNo:this.formCustomerDetail.customerNo,
+                    itemId:this.formCustomerDetail.itemId,
                     itemAmount: 0,
                     remark: ""
                   }
-                  this.dialogInboundDetailNew = {
+                  this.dialogCustomerDetailNew = {
                     id: 0,
-                    inboundNo:this.formInboundDetail.inboundNo,
-                    itemId:this.formInboundDetail.itemId,
+                    customerNo:this.formCustomerDetail.customerNo,
+                    itemId:this.formCustomerDetail.itemId,
                     itemAmount: 0,
                     remark: ""
                   }
                 }else{
                   //to deep copy
-                  this.dialogInboundDetailOld=JSON.parse(JSON.stringify(response.data.data));
-                  this.dialogInboundDetailNew=JSON.parse(JSON.stringify(response.data.data));
-                  console.log("this.dialogInboundDetailNew")
-                  console.log(this.dialogInboundDetailNew)
+                  this.dialogCustomerDetailOld=JSON.parse(JSON.stringify(response.data.data));
+                  this.dialogCustomerDetailNew=JSON.parse(JSON.stringify(response.data.data));
+                  console.log("this.dialogCustomerDetailNew")
+                  console.log(this.dialogCustomerDetailNew)
                 }
 
               })
