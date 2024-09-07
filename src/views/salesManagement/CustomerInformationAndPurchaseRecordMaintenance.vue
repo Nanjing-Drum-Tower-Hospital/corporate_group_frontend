@@ -13,38 +13,34 @@
 
 
 
-      <el-dialog title="添加修改入库信息" :visible.sync="dialogFormCustomerVisible" :before-close="handleCustomerClose"
+      <el-dialog title="添加客户信息" :visible.sync="dialogFormCustomerVisible" :before-close="handleCustomerClose"
                  :close-on-click-modal="false">
         <el-form :model="formCustomer">
 
-          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
 
-            <el-form-item label="供应商" style="flex: 1;" :label-width="'100px'">
-              <el-select v-model="formCustomer.supplierId" placeholder="请选择制造商" style="width: 70%;">
-                <el-option
-                    v-for="supplier in supplierList"
-                    :key="supplier.id"
-                    :label="supplier.supplierName"
-                    :value="supplier.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <el-form-item label="发票号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input v-model="formCustomer.fapiaoNo" autocomplete="off" style="width: 70%;"></el-input>
+            <el-form-item label="姓名" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input v-model="formCustomer.name" autocomplete="off" style="width: 70%;"></el-input>
             </el-form-item>
-
           </div>
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <el-form-item label="备注" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-              <el-input v-model="formCustomer.remark" autocomplete="off" style="width: 70%;"></el-input>
+            <el-form-item label="性别" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input v-model="formCustomer.gender" autocomplete="off" style="width: 70%;"></el-input>
             </el-form-item>
-
           </div>
 
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <el-form-item label="手机号码" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input v-model="formCustomer.phoneNumber" autocomplete="off" style="width: 70%;"></el-input>
+            </el-form-item>
+          </div>
 
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <el-form-item label="邮箱地址" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-input v-model="formCustomer.emailAddress" autocomplete="off" style="width: 70%;"></el-input>
+            </el-form-item>
+          </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleCustomerClose">取 消</el-button>
