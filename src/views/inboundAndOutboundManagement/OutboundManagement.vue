@@ -13,7 +13,22 @@
       <el-dialog title="添加修改出库信息" :visible.sync="dialogFormOutboundVisible" :before-close="handleOutboundClose"
                  :close-on-click-modal="false">
         <el-form :model="formOutbound">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <el-form-item label="购买记录" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <el-autocomplete
+                  v-model="selectedPurchaseRecord"
+                  :fetch-suggestions="querySearchPurchaseRecord"
+                  placeholder="搜索购买记录"
+                  style="width: 100%;"
+                  @select="handlePurchaseRecordSelection"
+                  :value-key="'label'"
 
+              >
+
+              </el-autocomplete>
+            </el-form-item>
+
+          </div>
 
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
@@ -45,6 +60,11 @@
         <el-table-column
             prop="outboundDate"
             label="出库时间"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="purchaseRecord.customer.name"
+            label="客户姓名"
             width="150">
         </el-table-column>
         <el-table-column
@@ -254,6 +274,7 @@ export default {
 
 
       selectedItem: null,
+      selectedPurchaseRecord: null,
       itemDetails: [],
       outboundDetailCurrentPage: 1,
       outboundDetailPageSize: 5,
@@ -709,11 +730,6 @@ export default {
                 this.existingInventoryAmount=0
                 this.queryExistingInventoryAmount()
 
-                // else {
-                //   //to deep copy
-                //
-                // }
-
               })
           .catch(
               (error) => {
@@ -723,7 +739,72 @@ export default {
 
     },
 
+    querySearchPurchaseRecord(queryString, cb) {
+      // Make a GET request to your Spring Boot backend to fetch item details
+      // You can use libraries like Axios for making HTTP requests
+      service.get('/queryPurchaseRecordByCustomerName', {
+        params: {
+          input: queryString,
+        }
+      })
 
+          .then(response => {
+            // Process the response and extract item details
+            this.itemDetails = response.data.data;
+            console.log(this.itemDetails)
+            // Call the callback function with the results
+            cb(this.itemDetails.map(item => ({value: item.id, label: item.code + " - " + item.name})));
+          })
+          .catch(error => {
+            console.error('Error fetching item details:', error);
+          });
+    },
+    handlePurchaseRecordSelection(item) {
+
+
+      // Handle the selection of an item from the autocomplete dropdown
+      this.formOutboundDetail.itemId = item.value
+
+      service.get('/queryOutboundItemListByOutboundNoAndItemId', {
+        params: {
+          outboundNo: this.formOutboundDetail.outboundNo,
+          itemId: this.formOutboundDetail.itemId,
+        }
+      })//axis后面的.get可以省略；
+          .then(
+              (response) => {
+                console.log(response);
+                if (response.data.data === null) {
+                  this.dialogOutboundDetailOld = {
+                    id: 0,
+                    outboundNo: this.formOutboundDetail.outboundNo,
+                    itemId: this.formOutboundDetail.itemId,
+                    itemAmount: 0,
+                    remark: ""
+                  }
+                  this.dialogOutboundDetailNew = {
+                    id: 0,
+                    outboundNo: this.formOutboundDetail.outboundNo,
+                    itemId: this.formOutboundDetail.itemId,
+                    itemAmount: 0,
+                    remark: ""
+                  }
+                } else {
+                  this.dialogOutboundDetailOld = JSON.parse(JSON.stringify(response.data.data));
+                  this.dialogOutboundDetailNew = JSON.parse(JSON.stringify(response.data.data));
+                }
+
+                this.existingInventoryAmount=0
+                this.queryExistingInventoryAmount()
+
+              })
+          .catch(
+              (error) => {
+                console.log(error);
+              });
+
+
+    },
   }
 
 

@@ -41,7 +41,7 @@
             </template>
             <el-menu-item-group >
               <el-menu-item index="2-1">客户基本信息维护</el-menu-item>
-
+              <el-menu-item index="2-2">购买记录管理</el-menu-item>
 
 
             </el-menu-item-group>
@@ -188,9 +188,11 @@ export default {
 
 
       else if(index==="2-1"){
-        this.$router.push({name: 'CustomerInformationAndPurchaseRecordMaintenance'})
+        this.$router.push({name: 'CustomerInformationMaintenance'})
       }
-
+      else if(index==="2-2"){
+        this.$router.push({name: 'PurchaseRecordManagement'})
+      }
     },
 
 

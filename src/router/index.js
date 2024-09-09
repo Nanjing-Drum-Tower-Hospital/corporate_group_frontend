@@ -10,8 +10,8 @@ import StatementManagement from "@/views/inboundAndOutboundManagement/StatementM
 import SupplierInformationMaintenance from "@/views/inboundAndOutboundManagement/SupplierInformationMaintenance.vue";
 import ManufacturerInformationMaintenance
     from "@/views/inboundAndOutboundManagement/ManufacturerInformationMaintenance.vue";
-import CustomerInformationAndPurchaseRecordMaintenance
-    from "@/views/salesManagement/CustomerInformationAndPurchaseRecordMaintenance.vue";
+import CustomerInformationMaintenance from "@/views/salesManagement/CustomerInformationMaintenance.vue";
+import PurchaseRecordManagement from "@/views/salesManagement/PurchaseRecordManagement.vue";
 
 
 
@@ -76,9 +76,14 @@ export default new VueRouter({
                 },
 
                 {
-                    name: 'CustomerInformationAndPurchaseRecordMaintenance',
-                    path: '/customerInformationAndPurchaseRecordMaintenance',
-                    component: CustomerInformationAndPurchaseRecordMaintenance,
+                    name: 'CustomerInformationMaintenance',
+                    path: '/customerInformationMaintenance',
+                    component: CustomerInformationMaintenance,
+                },
+                {
+                    name: 'PurchaseRecordManagement',
+                    path: '/purchaseRecordManagement',
+                    component: PurchaseRecordManagement,
                 },
 
 
