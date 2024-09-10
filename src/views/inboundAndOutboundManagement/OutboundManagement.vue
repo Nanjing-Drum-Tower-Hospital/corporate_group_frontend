@@ -276,6 +276,7 @@ export default {
       selectedItem: null,
       selectedPurchaseRecord: null,
       itemDetails: [],
+      purchaseRecordList:[],
       outboundDetailCurrentPage: 1,
       outboundDetailPageSize: 5,
       outboundDetailListCount: 0,
@@ -287,6 +288,9 @@ export default {
 
       dialogOutboundDetailOld:[],
       dialogOutboundDetailNew:[],
+
+      dialogOutboundOld:[],
+      dialogOutboundNew:[],
       existingInventoryAmount:0
     }
 
@@ -469,10 +473,18 @@ export default {
               });
     },
     handleOutboundClose() {
+      this.selectedPurchaseRecord=""
       this.formOutbound = {}
       this.dialogFormOutboundVisible = false;
     },
     handleOutboundEdit(row) {
+      console.log(row)
+      let purchaseRecord = {}
+      purchaseRecord.value = row.purchaseRecordId
+      console.log(purchaseRecord)
+      if(row.purchaseRecordId!==0){
+        this.selectedPurchaseRecord = "购买时间："+row.purchaseRecord.purchaseDate + " - " +"客户姓名："+ row.purchaseRecord.customer.name
+      }
       console.log(row);
       this.formOutbound = JSON.parse(JSON.stringify(row));
       this.dialogFormOutboundVisible = true;
@@ -750,53 +762,51 @@ export default {
 
           .then(response => {
             // Process the response and extract item details
-            this.itemDetails = response.data.data;
-            console.log(this.itemDetails)
+            this.purchaseRecordList = response.data.data;
+            console.log(this.purchaseRecordList)
             // Call the callback function with the results
-            cb(this.itemDetails.map(item => ({value: item.id, label: item.code + " - " + item.name})));
+            cb(this.purchaseRecordList.map(purchaseRecord => ({value: purchaseRecord.id, label: "购买时间："+purchaseRecord.purchaseDate + " - " +"客户姓名："+ purchaseRecord.customer.name})));
           })
           .catch(error => {
             console.error('Error fetching item details:', error);
           });
     },
-    handlePurchaseRecordSelection(item) {
+    handlePurchaseRecordSelection(purchaseRecord) {
 
 
       // Handle the selection of an item from the autocomplete dropdown
-      this.formOutboundDetail.itemId = item.value
+      this.formOutbound.purchaseRecordId = purchaseRecord.value
 
-      service.get('/queryOutboundItemListByOutboundNoAndItemId', {
+      service.get('/queryOutboundListByOutboundNoAndPurchaseRecordId', {
         params: {
-          outboundNo: this.formOutboundDetail.outboundNo,
-          itemId: this.formOutboundDetail.itemId,
+          outboundNo: this.formOutbound.outboundNo,
+          purchaseRecordId: this.formOutbound.purchaseRecordId,
         }
       })//axis后面的.get可以省略；
           .then(
               (response) => {
                 console.log(response);
                 if (response.data.data === null) {
-                  this.dialogOutboundDetailOld = {
-                    id: 0,
-                    outboundNo: this.formOutboundDetail.outboundNo,
-                    itemId: this.formOutboundDetail.itemId,
-                    itemAmount: 0,
-                    remark: ""
+                  this.dialogOutboundOld = {
+                    outboundNo: this.formOutbound.outboundNo,
+                    outboundDate: "",
+                    remark: "",
+                    accountingReversalOutboundNo: "",
+                    entryType: "",
+                    purchaseRecordId:""
                   }
-                  this.dialogOutboundDetailNew = {
-                    id: 0,
-                    outboundNo: this.formOutboundDetail.outboundNo,
-                    itemId: this.formOutboundDetail.itemId,
-                    itemAmount: 0,
-                    remark: ""
+                  this.dialogOutboundNew = {
+                    outboundNo: this.formOutbound.outboundNo,
+                    outboundDate: "",
+                    remark: "",
+                    accountingReversalOutboundNo: "",
+                    entryType: "",
+                    purchaseRecordId:""
                   }
                 } else {
-                  this.dialogOutboundDetailOld = JSON.parse(JSON.stringify(response.data.data));
-                  this.dialogOutboundDetailNew = JSON.parse(JSON.stringify(response.data.data));
+                  this.dialogOutboundOld = JSON.parse(JSON.stringify(response.data.data));
+                  this.dialogOutboundNew = JSON.parse(JSON.stringify(response.data.data));
                 }
-
-                this.existingInventoryAmount=0
-                this.queryExistingInventoryAmount()
-
               })
           .catch(
               (error) => {
