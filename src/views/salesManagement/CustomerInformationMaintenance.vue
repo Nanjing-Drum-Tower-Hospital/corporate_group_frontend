@@ -20,6 +20,9 @@
 
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <el-form-item label="姓名" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+              <label>
+                <span style="color: red;">*</span>
+              </label>
               <el-input v-model="formCustomer.name" autocomplete="off" style="width: 70%;"></el-input>
             </el-form-item>
           </div>

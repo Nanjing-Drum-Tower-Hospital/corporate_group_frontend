@@ -43,27 +43,45 @@
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <el-form-item label="编码" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
             <el-input v-model="form.code" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
           <el-form-item label="货品名称" style="flex: 1;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
             <el-input v-model="form.name" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <el-form-item label="型号" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
             <el-input v-model="form.model" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
           <el-form-item label="单位" style="flex: 1;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
             <el-input v-model="form.unitName" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <el-form-item label="税前单价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
             <el-input v-model="form.unitPriceExcludingTax" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
           <el-form-item label="制造商" style="flex: 1;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
             <el-select v-model="form.manufacturerId" placeholder="请选择制造商" style="width: 70%;">
               <!-- You can dynamically populate the options here -->
               <!-- For example, using a loop to iterate over a manufacturers array -->
@@ -88,6 +106,9 @@
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <el-form-item label="类型" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
             <el-input v-model="form.type" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
           <el-form-item label="批准文号" style="flex: 1;" :label-width="'100px'">
