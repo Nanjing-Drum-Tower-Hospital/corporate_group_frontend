@@ -36,6 +36,13 @@
           </el-form-item>
         </el-form>
 
+        <el-form :inline="true" style="display: inline-block;">
+          <el-form-item label="调差金额" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <el-input-number v-model="adjustmentAmount"  :precision="2" :step="0.01"></el-input-number>
+          </el-form-item>
+        </el-form>
+
+
 
       </template>
     </div>
@@ -188,7 +195,7 @@ export default {
         unitNameRight: null,
         ratio: 0
       },
-
+      adjustmentAmount: 0,
       dialogFormVisible:false,
 
       unitRatioCurrentPage: 1,
@@ -375,7 +382,8 @@ export default {
         params: {
           beginDate: this.dateRange.beginDate,
           endDate: this.dateRange.endDate,
-          mainUnitName: this.mainUnitName
+          mainUnitName: this.mainUnitName,
+          adjustmentAmount: this.adjustmentAmount
         }
       }).then(response => {
         if(response.data.code<400){
