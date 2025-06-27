@@ -36,11 +36,11 @@
           </el-form-item>
         </el-form>
 
-        <el-form :inline="true" style="display: inline-block;">
-          <el-form-item label="调差金额" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
-            <el-input-number v-model="adjustmentAmount"  :precision="2" :step="0.01"></el-input-number>
-          </el-form-item>
-        </el-form>
+<!--        <el-form :inline="true" style="display: inline-block;">-->
+<!--          <el-form-item label="调差金额" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
+<!--            <el-input-number v-model="adjustmentAmount"  :precision="2" :step="0.01"></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
 
 
 
