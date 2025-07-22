@@ -117,6 +117,21 @@
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <el-form-item label="零售单价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
+            <el-input v-model="form.retailPrice" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item label="员工折扣单价" style="flex: 1; margin-right: 10px;" :label-width="'100px'">
+            <label>
+              <span style="color: red;">*</span>
+            </label>
+            <el-input v-model="form.retailEmployeePrice" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
 
           <el-form-item label="有效期" style="flex: 1;" :label-width="'100px'">
             <el-input v-model="form.expireDate" autocomplete="off" style="width: 70%;"></el-input>
@@ -177,6 +192,22 @@
             width="150">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.unitPriceIncludingTax) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="retailPrice"
+            label="零售单价"
+            width="150">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.retailPrice) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="retailEmployeePrice"
+            label="员工折扣单价"
+            width="150">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.retailEmployeePrice) }}
           </template>
         </el-table-column>
         <el-table-column
