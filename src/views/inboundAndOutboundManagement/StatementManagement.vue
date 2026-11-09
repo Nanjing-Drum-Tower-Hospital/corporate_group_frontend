@@ -216,12 +216,11 @@ export default {
       unitRatioTableData: [],
       unitNameList:[],
       mainUnitName:null,
-      category: -1,
+      category: 1,
       categoryOptions:[
         {value: 1, label: '耳蜗'},
         {value: 2, label: '耳膜'}
-      ],
-      category: 1
+      ]
 
 
     }
