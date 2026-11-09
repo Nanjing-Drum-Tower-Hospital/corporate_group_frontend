@@ -111,8 +111,23 @@
             </label>
             <el-input v-model="form.type" autocomplete="off" style="width: 70%;"></el-input>
           </el-form-item>
+          <el-form-item label="商品分类" style="flex: 1;" :label-width="'100px'">
+            <el-select v-model="form.category" placeholder="请选择" style="width: 70%;">
+              <el-option
+                  v-for="item in categoryOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <el-form-item label="批准文号" style="flex: 1;" :label-width="'100px'">
             <el-input v-model="form.approvalNo" autocomplete="off" style="width: 70%;"></el-input>
+          </el-form-item>
+          <el-form-item style="flex: 1;" label-width="100px">
           </el-form-item>
         </div>
 
@@ -164,6 +179,14 @@
             prop="model"
             label="型号"
             width="90">
+        </el-table-column>
+        <el-table-column
+            prop="category"
+            label="商品分类"
+            width="100">
+          <template slot-scope="scope">
+            {{ formatCategory(scope.row.category) }}
+          </template>
         </el-table-column>
         <el-table-column
             prop="unitName"
@@ -267,6 +290,11 @@ export default {
       currentPage:1,
       itemListCount:0,
       pageSize:10,
+      categoryOptions:[
+        {value: 0, label: '其他'},
+        {value: 1, label: '耳蜗'},
+        {value: 2, label: '耳膜'}
+      ],
     }
   },
   mounted() {
@@ -305,6 +333,10 @@ export default {
     },
     formatNumber(value) {
       return Number(value).toFixed(10);
+    },
+    formatCategory(value) {
+      const option = this.categoryOptions.find(item => item.value === value);
+      return option ? option.label : value;
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;

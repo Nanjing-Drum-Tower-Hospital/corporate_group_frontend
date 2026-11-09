@@ -35,6 +35,18 @@
             </el-select>
           </el-form-item>
         </el-form>
+        <el-form :inline="true" style="display: inline-block;">
+          <el-form-item  style="flex: 1;"  label="商品分类：">
+            <el-select v-model="category" placeholder="请选择" style="width: 120px;">
+              <el-option
+                  v-for="item in categoryOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
 
 <!--        <el-form :inline="true" style="display: inline-block;">-->
 <!--          <el-form-item label="调差金额" style="flex: 1; margin-right: 10px;" :label-width="'100px'">-->
@@ -203,7 +215,13 @@ export default {
       unitRatioListCount: 0,
       unitRatioTableData: [],
       unitNameList:[],
-      mainUnitName:null
+      mainUnitName:null,
+      category: -1,
+      categoryOptions:[
+        {value: 1, label: '耳蜗'},
+        {value: 2, label: '耳膜'}
+      ],
+      category: 1
 
 
     }
@@ -219,7 +237,8 @@ export default {
         params: {
           beginDate: this.dateRange.beginDate,
           endDate: this.dateRange.endDate,
-          mainUnitName: this.mainUnitName
+          mainUnitName: this.mainUnitName,
+          category: this.category
         }
       }).then(response => {
         if(response.data.code<400){
@@ -240,7 +259,8 @@ export default {
         params: {
           beginDate: this.dateRange.beginDate,
           endDate: this.dateRange.endDate,
-          mainUnitName: this.mainUnitName
+          mainUnitName: this.mainUnitName,
+          category: this.category
         }
       }).then(response => {
         if(response.data.code<400){
@@ -383,7 +403,8 @@ export default {
           beginDate: this.dateRange.beginDate,
           endDate: this.dateRange.endDate,
           mainUnitName: this.mainUnitName,
-          adjustmentAmount: this.adjustmentAmount
+          adjustmentAmount: this.adjustmentAmount,
+          category: this.category
         }
       }).then(response => {
         if(response.data.code<400){
