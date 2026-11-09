@@ -291,7 +291,6 @@ export default {
       itemListCount:0,
       pageSize:10,
       categoryOptions:[
-        {value: 0, label: '其他'},
         {value: 1, label: '耳蜗'},
         {value: 2, label: '耳膜'}
       ],
