@@ -218,7 +218,7 @@ export default {
       mainUnitName:null,
       category: 1,
       categoryOptions:[
-        {value: 1, label: '耳蜗'},
+        {value: 1, label: '助听器'},
         {value: 2, label: '耳膜'}
       ]
 
